@@ -4,10 +4,12 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
 import { setupMapInteractionHandlers } from "./utils/Map";
+import { Routing } from "./components/Routing";
 
+/** lng, lat */
 export type Coordinate = [number, number];
 
-const INITIAL_CENTER: Coordinate = [-74.0242, 40.6941];
+const INITIAL_CENTER: Coordinate = [13.404954, 52.520008];
 
 const INITIAL_ZOOM = 10.12;
 
@@ -36,12 +38,12 @@ function App() {
     setupMapInteractionHandlers(mapRef, setCenter, setZoom);
   }, []);
 
-  const handleButtonClick = () => {
-    mapRef?.current?.flyTo({
-      center: INITIAL_CENTER,
-      zoom: INITIAL_ZOOM,
-    });
-  };
+  // const handleButtonClick = () => {
+  //   mapRef?.current?.flyTo({
+  //     center: INITIAL_CENTER,
+  //     zoom: INITIAL_ZOOM,
+  //   });
+  // };
 
   return (
     <>
@@ -49,9 +51,8 @@ function App() {
         Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
         Zoom: {zoom.toFixed(2)}
       </div>
-      <button className="reset-button" onClick={handleButtonClick}>
-        Reset
-      </button>
+
+      {mapRef.current && <Routing map={mapRef.current} />}
       <div id="map-container" ref={mapContainerRef} />
     </>
   );

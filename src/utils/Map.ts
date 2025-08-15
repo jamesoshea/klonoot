@@ -14,8 +14,4 @@ export const setupMapInteractionHandlers = (
     setCenter([mapCenter?.lng ?? 0, mapCenter?.lat ?? 0]);
     setZoom(mapZoom ?? 14);
   });
-
-  mapRef?.current?.on("click", (e: mapboxgl.MapMouseEvent) => {
-    console.log(e);
-  });
 };
