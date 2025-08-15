@@ -3,8 +3,9 @@ import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
+import { setupMapInteractionHandlers } from "./utils/Map";
 
-type Coordinate = [number, number]
+export type Coordinate = [number, number];
 
 const INITIAL_CENTER: Coordinate = [-74.0242, 40.6941];
 
@@ -21,7 +22,7 @@ function App() {
     mapboxgl.accessToken =
       "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
     mapRef.current = new mapboxgl.Map({
-      container: mapContainerRef.current,
+      container: mapContainerRef.current as HTMLElement,
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
     });
@@ -32,16 +33,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    mapRef?.current?.on("move", () => {
-      // get the current center coordinates and zoom level from the map
-      const mapCenter = mapRef?.current?.getCenter();
-      const mapZoom = mapRef?.current?.getZoom();
-
-      // update state
-      setCenter([mapCenter?.lng ?? 0, mapCenter?.lat ?? 0]);
-      setZoom(mapZoom ?? 14);
-    });
-  }, [])
+    setupMapInteractionHandlers(mapRef, setCenter, setZoom);
+  }, []);
 
   const handleButtonClick = () => {
     mapRef?.current?.flyTo({
