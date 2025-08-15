@@ -16,7 +16,6 @@ const INITIAL_ZOOM = 10.12;
 function App() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-
   const [center, setCenter] = useState<Coordinate>(INITIAL_CENTER);
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
 
@@ -47,11 +46,6 @@ function App() {
 
   return (
     <>
-      <div className="sidebar">
-        Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
-        Zoom: {zoom.toFixed(2)}
-      </div>
-
       {mapRef.current && <Routing map={mapRef.current} />}
       <div id="map-container" ref={mapContainerRef} />
     </>
