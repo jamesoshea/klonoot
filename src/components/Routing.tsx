@@ -28,6 +28,15 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     [points]
   );
 
+  const handlePointDrag = useCallback(
+    (e: { target: { _lngLat: { lng: number, lat: number } } }, index: number) => {
+      const newArray = [...points];
+      newArray.splice(index, 1, [e.target._lngLat.lng, e.target._lngLat.lat]);
+      setPoints(newArray);
+    },
+    [points]
+  );
+
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
       if (mode === MODES.ROUTING) {
@@ -40,7 +49,14 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   useEffect(() => {
     markersInState.forEach((marker) => marker.remove());
     setMarkersInState(
-      points.map((point) => new mapboxgl.Marker({ draggable:true }).setLngLat(point).addTo(map))
+      points.map((point, index) => {
+        const marker = new mapboxgl.Marker({ draggable: true })
+          .setLngLat(point)
+          .addTo(map);
+
+        marker.on("dragend", (e) => handlePointDrag(e, index));
+        return marker;
+      })
     );
   }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
