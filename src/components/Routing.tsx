@@ -1,47 +1,14 @@
 import mapboxgl, { Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { SearchBox } from "@mapbox/search-js-react";
 
 import type { Coordinate } from "../App";
-import { MAPBOX_ACCESS_TOKEN } from "../consts";
+import { Search } from "./Search";
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [routeTrack, setRouteTrack] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResult, setSearchResult] = useState(null);
-
-  const addSearchResultToPoints = (position: "START" | "END") => {
-    const newArray = [...points];
-    if (position === "START") {
-      newArray.unshift([
-        searchResult.properties.coordinates.longitude,
-        searchResult.properties.coordinates.latitude,
-      ]);
-    }
-
-    if (position === "END") {
-      newArray.push([
-        searchResult.properties.coordinates.longitude,
-        searchResult.properties.coordinates.latitude,
-      ]);
-    }
-
-    setPoints(newArray);
-    handleClearSearchResult();
-  };
-
-  const handleClearSearchResult = () => {
-    setSearchResult(null);
-    setSearchTerm("");
-  };
-
-  const handleRetrieveSearchResult = (res) => {
-    console.log(res.features[0])
-    setSearchResult(res.features[0]);
-  };
 
   const handlePointDelete = useCallback(
     (index: number) => {
@@ -145,17 +112,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   return (
     <>
       <div className="routing p-3 m-3 rounded-lg bg-base-100 flex flex-col items-center">
-        <SearchBox
-          accessToken={MAPBOX_ACCESS_TOKEN}
-          map={map}
-          mapboxgl={mapboxgl}
-          placeholder="Search for somewhere"
-          value={searchTerm}
-          onChange={(d) => {
-            setSearchTerm(d);
-          }}
-          onRetrieve={handleRetrieveSearchResult}
-        />
+        <Search map={map} points={points} setPoints={setPoints} />
         <ul className="list min-w-full">
           {!!points.length && (
             <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
@@ -178,51 +135,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           ))}
         </ul>
       </div>
-      {searchResult && (
-        <div className="search-result card m-3 rounded-lg bg-base-100 flex flex-col items-center">
-          <div className="card-body">
-            <div className="card-actions justify-end">
-              <button
-                className="btn btn-square btn-sm"
-                onClick={handleClearSearchResult}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <h2 className="card-title">{searchResult.properties.name}</h2>
-            <div>
-              {searchResult.properties.place_formatted}
-            </div>
-            <div className="card-actions justify-end mt-2">
-              <button
-                className="btn btn-outline"
-                onClick={() => addSearchResultToPoints("START")}
-              >
-                Add to start
-              </button>
-              <button
-                className="btn btn-outline"
-                onClick={() => addSearchResultToPoints("END")}
-              >
-                Add to end
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
