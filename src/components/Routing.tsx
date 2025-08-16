@@ -1,6 +1,7 @@
 import mapboxgl, { Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import * as turf from "@turf/turf";
 
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
@@ -109,9 +110,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
   }, [map, routeTrack]);
 
+  const routeLength =
+    routeTrack && points.length > 1 ? turf.length(routeTrack) : 0;
+
   return (
-    <>
-      <div className="routing p-3 m-3 rounded-lg bg-base-100 flex flex-col items-center">
+    <div className="routing m-3">
+      <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
         <Search map={map} points={points} setPoints={setPoints} />
         <ul className="list min-w-full">
           {!!points.length && (
@@ -135,6 +139,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           ))}
         </ul>
       </div>
-    </>
+      <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
+        {routeLength.toFixed(1)} km
+      </div>
+    </div>
   );
 };

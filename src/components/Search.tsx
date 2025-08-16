@@ -1,4 +1,4 @@
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { type GeoJSONFeature } from "mapbox-gl";
 import { useState, type Dispatch } from "react";
 
 import { MAPBOX_ACCESS_TOKEN } from "../consts";
@@ -11,23 +11,28 @@ type SearchProps = {
   setPoints: Dispatch<Coordinate[]>;
 };
 
+type SearchResult = {
+    attribution: string;
+    features: Array<GeoJSONFeature>
+}
+
 export const Search = ({ map, points, setPoints }: SearchProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResult, setSearchResult] = useState(null);
+  const [searchResult, setSearchResult] = useState<GeoJSONFeature | null>(null);
 
   const addSearchResultToPoints = (position: "START" | "END") => {
     const newArray = [...points];
     if (position === "START") {
       newArray.unshift([
-        searchResult.properties.coordinates.longitude,
-        searchResult.properties.coordinates.latitude,
+        searchResult?.properties?.coordinates.longitude,
+        searchResult?.properties?.coordinates.latitude,
       ]);
     }
 
     if (position === "END") {
       newArray.push([
-        searchResult.properties.coordinates.longitude,
-        searchResult.properties.coordinates.latitude,
+        searchResult?.properties?.coordinates.longitude,
+        searchResult?.properties?.coordinates.latitude,
       ]);
     }
 
@@ -40,13 +45,13 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
     setSearchTerm("");
   };
 
-  const handleRetrieveSearchResult = (res) => {
-    console.log(res.features[0]);
+  const handleRetrieveSearchResult = (res: SearchResult) => {
     setSearchResult(res.features[0]);
   };
 
   return (
     <>
+      {/* @ts-expect-error wat*/}
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
         map={map}
@@ -56,6 +61,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         onChange={(d) => {
           setSearchTerm(d);
         }}
+        // @ts-expect-error this type is not exported
         onRetrieve={handleRetrieveSearchResult}
       />
       {searchResult && (
@@ -82,8 +88,8 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
                 </svg>
               </button>
             </div>
-            <h2 className="card-title">{searchResult.properties.name}</h2>
-            <div>{searchResult.properties.place_formatted}</div>
+            <h2 className="card-title">{searchResult?.properties?.name ?? ''}</h2>
+            <div>{searchResult?.properties?.place_formatted ?? ''}</div>
             <div className="card-actions justify-end mt-2">
               <button
                 className="btn btn-outline"
