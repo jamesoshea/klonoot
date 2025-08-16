@@ -1,5 +1,5 @@
-import mapboxgl from "mapbox-gl";
-import { useEffect, useState } from "react";
+import mapboxgl, { Marker } from "mapbox-gl";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 import type { Coordinate } from "../App";
@@ -14,26 +14,39 @@ type Modes = (typeof MODES)[keyof typeof MODES];
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
+  const [markersInState, setMarkersInState] = useState<Marker[]>([])
   const [mode, setMode] = useState<Modes>(MODES.ROUTING);
 
   const [routeTrack, setRouteTrack] = useState(null);
 
-  useEffect(() => {
-    map.on("click", (e: mapboxgl.MapMouseEvent) => {
+  const handlePointDelete = useCallback(
+    (index: number) => {
+      const newArray = [...points];
+      newArray.splice(index, 1);
+      setPoints(newArray);
+    },
+    [points]
+  );
+
+  const handleNewPointSet = useCallback(
+    (e: mapboxgl.MapMouseEvent) => {
       setPoints([...points, [e.lngLat.lng, e.lngLat.lat]]);
-    });
-  }, [map, points]);
+    },
+    [points]
+  );
 
   useEffect(() => {
-    const currentMarkers = map._markers;
+    markersInState.forEach(marker => marker.remove());
+    setMarkersInState(points.map(point => new mapboxgl.Marker().setLngLat(point).addTo(map)))
+  }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    for (const marker of currentMarkers) {
-      marker.remove();
-    }
+  useEffect(() => {
+    map.on("click", handleNewPointSet);
+  }, [map, handleNewPointSet]);
 
-    for (const point of points) {
-      new mapboxgl.Marker().setLngLat(point).addTo(map);
-    }
+  useEffect(() => {
+    if (map.getLayer("route")) map.removeLayer("route");
+    if (map.getSource("route")) map.removeSource("route");
 
     if (points.length < 2) {
       return;
@@ -58,12 +71,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       return;
     }
 
-    try {
-      map.removeLayer("route");
-      map.removeSource("route");
-    } catch (e) {
-      console.log("no route");
-    }
+    if (map.getLayer("route")) map.removeLayer("route");
+    if (map.getSource("route")) map.removeSource("route");
 
     map.addSource("route", {
       type: "geojson",
@@ -84,12 +93,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       },
     });
   }, [map, routeTrack]);
-
-  const handlePointDelete = (index: number) => {
-    const newPoints = [...points]
-    newPoints.splice(index, 1)
-    setPoints(newPoints)
-  }
 
   return (
     <div className="routing p-2 m-2 rounded-lg bg-base-100 flex flex-col items-center">
@@ -126,7 +129,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             <div>
               {lat} {lon}
             </div>
-            <button className="btn btn-square btn-ghost" onClick={() => handlePointDelete(index)}>U̅̑</button>
+            <button
+              className="btn btn-square btn-ghost"
+              onClick={() => handlePointDelete(index)}
+            >
+              U̅̑
+            </button>
           </li>
         ))}
       </ul>
