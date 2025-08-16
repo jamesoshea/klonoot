@@ -36,13 +36,6 @@ function App() {
     setupMapInteractionHandlers(mapRef, setCenter, setZoom);
   }, []);
 
-  // const handleButtonClick = () => {
-  //   mapRef?.current?.flyTo({
-  //     center: INITIAL_CENTER,
-  //     zoom: INITIAL_ZOOM,
-  //   });
-  // };
-
   return (
     <>
       {mapRef.current && <Routing map={mapRef.current} />}

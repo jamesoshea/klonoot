@@ -14,23 +14,32 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [searchResult, setSearchResult] = useState(null);
 
   const addSearchResultToPoints = (position: "START" | "END") => {
+    const newArray = [...points];
     if (position === "START") {
-      const newArray = [...points];
-      newArray.unshift([searchResult.properties.coordinates.longitude, searchResult.properties.coordinates.latitude]);
-      setPoints(newArray); 
+      newArray.unshift([
+        searchResult.properties.coordinates.longitude,
+        searchResult.properties.coordinates.latitude,
+      ]);
     }
 
     if (position === "END") {
-      const newArray = [...points];
-      newArray.push([searchResult.properties.coordinates.longitude, searchResult.properties.coordinates.latitude]);
-      setPoints(newArray); 
+      newArray.push([
+        searchResult.properties.coordinates.longitude,
+        searchResult.properties.coordinates.latitude,
+      ]);
     }
 
+    setPoints(newArray);
+    handleClearSearchResult();
+  };
+
+  const handleClearSearchResult = () => {
     setSearchResult(null);
     setSearchTerm("");
-  }
+  };
 
   const handleRetrieveSearchResult = (res) => {
+    console.log(res.features[0])
     setSearchResult(res.features[0]);
   };
 
@@ -172,14 +181,44 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       {searchResult && (
         <div className="search-result card m-3 rounded-lg bg-base-100 flex flex-col items-center">
           <div className="card-body">
-            <h2 className="card-title">{searchResult.properties.name}</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
             <div className="card-actions justify-end">
-              <button className="btn btn-outline" onClick={() => addSearchResultToPoints("START")}>Add to start</button>
-              <button className="btn btn-outline" onClick={() => addSearchResultToPoints("END")}>Add to end</button>
+              <button
+                className="btn btn-square btn-sm"
+                onClick={handleClearSearchResult}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <h2 className="card-title">{searchResult.properties.name}</h2>
+            <div>
+              {searchResult.properties.place_formatted}
+            </div>
+            <div className="card-actions justify-end mt-2">
+              <button
+                className="btn btn-outline"
+                onClick={() => addSearchResultToPoints("START")}
+              >
+                Add to start
+              </button>
+              <button
+                className="btn btn-outline"
+                onClick={() => addSearchResultToPoints("END")}
+              >
+                Add to end
+              </button>
             </div>
           </div>
         </div>
