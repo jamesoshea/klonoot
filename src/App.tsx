@@ -10,7 +10,6 @@ import { Routing } from "./components/Routing";
 export type Coordinate = [number, number];
 
 const INITIAL_CENTER: Coordinate = [13.404954, 52.520008];
-
 const INITIAL_ZOOM = 10.12;
 
 function App() {
