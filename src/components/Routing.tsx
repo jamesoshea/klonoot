@@ -14,7 +14,7 @@ type Modes = (typeof MODES)[keyof typeof MODES];
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
-  const [markersInState, setMarkersInState] = useState<Marker[]>([])
+  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [mode, setMode] = useState<Modes>(MODES.ROUTING);
 
   const [routeTrack, setRouteTrack] = useState(null);
@@ -30,24 +30,29 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
-      setPoints([...points, [e.lngLat.lng, e.lngLat.lat]]);
+      if (mode === MODES.ROUTING) {
+        setPoints([...points, [e.lngLat.lng, e.lngLat.lat]]);
+      }
     },
-    [points]
+    [mode, points]
   );
 
   useEffect(() => {
-    markersInState.forEach(marker => marker.remove());
-    setMarkersInState(points.map(point => new mapboxgl.Marker().setLngLat(point).addTo(map)))
+    markersInState.forEach((marker) => marker.remove());
+    setMarkersInState(
+      points.map((point) => new mapboxgl.Marker({ draggable:true }).setLngLat(point).addTo(map))
+    );
   }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     map.on("click", handleNewPointSet);
+
+    return () => {
+      map.off("click", handleNewPointSet);
+    };
   }, [map, handleNewPointSet]);
 
   useEffect(() => {
-    if (map.getLayer("route")) map.removeLayer("route");
-    if (map.getSource("route")) map.removeSource("route");
-
     if (points.length < 2) {
       return;
     }
@@ -64,15 +69,17 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
 
     fetchRoute();
+
+    return () => {
+      if (map.getLayer("route")) map.removeLayer("route");
+      if (map.getSource("route")) map.removeSource("route");
+    };
   }, [map, points]);
 
   useEffect(() => {
     if (!routeTrack) {
       return;
     }
-
-    if (map.getLayer("route")) map.removeLayer("route");
-    if (map.getSource("route")) map.removeSource("route");
 
     map.addSource("route", {
       type: "geojson",
