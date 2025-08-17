@@ -13,6 +13,25 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [routeTrack, setRouteTrack] = useState(null);
 
+  const handleGPXDownload = async () => {
+    const formattedLngLats = points.map((point) => point.join(",")).join("|");
+    const formattedQueryString = `lonlats=${formattedLngLats}&profile=trekking&alternativeidx=0`;
+
+    const resp = await axios.get(
+      `http://localhost:17777/brouter?${formattedQueryString}`
+    );
+
+    const { data } = resp;
+    const blob = new Blob([data], { type: "text/plain" });
+    const fileURL = URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = fileURL;
+    downloadLink.download = "example.gpx";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    URL.revokeObjectURL(fileURL);
+  };
+
   const handlePointDelete = useCallback(
     (index: number) => {
       const newArray = [...points];
@@ -166,9 +185,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     return acc;
   }, 0);
 
-  console.log(elevationProfile);
-  console.log(totalElevationGain);
-
   return (
     <div className="routing m-3">
       <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
@@ -195,10 +211,20 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           ))}
         </ul>
       </div>
-      <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content flex justify-around">
-        <div>{routeLength.toFixed(1)} km</div>
-        <div>{(totalElevationGain ?? 0).toFixed(0)} m ele.</div>
-      </div>
+      {!!(points.length > 1) && (
+        <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content">
+          <div className="flex justify-around">
+            <div>{routeLength.toFixed(1)} km</div>
+            <div>{(totalElevationGain ?? 0).toFixed(0)} m ele.</div>
+          </div>
+          <button
+            className="btn btn-outline mt-3 w-full"
+            onClick={handleGPXDownload}
+          >
+            Download GPX
+          </button>
+        </div>
+      )}
     </div>
   );
 };
