@@ -8,6 +8,12 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
 
+const isLatLngLike = (position: number[]): position is Coordinate => {
+  return (
+    position.length === 2 && position.every((el) => typeof el === "number")
+  );
+};
+
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
@@ -79,7 +85,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     return () => {
       map.off("idle", addTerrain);
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     markersInState.forEach((marker) => marker.remove());
@@ -166,11 +172,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     // get the elevation for the leading coordinate of each segment
     return [
       ...chunks.map((feature) => {
-        return map.queryTerrainElevation(feature.geometry.coordinates[0]);
+        return map.queryTerrainElevation(
+          feature.geometry.coordinates.filter(isLatLngLike)[0]
+        );
       }),
       // do not forget the last coordinate
       map.queryTerrainElevation(
-        chunks[chunks.length - 1].geometry.coordinates[1]
+        chunks[chunks.length - 1].geometry.coordinates.filter(isLatLngLike)[1]
       ),
     ];
   }, [map, routeTrack]);

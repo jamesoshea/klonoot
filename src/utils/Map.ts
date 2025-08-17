@@ -1,4 +1,4 @@
-import type { Coordinate } from "../App";
+import { type Coordinate } from "../App";
 
 export const setupMapInteractionHandlers = (
   mapRef: React.RefObject<mapboxgl.Map | null>,

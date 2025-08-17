@@ -15,8 +15,8 @@ const INITIAL_ZOOM = 10.12;
 function App() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const [center, setCenter] = useState<Coordinate>(INITIAL_CENTER);
-  const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
+  const [_, setCenter] = useState<Coordinate>(INITIAL_CENTER);
+  const [__, setZoom] = useState<number>(INITIAL_ZOOM);
 
   useEffect(() => {
     mapboxgl.accessToken =

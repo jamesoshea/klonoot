@@ -45,12 +45,6 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
     setSearchTerm("");
   };
 
-  const handleClickaway = (e: Event) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleClearSearchResult();
-  };
-
   const handleRetrieveSearchResult = (res: SearchResult) => {
     setSearchResult(res.features[0]);
   };
