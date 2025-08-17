@@ -25,6 +25,7 @@ function App() {
       container: mapContainerRef.current as HTMLElement,
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
+      style: 'mapbox://styles/mapbox/outdoors-v12', // style URL
     });
 
     return () => {

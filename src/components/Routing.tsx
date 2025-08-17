@@ -1,13 +1,12 @@
 import mapboxgl, { Marker } from "mapbox-gl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import * as turf from "@turf/turf";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
-
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
@@ -41,6 +40,27 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     },
     [points]
   );
+
+  useEffect(() => {
+    // add the digital elevation model tiles
+    const addTerrain = () => {
+      if (map.getSource("mapbox-dem")) return;
+
+      map.addSource("mapbox-dem", {
+        type: "raster-dem",
+        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+        tileSize: 512,
+        maxzoom: 20,
+      });
+      map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
+    };
+
+    map.once("idle", addTerrain);
+
+    return () => {
+      map.off("idle", addTerrain);
+    };
+  }, []);
 
   useEffect(() => {
     markersInState.forEach((marker) => marker.remove());
@@ -116,6 +136,39 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const routeLength =
     routeTrack && points.length > 1 ? turf.length(routeTrack) : 0;
 
+  const elevationProfile = useMemo(() => {
+    if (!routeTrack) {
+      return [];
+    }
+
+    // split the line into 1km segments
+    const chunks = turf.lineChunk(routeTrack, 0.1).features;
+
+    // get the elevation for the leading coordinate of each segment
+    return [
+      ...chunks.map((feature) => {
+        return map.queryTerrainElevation(feature.geometry.coordinates[0]);
+      }),
+      // do not forget the last coordinate
+      map.queryTerrainElevation(
+        chunks[chunks.length - 1].geometry.coordinates[1]
+      ),
+    ];
+  }, [map, routeTrack]);
+
+  const totalElevationGain = elevationProfile.reduce((acc, cur, index) => {
+    if (index === 0) return acc;
+
+    if (Number(cur) > Number(elevationProfile[index - 1])) {
+      return Number(acc) + (Number(cur) - Number(elevationProfile[index - 1]));
+    }
+
+    return acc;
+  }, 0);
+
+  console.log(elevationProfile);
+  console.log(totalElevationGain);
+
   return (
     <div className="routing m-3">
       <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
@@ -142,8 +195,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           ))}
         </ul>
       </div>
-      <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
-        {routeLength.toFixed(1)} km
+      <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content flex justify-around">
+        <div>{routeLength.toFixed(1)} km</div>
+        <div>{(totalElevationGain ?? 0).toFixed(0)} m ele.</div>
       </div>
     </div>
   );
