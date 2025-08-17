@@ -12,9 +12,9 @@ type SearchProps = {
 };
 
 type SearchResult = {
-    attribution: string;
-    features: Array<GeoJSONFeature>
-}
+  attribution: string;
+  features: Array<GeoJSONFeature>;
+};
 
 export const Search = ({ map, points, setPoints }: SearchProps) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,6 +45,12 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
     setSearchTerm("");
   };
 
+  const handleClickaway = (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleClearSearchResult();
+  };
+
   const handleRetrieveSearchResult = (res: SearchResult) => {
     setSearchResult(res.features[0]);
   };
@@ -65,47 +71,53 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         onRetrieve={handleRetrieveSearchResult}
       />
       {searchResult && (
-        <div className="search-result card m-3 rounded-lg bg-base-100 flex flex-col items-center">
-          <div className="card-body">
-            <div className="card-actions justify-end">
-              <button
-                className="btn btn-square btn-sm"
-                onClick={handleClearSearchResult}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <h2 className="card-title">{searchResult?.properties?.name ?? ''}</h2>
-            <div>{searchResult?.properties?.place_formatted ?? ''}</div>
-            <div className="card-actions justify-end mt-2">
-              <button
-                className="btn btn-outline"
-                onClick={() => addSearchResultToPoints("START")}
-              >
-                Add to start
-              </button>
-              <button
-                className="btn btn-outline"
-                onClick={() => addSearchResultToPoints("END")}
-              >
-                Add to end
-              </button>
+        <>
+          <div className="left-0 top-0 fixed z-10 min-w-screen min-h-screen">
+            <div className="search-result card bg-base-content text-primary-content rounded-lg bg-base-100 flex flex-col items-center z-100">
+              <div className="card-body pl-1 pr-1">
+                <div className="card-actions justify-end">
+                  <button
+                    className="btn btn-square btn-outline btn-sm"
+                    onClick={handleClearSearchResult}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <h2 className="card-title">
+                  {searchResult?.properties?.name ?? ""}
+                </h2>
+                <div>{searchResult?.properties?.place_formatted ?? ""}</div>
+                <div className="card-actions justify-end mt-2">
+                  <button
+                    className="btn btn-outline"
+                    onClick={() => addSearchResultToPoints("START")}
+                  >
+                    Add to start
+                  </button>
+                  <button
+                    className="btn btn-outline"
+                    onClick={() => addSearchResultToPoints("END")}
+                  >
+                    Add to end
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

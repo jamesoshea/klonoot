@@ -2,9 +2,12 @@ import mapboxgl, { Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import * as turf from "@turf/turf";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
+
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
@@ -127,13 +130,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             <li className="list-row items-center p-0 min-w-full" key={index}>
               <div>{index + 1}</div>
               <div>
-                {lat.toFixed(3)} {lon.toFixed(3)}
+                {lat.toFixed(3)}, {lon.toFixed(3)}
               </div>
               <button
-                className="btn btn-square btn-ghost"
+                className="btn btn-square w-4 h-4 btn-ghost"
                 onClick={() => handlePointDelete(index)}
               >
-                U̅̑
+                <FontAwesomeIcon icon={faTrash} />
               </button>
             </li>
           ))}
