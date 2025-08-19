@@ -4,9 +4,12 @@ import axios from "axios";
 import * as turf from "@turf/turf";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import type { Feature, Geometry, GeometryCollection } from "geojson";
+
 
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
+import { fetchRoute } from "../queries/fetchRoute";
 
 const isLatLngLike = (position: number[]): position is Coordinate => {
   return (
@@ -17,7 +20,7 @@ const isLatLngLike = (position: number[]): position is Coordinate => {
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
-  const [routeTrack, setRouteTrack] = useState(null);
+  const [routeTrack, setRouteTrack] = useState<Feature<GeometryCollection<Geometry>> | null>(null);
 
   const handleGPXDownload = async () => {
     const formattedLngLats = points.map((point) => point.join(",")).join("|");
@@ -110,22 +113,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [map, handleNewPointSet]);
 
   useEffect(() => {
-    if (points.length < 2) {
-      return;
-    }
 
-    const formattedLngLats = points.map((point) => point.join(",")).join("|");
-    const formattedQueryString = `lonlats=${formattedLngLats}&profile=trekking&alternativeidx=0&format=geojson`;
-
-    const fetchRoute = async () => {
-      const resp = await axios.get(
-        `http://localhost:17777/brouter?${formattedQueryString}`
-      );
-
-      setRouteTrack(resp.data);
-    };
-
-    fetchRoute();
+    fetchRoute(points).then(route => {
+      setRouteTrack(route)
+    })
 
     return () => {
       if (map.getLayer("route")) map.removeLayer("route");
@@ -176,7 +167,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     // get the elevation for the leading coordinate of each segment
     return [
       ...chunks.map((feature) => {
-        console.log(feature.geometry.coordinates);
         return map.queryTerrainElevation(
           feature.geometry.coordinates.filter(isLatLngLike)[0]
         );
