@@ -169,17 +169,20 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     // split the line into 1km segments
     const chunks = turf.lineChunk(routeTrack, 0.1).features;
 
+    const lastChunk =
+      chunks[chunks.length - 1].geometry.coordinates.filter(isLatLngLike);
+    const lastCoordinate = lastChunk[lastChunk.length - 1];
+
     // get the elevation for the leading coordinate of each segment
     return [
       ...chunks.map((feature) => {
+        console.log(feature.geometry.coordinates);
         return map.queryTerrainElevation(
           feature.geometry.coordinates.filter(isLatLngLike)[0]
         );
       }),
       // do not forget the last coordinate
-      map.queryTerrainElevation(
-        chunks[chunks.length - 1].geometry.coordinates.filter(isLatLngLike)[1]
-      ),
+      map.queryTerrainElevation(lastCoordinate),
     ];
   }, [map, routeTrack]);
 
