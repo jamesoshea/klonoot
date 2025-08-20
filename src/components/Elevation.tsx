@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import type { BrouterResponse } from "./Routing";
 
-function scale(number, inMin, inMax, outMin, outMax) {
+const scale = (number: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
   return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }
 
@@ -34,14 +35,12 @@ export const Elevation = ({
   const canvasHeight = canvas?.getBoundingClientRect()?.height ?? 0;
   const canvasWidth = canvas?.getBoundingClientRect()?.width ?? 0;
 
-  console.log(canvasWidth)
-
   const scaleXWithParams = (pointElevation: number) =>
     scale(pointElevation, minElevation, maxElevation, 0, canvasHeight);
   const scaleYWithParams = (pointDistance: number) =>
     scale(pointDistance, 0, trackLength, 0, canvasWidth);
 
-  const dots = routeTrack.features[0]?.properties?.["messages"].slice(1).reduce(
+  const dots = routeTrack.features[0]?.properties?.["messages"].slice(1).reduce<{ dots: ReactNode[], distance: number }>(
     (acc, message) => ({
       dots: [
         ...acc.dots,
