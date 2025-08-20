@@ -13,17 +13,13 @@
   background-color: lightgrey;
 }
 
-.sidebar {
-  background-color: rgb(35 55 75 / 90%);
-  color: #fff;
-  padding: 6px 12px;
-  font-family: monospace;
+.elevation {
   z-index: 1;
   position: absolute;
-  top: 0;
-  right: 0;
-  margin: 12px;
-  border-radius: 4px;
+  bottom: 36px;
+  left: 12px;
+  width: calc(100vw - 24px);
+  height: 128px;
 }
 
 .routing {
@@ -40,8 +36,6 @@
   left: 324px;
   width: 295px;
 }
-
-
 
 .reset-button {
   position: absolute;

@@ -1,44 +1,38 @@
 import mapboxgl, { Marker } from "mapbox-gl";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "axios";
-import * as turf from "@turf/turf";
+import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import type { Feature, Geometry, GeometryCollection } from "geojson";
-
+import type { FeatureCollection, Geometry, GeometryCollection } from "geojson";
 
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
 import { fetchRoute } from "../queries/fetchRoute";
+import { Elevation } from "./Elevation";
 
-const isLatLngLike = (position: number[]): position is Coordinate => {
-  return (
-    position.length === 2 && position.every((el) => typeof el === "number")
-  );
-};
+export type BrouterResponse = FeatureCollection<
+    GeometryCollection<Geometry>, { messages: string[][], "track-length": string, "filtered ascend": string }
+  >
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
-  const [routeTrack, setRouteTrack] = useState<Feature<GeometryCollection<Geometry>> | null>(null);
+  const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
 
   const handleGPXDownload = async () => {
-    const formattedLngLats = points.map((point) => point.join(",")).join("|");
-    const formattedQueryString = `lonlats=${formattedLngLats}&profile=trekking&alternativeidx=0`;
+    fetchRoute("gpx", points).then((route) => {
+      if (!route) {
+        return;
+      }
 
-    const resp = await axios.get(
-      `http://localhost:17777/brouter?${formattedQueryString}`
-    );
-
-    const { data } = resp;
-    const blob = new Blob([data], { type: "text/plain" });
-    const fileURL = URL.createObjectURL(blob);
-    const downloadLink = document.createElement("a");
-    downloadLink.href = fileURL;
-    downloadLink.download = "example.gpx";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    URL.revokeObjectURL(fileURL);
+      const blob = new Blob([route], { type: "text/plain" });
+      const fileURL = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = fileURL;
+      downloadLink.download = "example.gpx";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      URL.revokeObjectURL(fileURL);
+    });
   };
 
   const handlePointDelete = useCallback(
@@ -113,10 +107,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [map, handleNewPointSet]);
 
   useEffect(() => {
-
-    fetchRoute(points).then(route => {
-      setRouteTrack(route)
-    })
+    fetchRoute("geojson", points).then((route) => {
+      setRouteTrack(route);
+    });
 
     return () => {
       if (map.getLayer("route")) map.removeLayer("route");
@@ -149,83 +142,56 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
   }, [map, routeTrack]);
 
-  const routeLength =
-    routeTrack && points.length > 1 ? turf.length(routeTrack) : 0;
-
-  const elevationProfile = useMemo(() => {
-    if (!routeTrack) {
-      return [];
-    }
-
-    // split the line into 1km segments
-    const chunks = turf.lineChunk(routeTrack, 0.1).features;
-
-    const lastChunk =
-      chunks[chunks.length - 1].geometry.coordinates.filter(isLatLngLike);
-    const lastCoordinate = lastChunk[lastChunk.length - 1];
-
-    // get the elevation for the leading coordinate of each segment
-    return [
-      ...chunks.map((feature) => {
-        return map.queryTerrainElevation(
-          feature.geometry.coordinates.filter(isLatLngLike)[0]
-        );
-      }),
-      // do not forget the last coordinate
-      map.queryTerrainElevation(lastCoordinate),
-    ];
-  }, [map, routeTrack]);
-
-  const totalElevationGain = elevationProfile.reduce((acc, cur, index) => {
-    if (index === 0) return acc;
-
-    if (Number(cur) > Number(elevationProfile[index - 1])) {
-      return Number(acc) + (Number(cur) - Number(elevationProfile[index - 1]));
-    }
-
-    return acc;
-  }, 0);
+  const trackLength = Number(
+    routeTrack?.features[0]?.properties?.["track-length"] ?? 0
+  );
+  const elevationGain = Number(
+    routeTrack?.features[0]?.properties?.["filtered ascend"] ?? 0
+  );
 
   return (
-    <div className="routing m-3">
-      <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
-        <Search map={map} points={points} setPoints={setPoints} />
-        <ul className="list min-w-full">
-          {!!points.length && (
-            <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-              Anchor points
-            </li>
-          )}
-          {points.map(([lat, lon], index) => (
-            <li className="list-row items-center p-0 min-w-full" key={index}>
-              <div>{index + 1}</div>
-              <div>
-                {lat.toFixed(3)}, {lon.toFixed(3)}
-              </div>
-              <button
-                className="btn btn-square w-4 h-4 btn-ghost"
-                onClick={() => handlePointDelete(index)}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {!!(points.length > 1) && (
-        <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content">
-          <div className="flex justify-around">
-            <div>{routeLength.toFixed(1)} km</div>
-            <div>{(totalElevationGain ?? 0).toFixed(0)} m ele.</div>
-          </div>
-          <button
-            className="btn btn-outline mt-3 w-full"
-            onClick={handleGPXDownload}
-          >
-            Download GPX
-          </button>
+    <>
+      <div className="routing m-3">
+        <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
+          <Search map={map} points={points} setPoints={setPoints} />
+          <ul className="list min-w-full">
+            {!!points.length && (
+              <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+                Anchor points
+              </li>
+            )}
+            {points.map(([lat, lon], index) => (
+              <li className="list-row items-center p-0 min-w-full" key={index}>
+                <div>{index + 1}</div>
+                <div>
+                  {lat.toFixed(3)}, {lon.toFixed(3)}
+                </div>
+                <button
+                  className="btn btn-square w-4 h-4 btn-ghost"
+                  onClick={() => handlePointDelete(index)}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-      )}
-    </div>
+        {!!(points.length > 1) && (
+          <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content">
+            <div className="flex justify-around">
+              <div>{(trackLength / 1000).toFixed(1)} km</div>
+              <div>{elevationGain.toFixed(0)} m ele.</div>
+            </div>
+            <button
+              className="btn btn-outline mt-3 w-full"
+              onClick={handleGPXDownload}
+            >
+              Download GPX
+            </button>
+          </div>
+        )}
+      </div>
+      <Elevation routeTrack={routeTrack} />
+    </>
   );
 };

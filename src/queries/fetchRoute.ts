@@ -1,22 +1,31 @@
 import axios from "axios";
-import type { Feature, Geometry, GeometryCollection } from "geojson";
 
 import type { Coordinate } from "../App";
+import type { BrouterResponse } from "../components/Routing";
 
-export const fetchRoute = async (
+async function fetchRoute(
+  format: "gpx",
   points: Coordinate[]
-): Promise<Feature<GeometryCollection<Geometry>> | null> => {
+): Promise<string | null>;
+async function fetchRoute(
+  format: "geojson",
+  points: Coordinate[]
+): Promise<BrouterResponse | null>;
+async function fetchRoute(
+  format: "gpx" | "geojson",
+  points: Coordinate[]
+) {
   if (points.length < 2) {
     return null;
   }
 
   const formattedLngLats = points.map((point) => point.join(",")).join("|");
-  const formattedQueryString = `lonlats=${formattedLngLats}&profile=trekking&alternativeidx=0&format=geojson`;
+  const formattedQueryString = `lonlats=${formattedLngLats}&profile=gravel&alternativeidx=0&format=${format}`;
   const resp = await axios.get(
     `http://localhost:17777/brouter?${formattedQueryString}`
   );
 
-  console.log(resp.data)
-
   return resp.data;
-};
+}
+
+export { fetchRoute }
