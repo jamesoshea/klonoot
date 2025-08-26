@@ -23,6 +23,6 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 
 You'll need a locally-running brouter instance, and change the query for routes. After that, it's just the normal
 
-’npm i’
+`npm i`
 
-’npm run dev’
+`npm run dev`
