@@ -156,13 +156,23 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       <div className="routing m-3">
         <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
-          <select className="select select-secondary" value={brouterProfile} onChange={(e) => setBrouterProfile(e.target.value)}>
+          <div className="w-full">
+
+          <p className="text-xs opacity-60">
+            Brouter profile
+          </p>
+          <select
+            className="select pl-0 pr-0 bg-base-content text-primary-content"
+            value={brouterProfile}
+            onChange={(e) => setBrouterProfile(e.target.value)}
+            >
             <option value="trekking">Trekking</option>
             <option value="gravel">Gravel</option>
           </select>
+            </div>
           <ul className="list min-w-full">
             {!!points.length && (
-              <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+              <li className="pb-2 text-xs opacity-60">
                 Anchor points
               </li>
             )}

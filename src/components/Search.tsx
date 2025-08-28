@@ -54,6 +54,13 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
       {/* @ts-expect-error wat*/}
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
+        theme={{
+          variables: {
+            padding: "0.5em",
+            borderRadius: "8px",
+            border: "1px solid black"
+          },
+        }}
         map={map}
         mapboxgl={mapboxgl}
         placeholder="Search for somewhere"
