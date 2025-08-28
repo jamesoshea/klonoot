@@ -1,7 +1,8 @@
 import axios from "axios";
 
 import type { Coordinate } from "../App";
-import type { BrouterResponse } from "../components/Routing";
+import type { BrouterResponse } from "../types";
+
 
 async function fetchRoute(
   format: "gpx",

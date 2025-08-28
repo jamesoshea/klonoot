@@ -2,17 +2,19 @@ import mapboxgl, { Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import type { FeatureCollection, Geometry, GeometryCollection } from "geojson";
 
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
 import { fetchRoute } from "../queries/fetchRoute";
 import { Elevation } from "./Elevation";
+import { BROUTER_PROFILES, type BrouterResponse } from "../types";
 
-export type BrouterResponse = FeatureCollection<
-  GeometryCollection<Geometry>,
-  { messages: string[][]; "track-length": string; "filtered ascend": string }
->;
+const profileNameMap = {
+  TREKKING: "Trekking",
+  GRAVEL: "Gravel",
+  ROAD: "Road",
+  ROAD_LOW_TRAFFIC: "Road (low traffic)",
+}
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
@@ -163,10 +165,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               value={brouterProfile}
               onChange={(e) => setBrouterProfile(e.target.value)}
             >
-              <option value="trekking">Trekking</option>
-              <option value="gravel">Gravel</option>
-              <option value="fastbike">Road</option>
-              <option value="fastbike-verylowtraffic">Road (low traffic)</option>
+              {/* @ts-expect-error not sure about this one */}
+              {Object.entries(BROUTER_PROFILES).map(([key, value]) => <option value={value}>{profileNameMap[key]}</option>)}
             </select>
           </div>
           <ul className="list min-w-full">

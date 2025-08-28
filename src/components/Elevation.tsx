@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { BrouterResponse } from "./Routing";
+import type { BrouterResponse } from "../types";
 
 const scale = (number: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
   return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
