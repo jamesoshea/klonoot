@@ -10,16 +10,18 @@ import { fetchRoute } from "../queries/fetchRoute";
 import { Elevation } from "./Elevation";
 
 export type BrouterResponse = FeatureCollection<
-    GeometryCollection<Geometry>, { messages: string[][], "track-length": string, "filtered ascend": string }
-  >
+  GeometryCollection<Geometry>,
+  { messages: string[][]; "track-length": string; "filtered ascend": string }
+>;
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
+  const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
 
   const handleGPXDownload = async () => {
-    fetchRoute("gpx", points).then((route) => {
+    fetchRoute("gpx", points, brouterProfile).then((route) => {
       if (!route) {
         return;
       }
@@ -107,7 +109,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [map, handleNewPointSet]);
 
   useEffect(() => {
-    fetchRoute("geojson", points).then((route) => {
+    fetchRoute("geojson", points, brouterProfile).then((route) => {
       setRouteTrack(route);
     });
 
@@ -115,7 +117,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       if (map.getLayer("route")) map.removeLayer("route");
       if (map.getSource("route")) map.removeSource("route");
     };
-  }, [map, points]);
+  }, [brouterProfile, map, points]);
 
   useEffect(() => {
     if (!routeTrack) {
@@ -154,6 +156,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       <div className="routing m-3">
         <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
+          <select className="select select-secondary" value={brouterProfile} onChange={(e) => setBrouterProfile(e.target.value)}>
+            <option value="trekking">Trekking</option>
+            <option value="gravel">Gravel</option>
+          </select>
           <ul className="list min-w-full">
             {!!points.length && (
               <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">

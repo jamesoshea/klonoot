@@ -50,7 +50,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   };
 
   return (
-    <>
+    <div className="mb-2">
       {/* @ts-expect-error wat*/}
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
@@ -111,6 +111,6 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
