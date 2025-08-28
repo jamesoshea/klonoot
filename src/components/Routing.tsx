@@ -157,24 +157,21 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
-
-          <p className="text-xs opacity-60">
-            Brouter profile
-          </p>
-          <select
-            className="select pl-0 pr-0 bg-base-content text-primary-content"
-            value={brouterProfile}
-            onChange={(e) => setBrouterProfile(e.target.value)}
+            <p className="text-xs opacity-60">Brouter profile</p>
+            <select
+              className="select pl-0 pr-0 bg-base-content text-primary-content"
+              value={brouterProfile}
+              onChange={(e) => setBrouterProfile(e.target.value)}
             >
-            <option value="trekking">Trekking</option>
-            <option value="gravel">Gravel</option>
-          </select>
-            </div>
+              <option value="trekking">Trekking</option>
+              <option value="gravel">Gravel</option>
+              <option value="fastbike">Road</option>
+              <option value="fastbike-verylowtraffic">Road (low traffic)</option>
+            </select>
+          </div>
           <ul className="list min-w-full">
             {!!points.length && (
-              <li className="pb-2 text-xs opacity-60">
-                Anchor points
-              </li>
+              <li className="pb-2 text-xs opacity-60">Anchor points</li>
             )}
             {points.map(([lat, lon], index) => (
               <li className="list-row items-center p-0 min-w-full" key={index}>
