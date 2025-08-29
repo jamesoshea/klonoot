@@ -14,7 +14,7 @@ const profileNameMap = {
   GRAVEL: "Gravel",
   ROAD: "Road",
   ROAD_LOW_TRAFFIC: "Road (low traffic)",
-}
+};
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
@@ -165,8 +165,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               value={brouterProfile}
               onChange={(e) => setBrouterProfile(e.target.value)}
             >
-              {/* @ts-expect-error not sure about this one */}
-              {Object.entries(BROUTER_PROFILES).map(([key, value]) => <option value={value}>{profileNameMap[key]}</option>)}
+              {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
+                // @ts-expect-error not sure about this one
+                <option value={value}>{profileNameMap[key]}</option>
+              ))}
             </select>
           </div>
           <ul className="list min-w-full">
@@ -204,7 +206,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           </div>
         )}
       </div>
-      <Elevation routeTrack={routeTrack} />
+      {routeTrack && <Elevation routeTrack={routeTrack} />}
     </>
   );
 };
