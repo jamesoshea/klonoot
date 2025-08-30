@@ -1,4 +1,4 @@
-import type { FeatureCollection, Geometry, GeometryCollection } from "geojson";
+import type { FeatureCollection, LineString } from "geojson";
 
 export enum BROUTER_PROFILES {
   TREKKING = "trekking",
@@ -8,6 +8,6 @@ export enum BROUTER_PROFILES {
 }
 
 export type BrouterResponse = FeatureCollection<
-  GeometryCollection<Geometry>,
+  LineString,
   { messages: string[][]; "track-length": string; "filtered ascend": string }
 >;

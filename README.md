@@ -10,7 +10,7 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 
 - Auth/persistence
 - ~~proper elevation profile~~
-- surfaces
+- ~~surfaces~~
 - context menu on map click
 - gpx import
 - ~~brouter profile selection~~

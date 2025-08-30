@@ -22,7 +22,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
-  const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1)
+  const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
 
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
@@ -69,19 +69,26 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     [points]
   );
 
-  const handleLineMouseMove  = useCallback((e: MapMouseEvent) => {
-    const nearestPointOnLine = turf.nearestPointOnLine(
-      turf.lineString(routeTrack?.features[0].geometry.coordinates),
-      turf.point([e.lngLat.lng, e.lngLat.lat]),
-      { units: "meters" }
-    );
+  const handleLineMouseMove = useCallback(
+    (e: MapMouseEvent) => {
+      if (!routeTrack) {
+        return;
+      }
 
-    const pointDistance = nearestPointOnLine.properties.location
-    setCurrentPointDistance(pointDistance)
-  }, [routeTrack]);
+      const nearestPointOnLine = turf.nearestPointOnLine(
+        turf.lineString(routeTrack?.features[0].geometry.coordinates),
+        turf.point([e.lngLat.lng, e.lngLat.lat]),
+        { units: "meters" }
+      );
 
-  const handleLineMouseLeave  = () => {
-    setCurrentPointDistance(-1)
+      const pointDistance = nearestPointOnLine.properties.location;
+      setCurrentPointDistance(pointDistance);
+    },
+    [routeTrack]
+  );
+
+  const handleLineMouseLeave = () => {
+    setCurrentPointDistance(-1);
   };
 
   useEffect(() => {
@@ -233,7 +240,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           </div>
         )}
       </div>
-      {routeTrack && <Elevation currentPointDistance={currentPointDistance} routeTrack={routeTrack} />}
+      {routeTrack && (
+        <Elevation
+          currentPointDistance={currentPointDistance}
+          routeTrack={routeTrack}
+        />
+      )}
     </>
   );
 };

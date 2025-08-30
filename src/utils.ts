@@ -59,11 +59,13 @@ export const createRouteMarks = (
       distance: number;
     }>(
       (acc, message) => {
-        const wayTags = message[9].split(" ").reduce<Record<string, string>>((acc, cur) => {
-          const [tag, value] = cur.split("=");
-          acc[tag] = value;
-          return acc;
-        }, {});
+        const wayTags = message[9]
+          .split(" ")
+          .reduce<Record<string, string>>((acc, cur) => {
+            const [tag, value] = cur.split("=");
+            acc[tag] = value;
+            return acc;
+          }, {});
 
         return {
           points: [
