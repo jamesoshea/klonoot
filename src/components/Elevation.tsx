@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { BrouterResponse } from "../types";
 import { CANVAS_HEIGHT } from "../consts";
-import { calculateMaxElevation, calculateMinElevation, createRouteMarks } from "../utils";
+import {
+  calculateMaxElevation,
+  calculateMinElevation,
+  createRouteMarks,
+} from "../utils";
 
 export const Elevation = ({
   currentPointDistance,
@@ -48,20 +52,19 @@ export const Elevation = ({
           currentPointDistance > point.distance &&
           currentPointDistance < points[index + 1].distance
         ) {
-          ctx.fillStyle = "green";
-          // Add a rectangle at (10, 10) with size 100x100 pixels
-          ctx.fillRect(point.left, CANVAS_HEIGHT - point.top, 1, CANVAS_HEIGHT);
+          ctx.fillStyle = "rgb(0, 0, 255)";
+          ctx.fillRect(point.left, 0, 2, CANVAS_HEIGHT);
           ctx.fillText(
             `${(currentPointDistance / 1000).toFixed(1)}km\n${
               point.wayTags.surface
             }`,
-            point.left,
-            CANVAS_HEIGHT - point.top
+            point.left + 5,
+            10
           );
         }
       });
 
-      ctx.strokeStyle = "rgb(0 0 0)";
+      ctx.strokeStyle = "rgb(0 0 0) 2";
       ctx.stroke();
     }
   }, [canvasWidth, currentPointDistance, routeTrack]);
