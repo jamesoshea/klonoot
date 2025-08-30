@@ -11,7 +11,13 @@ const scale = (
   return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 };
 
-export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
+export const Elevation = ({
+  currentPointDistance,
+  routeTrack,
+}: {
+  currentPointDistance: number;
+  routeTrack: BrouterResponse;
+}) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
@@ -55,19 +61,29 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
       const dots = routeTrack.features[0]?.properties?.["messages"]
         .slice(1)
         .reduce<{
-          points: { left: number; top: number }[];
+          points: { distance: number; left: number; top: number, wayTags: Record<string, string> }[];
           distance: number;
         }>(
-          (acc, message) => ({
-            points: [
-              ...acc.points,
-              {
-                left: scaleXWithParams(acc.distance + Number(message[3])),
-                top: scaleYWithParams(Number(message[2])),
-              },
-            ],
-            distance: acc.distance + Number(message[3]),
-          }),
+          (acc, message) => {
+            const wayTags = message[9].split(" ").reduce((acc, cur) => {
+              const [tag, value] = cur.split("=");
+              acc[tag] = value;
+              return acc;
+            }, {});
+
+            return {
+              points: [
+                ...acc.points,
+                {
+                  distance: acc.distance + Number(message[3]),
+                  left: scaleXWithParams(acc.distance + Number(message[3])),
+                  top: scaleYWithParams(Number(message[2])),
+                  wayTags,
+                },
+              ],
+              distance: acc.distance + Number(message[3]),
+            };
+          },
           { points: [], distance: 0 }
         );
 
@@ -75,14 +91,37 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
       ctx.beginPath();
       ctx.moveTo(dots.points[0].left, CANVAS_HEIGHT - dots.points[0].top);
 
-      for (const dot of dots.points.slice(1)) {
-        ctx.lineTo(dot.left, CANVAS_HEIGHT - dot.top);
-      }
+      const points = dots.points.slice(1);
+
+      points.forEach((point, index) => {
+        ctx.lineTo(point.left, CANVAS_HEIGHT - point.top);
+
+        if (
+          currentPointDistance > point.distance &&
+          currentPointDistance < points[index + 1].distance
+        ) {
+          ctx.fillStyle = "green";
+          // Add a rectangle at (10, 10) with size 100x100 pixels
+          ctx.fillRect(point.left, CANVAS_HEIGHT - point.top, 1, CANVAS_HEIGHT);
+          ctx.fillText(
+            `${(currentPointDistance / 1000).toFixed(1)}km\n${point.wayTags.surface}`,
+            point.left,
+            CANVAS_HEIGHT - point.top
+          );
+        }
+      });
 
       ctx.strokeStyle = "rgb(0 0 0)";
       ctx.stroke();
     }
-  }, [canvasWidth, maxElevation, minElevation, routeTrack, trackLength]);
+  }, [
+    canvasWidth,
+    currentPointDistance,
+    maxElevation,
+    minElevation,
+    routeTrack,
+    trackLength,
+  ]);
 
   useEffect(() => {
     window.addEventListener("resize", drawElevationMap);

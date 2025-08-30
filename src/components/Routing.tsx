@@ -1,4 +1,4 @@
-import mapboxgl, { Marker } from "mapbox-gl";
+import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -6,8 +6,9 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import type { Coordinate } from "../App";
 import { Search } from "./Search";
 import { fetchRoute } from "../queries/fetchRoute";
-import { Elevation } from "./Elevation";
+import { Elevation } from "./Elevation.tsx";
 import { BROUTER_PROFILES, type BrouterResponse } from "../types";
+import * as turf from "@turf/turf";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -21,6 +22,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
+  const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1)
 
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
@@ -67,6 +69,21 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     [points]
   );
 
+  const handleLineMouseMove  = useCallback((e: MapMouseEvent) => {
+    const nearestPointOnLine = turf.nearestPointOnLine(
+      turf.lineString(routeTrack?.features[0].geometry.coordinates),
+      turf.point([e.lngLat.lng, e.lngLat.lat]),
+      { units: "meters" }
+    );
+
+    const pointDistance = nearestPointOnLine.properties.location
+    setCurrentPointDistance(pointDistance)
+  }, [routeTrack]);
+
+  const handleLineMouseLeave  = () => {
+    setCurrentPointDistance(-1)
+  };
+
   useEffect(() => {
     // add the digital elevation model tiles
     const addTerrain = () => {
@@ -93,7 +110,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setMarkersInState(
       points.map((point, index) => {
         const element = document.createElement("div");
-        element.className = "rounded-lg bg-base-content text-primary-content w-5 text-center";
+        element.className =
+          "rounded-lg bg-base-content text-primary-content w-5 text-center";
         element.innerText = (index + 1).toString();
         const marker = new mapboxgl.Marker({ draggable: true, element })
           .setLngLat(point)
@@ -107,11 +125,15 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   useEffect(() => {
     map.on("click", handleNewPointSet);
+    map.on("mousemove", "route", handleLineMouseMove);
+    map.on("mouseleave", "route", handleLineMouseLeave);
 
     return () => {
       map.off("click", handleNewPointSet);
+      map.off("mousemove", "route", handleLineMouseMove);
+      map.off("mouseleave", "route", handleLineMouseLeave);
     };
-  }, [map, handleNewPointSet]);
+  }, [map, handleLineMouseMove, handleNewPointSet]);
 
   useEffect(() => {
     fetchRoute("geojson", points, brouterProfile).then((route) => {
@@ -144,7 +166,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       },
       paint: {
         "line-color": "#0000FF",
-        "line-width": 4,
+        "line-width": 8,
       },
     });
   }, [map, routeTrack]);
@@ -169,8 +191,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               onChange={(e) => setBrouterProfile(e.target.value)}
             >
               {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
-                // @ts-expect-error not sure about this one
-                <option key={key} value={value}>{profileNameMap[key]}</option>
+                <option key={key} value={value}>
+                  {/* @ts-expect-error not sure about this one */}
+                  {profileNameMap[key]}
+                </option>
               ))}
             </select>
           </div>
@@ -209,7 +233,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           </div>
         )}
       </div>
-      {routeTrack && <Elevation routeTrack={routeTrack} />}
+      {routeTrack && <Elevation currentPointDistance={currentPointDistance} routeTrack={routeTrack} />}
     </>
   );
 };
