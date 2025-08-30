@@ -27,10 +27,10 @@ function App() {
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
       style: "mapbox://styles/mapbox/outdoors-v12", // style URL
-    })
+    });
     newMap.on("load", () => setMapLoaded(true));
 
-    setMap(newMap)
+    setMap(newMap);
 
     return () => {
       newMap.remove();

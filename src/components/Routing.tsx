@@ -92,7 +92,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     markersInState.forEach((marker) => marker.remove());
     setMarkersInState(
       points.map((point, index) => {
-        const marker = new mapboxgl.Marker({ draggable: true })
+        const element = document.createElement("div");
+        element.className = "rounded-lg bg-base-content text-primary-content w-5 text-center";
+        element.innerText = (index + 1).toString();
+        const marker = new mapboxgl.Marker({ draggable: true, element })
           .setLngLat(point)
           .addTo(map);
 
@@ -140,8 +143,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#888",
-        "line-width": 8,
+        "line-color": "#0000FF",
+        "line-width": 4,
       },
     });
   }, [map, routeTrack]);
@@ -167,7 +170,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             >
               {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
                 // @ts-expect-error not sure about this one
-                <option value={value}>{profileNameMap[key]}</option>
+                <option key={key} value={value}>{profileNameMap[key]}</option>
               ))}
             </select>
           </div>

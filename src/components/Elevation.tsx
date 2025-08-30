@@ -14,7 +14,7 @@ const scale = (
 export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [canvasWidth, setCanvasWidth] = useState<number>(0)
+  const [canvasWidth, setCanvasWidth] = useState<number>(0);
 
   const maxElevation = routeTrack.features[0]?.properties?.["messages"]
     .slice(1)
@@ -45,7 +45,7 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
       }
 
       const currentCanvasWidth = canvasContainerRef.current?.clientWidth ?? 0;
-      setCanvasWidth(currentCanvasWidth)
+      setCanvasWidth(currentCanvasWidth);
 
       const scaleYWithParams = (pointElevation: number) =>
         scale(pointElevation, minElevation, maxElevation, 0, CANVAS_HEIGHT);
@@ -82,15 +82,15 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
       ctx.strokeStyle = "rgb(255 255 255)";
       ctx.stroke();
     }
-  }, [canvasWidth, maxElevation, minElevation, routeTrack, trackLength])
+  }, [canvasWidth, maxElevation, minElevation, routeTrack, trackLength]);
 
   useEffect(() => {
-    window.addEventListener("resize", drawElevationMap)
+    window.addEventListener("resize", drawElevationMap);
 
     return () => {
-      window.removeEventListener("resize", drawElevationMap)
-    }
-  }, [drawElevationMap])
+      window.removeEventListener("resize", drawElevationMap);
+    };
+  }, [drawElevationMap]);
 
   useEffect(drawElevationMap, [drawElevationMap]);
 
