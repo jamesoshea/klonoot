@@ -79,7 +79,7 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
         ctx.lineTo(dot.left, CANVAS_HEIGHT - dot.top);
       }
 
-      ctx.strokeStyle = "rgb(255 255 255)";
+      ctx.strokeStyle = "rgb(0 0 0)";
       ctx.stroke();
     }
   }, [canvasWidth, maxElevation, minElevation, routeTrack, trackLength]);
