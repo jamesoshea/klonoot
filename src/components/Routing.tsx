@@ -188,7 +188,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
                   className="btn btn-square w-4 h-4 btn-ghost"
                   onClick={() => handlePointDelete(index)}
                 >
-                  <FontAwesomeIcon icon={faTrash} />
+                  <FontAwesomeIcon icon={faTrash} size="2xs" />
                 </button>
               </li>
             ))}

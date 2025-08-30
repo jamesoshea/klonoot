@@ -98,8 +98,8 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
     <div className="elevation">
       <div className="rounded-lg bg-base-content text-primary-content flex items-center gap-3 p-3 w-full h-full">
         <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[128px]">
-          <span>{maxElevation}</span>
-          <span>{minElevation}</span>
+          <span>{maxElevation}m</span>
+          <span>{minElevation}m</span>
         </div>
         <div className="w-full" ref={canvasContainerRef}>
           <canvas
@@ -107,6 +107,10 @@ export const Elevation = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
             width={canvasWidth}
             ref={canvasRef}
           ></canvas>
+          <div className="w-full flex justify-between text-xs opacity-60">
+            <span>0km</span>
+            <span>{(trackLength / 1000).toFixed(0)}km</span>
+          </div>
         </div>
       </div>
     </div>
