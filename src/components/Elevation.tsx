@@ -34,6 +34,19 @@ export const Elevation = ({
       const currentCanvasWidth = canvasContainerRef.current?.clientWidth ?? 0;
       setCanvasWidth(currentCanvasWidth);
 
+      // Get the DPR and size of the canvas
+      const dpr = window.devicePixelRatio;
+
+      // Set the "actual" size of the canvas
+      canvas.width = currentCanvasWidth * dpr;
+      canvas.height = CANVAS_HEIGHT * dpr;
+
+      // Scale the context to ensure correct drawing operations
+      ctx.scale(dpr, dpr);
+
+      canvas.style.width = `${currentCanvasWidth}px`;
+      canvas.style.height = `${CANVAS_HEIGHT}px`;
+
       const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
 
       ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);

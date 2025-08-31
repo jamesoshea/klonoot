@@ -193,7 +193,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           <div className="w-full">
             <p className="text-xs opacity-60">Brouter profile</p>
             <select
-              className="select pl-0 pr-0 bg-base-content text-primary-content"
+              className="select pl-0 pr-0 bg-base-content text-primary-content w-full"
               value={brouterProfile}
               onChange={(e) => setBrouterProfile(e.target.value)}
             >
@@ -227,16 +227,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         </div>
         {!!(points.length > 1) && (
           <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content">
-            <div className="flex justify-around">
-              <div>{(trackLength / 1000).toFixed(1)} km</div>
-              <div>{elevationGain.toFixed(0)} m ele.</div>
+            <div className="flex items-center justify-between">
+              <span>{(trackLength / 1000).toFixed(1)} km</span>
+              <span>{elevationGain.toFixed(0)} m ele.</span>
+              <button className="btn btn-outline" onClick={handleGPXDownload}>
+                Download GPX
+              </button>
             </div>
-            <button
-              className="btn btn-outline mt-3 w-full"
-              onClick={handleGPXDownload}
-            >
-              Download GPX
-            </button>
           </div>
         )}
       </div>
