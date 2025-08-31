@@ -112,13 +112,13 @@ export const Elevation = ({
 
   return (
     <div className="elevation">
-      <div className="rounded-lg bg-base-content text-primary-content flex items-start gap-2 p-2 w-full h-full">
+      <div className="rounded-lg bg-base-100 text-primary-content flex items-start gap-2 p-2 w-full h-full">
         <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[128px]">
           <span>{calculateMaxElevation(routeTrack)}m</span>
           <span>{calculateMinElevation(routeTrack)}m</span>
         </div>
         <div className="w-full" ref={canvasContainerRef}>
-          <div className="bg-neutral-content">
+          <div className="bg-base-300">
             {legendIsOpen ? (
               <FontAwesomeIcon
                 className="absolute top-3 right-2 cursor-pointer z-100"

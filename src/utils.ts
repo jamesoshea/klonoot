@@ -119,3 +119,15 @@ export const drawTextWithBackground = (
   /// restore original state
   ctx.restore();
 };
+
+export const CSSColorToRGBA255Color = (string: string) => {
+  const ctx = new OffscreenCanvas(1, 1).getContext("2d");
+
+  if (!ctx) {
+    return "";
+  }
+
+  ctx.fillStyle = string;
+  ctx.fillRect(0, 0, 1, 1);
+  return ctx.getImageData(0, 0, 1, 1).data;
+};

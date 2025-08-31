@@ -9,6 +9,7 @@ import { fetchRoute } from "../queries/fetchRoute";
 import { Elevation } from "./Elevation.tsx";
 import { BROUTER_PROFILES, type BrouterResponse } from "../types";
 import * as turf from "@turf/turf";
+import { PRIMARY_COLOR_CONTENT_RGBA } from "../consts.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -118,7 +119,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       points.map((point, index) => {
         const element = document.createElement("div");
         element.className =
-          "rounded-2xl min-w-6 min-h-6 bg-primary-content text-base-content w-5 text-center";
+          "rounded-2xl min-w-6 min-h-6 bg-base-content text-neutral-content text-center";
         element.innerText = (index + 1).toString();
         const marker = new mapboxgl.Marker({ draggable: true, element })
           .setLngLat(point)
@@ -172,7 +173,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#0000FF",
+        "line-color": PRIMARY_COLOR_CONTENT_RGBA,
         "line-width": 8,
       },
     });
@@ -188,12 +189,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   return (
     <>
       <div className="routing m-3">
-        <div className="p-3 rounded-lg bg-base-content text-primary-content flex flex-col items-center">
+        <div className="p-3 rounded-lg bg-base-100 text-primary-content flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
-            <p className="text-xs opacity-60">Brouter profile</p>
+            <p className="pb-1 text-xs opacity-60">Brouter profile</p>
             <select
-              className="select pl-0 pr-0 bg-base-content text-primary-content w-full"
+              className="select pr-0 bg-base-100 text-primary-content w-full"
               value={brouterProfile}
               onChange={(e) => setBrouterProfile(e.target.value)}
             >
@@ -207,10 +208,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           </div>
           <ul className="list min-w-full">
             {!!points.length && (
-              <li className="pb-2 text-xs opacity-60">Anchor points</li>
+              <li className="pt-2 text-xs opacity-60">Anchor points</li>
             )}
             {points.map(([lat, lon], index) => (
-              <li className="list-row items-center p-0 min-w-full" key={index}>
+              <li className="list-row items-center p-1 min-w-full" key={index}>
                 <div>{index + 1}</div>
                 <div>
                   {lat.toFixed(3)}, {lon.toFixed(3)}
@@ -226,7 +227,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           </ul>
         </div>
         {!!(points.length > 1) && (
-          <div className="p-3 mt-3 rounded-lg bg-base-content text-primary-content">
+          <div className="p-3 mt-3 rounded-lg bg-base-100 text-primary-content">
             <div className="flex items-center justify-between">
               <span>{(trackLength / 1000).toFixed(1)} km</span>
               <span>{elevationGain.toFixed(0)} m ele.</span>

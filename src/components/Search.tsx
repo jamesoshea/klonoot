@@ -58,7 +58,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
           variables: {
             padding: "0.5em",
             borderRadius: "8px",
-            border: "1px solid black"
+            border: "1px solid black",
           },
         }}
         map={map}
@@ -73,7 +73,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
       />
       {searchResult && (
         <div className="left-0 top-0 fixed z-10 min-w-screen min-h-screen">
-          <div className="search-result card bg-base-content text-primary-content rounded-lg bg-base-100 flex flex-col items-center z-100">
+          <div className="search-result card bg-base-100 text-primary-content rounded-lg flex flex-col items-center z-100">
             <div className="card-body pl-1 pr-1">
               <div className="card-actions justify-end">
                 <button

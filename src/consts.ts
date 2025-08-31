@@ -1,3 +1,5 @@
+import { CSSColorToRGBA255Color } from "./utils";
+
 export const CANVAS_HEIGHT = 128;
 
 export const MAPBOX_ACCESS_TOKEN =
@@ -50,3 +52,13 @@ export const SURFACE_COLORS = {
   ice: SURFACE_COLOR_ORANGE,
   salt: SURFACE_COLOR_ORANGE,
 };
+
+const primaryColorContentOKLCH = window
+  .getComputedStyle(document.body)
+  .getPropertyValue("--color-primary-content");
+
+const primaryColorContentRGBA = CSSColorToRGBA255Color(
+  primaryColorContentOKLCH
+).toString();
+
+export const PRIMARY_COLOR_CONTENT_RGBA = `rgba(${primaryColorContentRGBA})`;
