@@ -1,0 +1,5 @@
+https://coolors.co/484a47-dd6e42-facc6b-6fa960-9bc995
+
+https://wiki.openstreetmap.org/wiki/Key:highway
+https://wiki.openstreetmap.org/wiki/Key:tracktype
+https://wiki.openstreetmap.org/wiki/Key:surface
