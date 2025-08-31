@@ -85,3 +85,37 @@ export const createRouteMarks = (
 
   return dots;
 };
+
+export const drawTextWithBackground = (
+  ctx: CanvasRenderingContext2D,
+  txt: string,
+  x: number,
+  y: number,
+  flip: boolean = false
+) => {
+  /// lets save current state as we make a lot of changes
+  ctx.save();
+
+  /// draw text from top - makes life easier at the moment
+  ctx.textBaseline = "top";
+
+  /// color for background
+  ctx.fillStyle = "oklch(0.97747 0.007 106.545 / 0.8)";
+
+  /// get width of text
+  const width = ctx.measureText(txt).width;
+
+  const safeX = flip ? x - (width + 20) : x;
+
+  /// draw background rect assuming height of font
+  ctx.fillRect(safeX, y - 2, width, 16);
+
+  /// text color
+  ctx.fillStyle = "#0000FF";
+
+  /// draw text on top
+  ctx.fillText(txt, safeX, y + 2);
+
+  /// restore original state
+  ctx.restore();
+};

@@ -18,6 +18,7 @@ import {
   calculateMaxElevation,
   calculateMinElevation,
   createRouteMarks,
+  drawTextWithBackground,
 } from "../utils";
 
 export const Elevation = ({
@@ -80,20 +81,20 @@ export const Elevation = ({
         ctx.lineWidth = 2;
         ctx.lineCap = "round";
         ctx.stroke();
+      });
 
+      points.forEach((point, index) => {
         if (
           currentPointDistance > point.distance &&
           currentPointDistance < points[index + 1].distance
         ) {
           ctx.fillStyle = "rgb(0, 0, 255)";
           ctx.fillRect(point.left, 0, 1, CANVAS_HEIGHT);
-          ctx.fillText(
-            `${(currentPointDistance / 1000).toFixed(1)}km\n${
-              point.wayTags.surface
-            }`,
-            point.left + 5,
-            10
-          );
+          const textString = `${(currentPointDistance / 1000).toFixed(1)}km\n${
+            point.wayTags.surface
+          }`;
+          const flip = index > points.length * 0.9;
+          drawTextWithBackground(ctx, textString, point.left + 5, 2, flip);
         }
       });
     }
@@ -111,66 +112,68 @@ export const Elevation = ({
 
   return (
     <div className="elevation">
-      <div className="rounded-lg bg-base-content text-primary-content flex items-center gap-3 p-3 w-full h-full">
+      <div className="rounded-lg bg-base-content text-primary-content flex items-start gap-2 p-2 w-full h-full">
         <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[128px]">
           <span>{calculateMaxElevation(routeTrack)}m</span>
           <span>{calculateMinElevation(routeTrack)}m</span>
         </div>
         <div className="w-full" ref={canvasContainerRef}>
-          {legendIsOpen ? (
-            <FontAwesomeIcon
-              className="absolute top-2 right-2 cursor-pointer z-100"
-              icon={faCircleXmark}
-              size="lg"
-              onClick={() => setLegendIsOpen(false)}
-            />
-          ) : (
-            <FontAwesomeIcon
-              className="absolute top-2 right-2 cursor-pointer z-100"
-              icon={faCircleQuestion}
-              size="lg"
-              onClick={() => setLegendIsOpen(true)}
-            />
-          )}
-          {legendIsOpen && (
-            <div className="absolute top-12 right-16">
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div
-                  className="min-h-3 min-w-3"
-                  style={{ background: SURFACE_COLOR_GRAY }}
-                />
-                <p className="text-s">Paved (Good)</p>
+          <div className="bg-neutral-content">
+            {legendIsOpen ? (
+              <FontAwesomeIcon
+                className="absolute top-3 right-2 cursor-pointer z-100"
+                icon={faCircleXmark}
+                size="lg"
+                onClick={() => setLegendIsOpen(false)}
+              />
+            ) : (
+              <FontAwesomeIcon
+                className="absolute top-3 right-2 cursor-pointer z-100"
+                icon={faCircleQuestion}
+                size="lg"
+                onClick={() => setLegendIsOpen(true)}
+              />
+            )}
+            {legendIsOpen && (
+              <div className="absolute top-10 right-16">
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: SURFACE_COLOR_GRAY }}
+                  />
+                  <p className="text-s">Paved (Good)</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
+                  />
+                  <p className="text-s">Paved (Poor)</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: SURFACE_COLOR_YELLOW }}
+                  />
+                  <p className="text-s">Unpaved (Good)</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: SURFACE_COLOR_ORANGE }}
+                  />
+                  <p className="text-s">Unpaved (Poor)</p>
+                </div>
               </div>
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div
-                  className="min-h-3 min-w-3"
-                  style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
-                />
-                <p className="text-s">Paved (Poor)</p>
-              </div>
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div
-                  className="min-h-3 min-w-3"
-                  style={{ background: SURFACE_COLOR_YELLOW }}
-                />
-                <p className="text-s">Unpaved (Good)</p>
-              </div>
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div
-                  className="min-h-3 min-w-3"
-                  style={{ background: SURFACE_COLOR_ORANGE }}
-                />
-                <p className="text-s">Unpaved (Poor)</p>
-              </div>
-            </div>
-          )}
-          <canvas
-            height={CANVAS_HEIGHT}
-            width={canvasWidth}
-            ref={canvasRef}
-            style={{ opacity: legendIsOpen ? 0 : 100 }}
-          ></canvas>
-          <div className="w-full flex justify-between text-xs opacity-60">
+            )}
+            <canvas
+              height={CANVAS_HEIGHT}
+              width={canvasWidth}
+              ref={canvasRef}
+              style={{ opacity: legendIsOpen ? 0 : 100 }}
+            ></canvas>
+          </div>
+          <div className="w-full flex justify-between mt-1 text-xs opacity-60">
             <span>0km</span>
             <span>{(trackLength / 1000).toFixed(0)}km</span>
           </div>

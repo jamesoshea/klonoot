@@ -118,7 +118,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       points.map((point, index) => {
         const element = document.createElement("div");
         element.className =
-          "rounded-lg bg-base-content text-primary-content w-5 text-center";
+          "rounded-2xl min-w-6 min-h-6 bg-primary-content text-base-content w-5 text-center";
         element.innerText = (index + 1).toString();
         const marker = new mapboxgl.Marker({ draggable: true, element })
           .setLngLat(point)
@@ -216,10 +216,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
                   {lat.toFixed(3)}, {lon.toFixed(3)}
                 </div>
                 <button
-                  className="btn btn-square w-4 h-4 btn-ghost"
+                  className="btn btn-circle w-5 h-5 btn-ghost"
                   onClick={() => handlePointDelete(index)}
                 >
-                  <FontAwesomeIcon icon={faTrash} size="2xs" />
+                  <FontAwesomeIcon icon={faTrash} size="sm" />
                 </button>
               </li>
             ))}
