@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { BrouterResponse } from "../types";
-import { CANVAS_HEIGHT } from "../consts";
+import type { BrouterResponse, SURFACE } from "../types";
+import { CANVAS_HEIGHT, SURFACE_COLORS } from "../consts";
 import {
   calculateMaxElevation,
   calculateMinElevation,
@@ -37,16 +37,22 @@ export const Elevation = ({
       const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
 
       ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
-      ctx.beginPath();
-      ctx.moveTo(
-        routeMarks.points[0].left,
-        CANVAS_HEIGHT - routeMarks.points[0].top
-      );
-
       const points = routeMarks.points.slice(1);
 
       points.forEach((point, index) => {
-        ctx.lineTo(point.left, CANVAS_HEIGHT - point.top);
+        ctx.beginPath();
+        ctx.moveTo(
+          routeMarks.points[index].left,
+          CANVAS_HEIGHT - routeMarks.points[index].top
+        );
+        ctx.strokeStyle = SURFACE_COLORS[point.wayTags.surface as SURFACE];
+        ctx.lineTo(
+          routeMarks.points[index + 1].left,
+          CANVAS_HEIGHT - routeMarks.points[index + 1].top
+        );
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.stroke();
 
         if (
           currentPointDistance > point.distance &&
@@ -63,9 +69,6 @@ export const Elevation = ({
           );
         }
       });
-
-      ctx.strokeStyle = "rgb(0 0 0) 2";
-      ctx.stroke();
     }
   }, [canvasWidth, currentPointDistance, routeTrack]);
 

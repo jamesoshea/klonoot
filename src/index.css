@@ -1,4 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes: dracula --default;
+  themes: dracula --default;
+}
+
+html {
+  font-size: 80%;
 }

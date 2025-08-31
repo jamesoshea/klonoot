@@ -41,7 +41,7 @@ export const createRouteMarks = (
       calculateMinElevation(routeTrack),
       calculateMaxElevation(routeTrack),
       0,
-      CANVAS_HEIGHT
+      CANVAS_HEIGHT - 4
     );
 
   const scaleXWithParams = (pointDistance: number) =>
