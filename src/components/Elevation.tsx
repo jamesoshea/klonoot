@@ -1,6 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleXmark,
+  faCircleQuestion,
+} from "@fortawesome/free-solid-svg-icons";
+
+import {
+  CANVAS_HEIGHT,
+  SURFACE_COLOR_GRAY,
+  SURFACE_COLOR_LIGHT_GRAY,
+  SURFACE_COLOR_ORANGE,
+  SURFACE_COLOR_YELLOW,
+  SURFACE_COLORS,
+} from "../consts";
 import type { BrouterResponse, SURFACE } from "../types";
-import { CANVAS_HEIGHT, SURFACE_COLORS } from "../consts";
 import {
   calculateMaxElevation,
   calculateMinElevation,
@@ -17,6 +30,7 @@ export const Elevation = ({
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
+  const [legendIsOpen, setLegendIsOpen] = useState<boolean>(false);
 
   const trackLength = Number(
     routeTrack?.features[0]?.properties?.["track-length"] ?? 0
@@ -72,7 +86,7 @@ export const Elevation = ({
           currentPointDistance < points[index + 1].distance
         ) {
           ctx.fillStyle = "rgb(0, 0, 255)";
-          ctx.fillRect(point.left, 0, 2, CANVAS_HEIGHT);
+          ctx.fillRect(point.left, 0, 1, CANVAS_HEIGHT);
           ctx.fillText(
             `${(currentPointDistance / 1000).toFixed(1)}km\n${
               point.wayTags.surface
@@ -103,10 +117,58 @@ export const Elevation = ({
           <span>{calculateMinElevation(routeTrack)}m</span>
         </div>
         <div className="w-full" ref={canvasContainerRef}>
+          {legendIsOpen ? (
+            <FontAwesomeIcon
+              className="absolute top-2 right-2 cursor-pointer z-100"
+              icon={faCircleXmark}
+              size="lg"
+              onClick={() => setLegendIsOpen(false)}
+            />
+          ) : (
+            <FontAwesomeIcon
+              className="absolute top-2 right-2 cursor-pointer z-100"
+              icon={faCircleQuestion}
+              size="lg"
+              onClick={() => setLegendIsOpen(true)}
+            />
+          )}
+          {legendIsOpen && (
+            <div className="absolute top-12 right-16">
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_GRAY }}
+                />
+                <p className="text-s">Paved (Good)</p>
+              </div>
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
+                />
+                <p className="text-s">Paved (Poor)</p>
+              </div>
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_YELLOW }}
+                />
+                <p className="text-s">Unpaved (Good)</p>
+              </div>
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_ORANGE }}
+                />
+                <p className="text-s">Unpaved (Poor)</p>
+              </div>
+            </div>
+          )}
           <canvas
             height={CANVAS_HEIGHT}
             width={canvasWidth}
             ref={canvasRef}
+            style={{ opacity: legendIsOpen ? 0 : 100 }}
           ></canvas>
           <div className="w-full flex justify-between text-xs opacity-60">
             <span>0km</span>
