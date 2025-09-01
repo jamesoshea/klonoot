@@ -1,7 +1,7 @@
-import { CANVAS_HEIGHT } from "./consts";
-import type { BrouterResponse } from "./types";
+import { CANVAS_HEIGHT, COLOR__ACCENT, COLOR__BASE_300_80 } from "../consts";
+import type { BrouterResponse } from "../types";
 
-const scale = (
+export const scale = (
   number: number,
   inMin: number,
   inMax: number,
@@ -100,7 +100,7 @@ export const drawTextWithBackground = (
   ctx.textBaseline = "top";
 
   /// color for background
-  ctx.fillStyle = "oklch(0.97747 0.007 106.545 / 0.8)";
+  ctx.fillStyle = COLOR__BASE_300_80;
 
   /// get width of text
   const width = ctx.measureText(txt).width;
@@ -111,23 +111,11 @@ export const drawTextWithBackground = (
   ctx.fillRect(safeX, y - 2, width, 16);
 
   /// text color
-  ctx.fillStyle = "#0000FF";
+  ctx.fillStyle = COLOR__ACCENT;
 
   /// draw text on top
   ctx.fillText(txt, safeX, y + 2);
 
   /// restore original state
   ctx.restore();
-};
-
-export const CSSColorToRGBA255Color = (string: string) => {
-  const ctx = new OffscreenCanvas(1, 1).getContext("2d");
-
-  if (!ctx) {
-    return "";
-  }
-
-  ctx.fillStyle = string;
-  ctx.fillRect(0, 0, 1, 1);
-  return ctx.getImageData(0, 0, 1, 1).data;
 };

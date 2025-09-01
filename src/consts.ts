@@ -1,4 +1,4 @@
-import { CSSColorToRGBA255Color } from "./utils";
+import { getThemeColor } from "./utils/colors";
 
 export const CANVAS_HEIGHT = 128;
 
@@ -10,9 +10,9 @@ export const SURFACE_COLOR_LIGHT_GRAY = "#ADAFAC";
 export const SURFACE_COLOR_ORANGE = "#BA5C12";
 export const SURFACE_COLOR_YELLOW = "#FACC6B";
 
-const TRAFFIC_COLOR_NONE = "#6FA960";
-const TRAFFIC_COLOR_LOW = "#9BC995";
-const TRAFFIC_COLOR_NORMAL = "#FFFFFF";
+// const TRAFFIC_COLOR_NONE = "#6FA960";
+// const TRAFFIC_COLOR_LOW = "#9BC995";
+// const TRAFFIC_COLOR_NORMAL = "#FFFFFF";
 
 export const SURFACE_COLORS = {
   // PAVED
@@ -53,12 +53,8 @@ export const SURFACE_COLORS = {
   salt: SURFACE_COLOR_ORANGE,
 };
 
-const primaryColorContentOKLCH = window
-  .getComputedStyle(document.body)
-  .getPropertyValue("--color-primary-content");
-
-const primaryColorContentRGBA = CSSColorToRGBA255Color(
-  primaryColorContentOKLCH
-).toString();
-
-export const PRIMARY_COLOR_CONTENT_RGBA = `rgba(${primaryColorContentRGBA})`;
+export const COLOR__ACCENT = getThemeColor("--color-accent");
+export const COLOR__BASE_300 = getThemeColor("--color-base-300");
+export const COLOR__BASE_300_80 = getThemeColor("--color-base-300", 204);
+export const COLOR__PRIMARY = getThemeColor("--color-primary");
+export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");

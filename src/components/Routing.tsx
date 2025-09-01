@@ -1,15 +1,15 @@
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import type { Coordinate } from "../App";
-import { Search } from "./Search";
-import { fetchRoute } from "../queries/fetchRoute";
 import { Elevation } from "./Elevation.tsx";
+import { Search } from "./Search";
+import { COLOR__ACCENT } from "../consts.ts";
+import { fetchRoute } from "../queries/fetchRoute";
 import { BROUTER_PROFILES, type BrouterResponse } from "../types";
-import * as turf from "@turf/turf";
-import { PRIMARY_COLOR_CONTENT_RGBA } from "../consts.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -119,7 +119,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       points.map((point, index) => {
         const element = document.createElement("div");
         element.className =
-          "rounded-2xl min-w-6 min-h-6 bg-base-content text-neutral-content text-center";
+          "rounded-2xl min-w-6 min-h-6 bg-primary text-primary-content text-center";
         element.innerText = (index + 1).toString();
         const marker = new mapboxgl.Marker({ draggable: true, element })
           .setLngLat(point)
@@ -173,7 +173,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         "line-cap": "round",
       },
       paint: {
-        "line-color": PRIMARY_COLOR_CONTENT_RGBA,
+        "line-color": COLOR__ACCENT,
         "line-width": 8,
       },
     });

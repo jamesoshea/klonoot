@@ -7,6 +7,7 @@ import {
 
 import {
   CANVAS_HEIGHT,
+  COLOR__ACCENT,
   SURFACE_COLOR_GRAY,
   SURFACE_COLOR_LIGHT_GRAY,
   SURFACE_COLOR_ORANGE,
@@ -19,7 +20,7 @@ import {
   calculateMinElevation,
   createRouteMarks,
   drawTextWithBackground,
-} from "../utils";
+} from "../utils/canvas";
 
 export const Elevation = ({
   currentPointDistance,
@@ -88,7 +89,7 @@ export const Elevation = ({
           currentPointDistance > point.distance &&
           currentPointDistance < points[index + 1].distance
         ) {
-          ctx.fillStyle = "rgb(0, 0, 255)";
+          ctx.fillStyle = COLOR__ACCENT;
           ctx.fillRect(point.left, 0, 1, CANVAS_HEIGHT);
           const textString = `${(currentPointDistance / 1000).toFixed(1)}km\n${
             point.wayTags.surface
