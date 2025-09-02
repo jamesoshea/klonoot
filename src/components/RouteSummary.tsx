@@ -5,6 +5,7 @@ import type { BrouterResponse } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownUpAcrossLine,
+  faArrowRotateBackward,
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -42,6 +43,13 @@ export const RouteSummary = ({
     setPoints(newPoints);
   };
 
+  const handleRouteBackToStart = () => {
+    const theFirstPointButMovedSlightly = points[0].map(
+      (coord) => coord + 0.0001
+    );
+    setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
+  };
+
   if (!points.length) {
     return;
   }
@@ -59,6 +67,14 @@ export const RouteSummary = ({
         <span>{(trackLength / 1000).toFixed(1)} km</span>
         <span>{elevationGain.toFixed(0)} m ele.</span>
         <div>
+          <div className="tooltip" data-tip="Route back to start">
+            <button
+              className="btn btn-circle w-8 h-8 btn-ghost"
+              onClick={handleRouteBackToStart}
+            >
+              <FontAwesomeIcon icon={faArrowRotateBackward} size="lg" />
+            </button>
+          </div>
           <div className="tooltip" data-tip="Reverse route">
             <button
               className="btn btn-circle w-8 h-8 btn-ghost"
