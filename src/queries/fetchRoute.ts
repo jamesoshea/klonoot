@@ -25,9 +25,7 @@ async function fetchRoute(
   const formattedLngLats = points.map((point) => point.join(",")).join("|");
   const formattedQueryString = `lonlats=${formattedLngLats}&profile=${brouterProfile}&alternativeidx=0&format=${format}`;
 
-  const baseUrl = import.meta.env.PROD
-    ? "https:klonoot.org/api"
-    : "http://localhost:17777";
+  const baseUrl = import.meta.env.PROD ? "/api" : "http://localhost:17777";
 
   const resp = await axios.get(`${baseUrl}/brouter?${formattedQueryString}`);
 

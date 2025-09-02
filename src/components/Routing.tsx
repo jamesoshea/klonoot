@@ -1,4 +1,8 @@
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronCircleDown,
+  faCircleChevronUp,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
@@ -90,6 +94,20 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handleLineMouseLeave = () => {
     setCurrentPointDistance(-1);
+  };
+
+  const handleMovePointDown = (index: number) => {
+    const newArray = [...points];
+    const [point] = newArray.splice(index, 1);
+    newArray.splice(index + 1, 0, point);
+    setPoints(newArray);
+  };
+
+  const handleMovePointUp = (index: number) => {
+    const newArray = [...points];
+    const [point] = newArray.splice(index, 1);
+    newArray.splice(index - 1, 0, point);
+    setPoints(newArray);
   };
 
   useEffect(() => {
@@ -216,12 +234,32 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
                 <div>
                   {lat.toFixed(3)}, {lon.toFixed(3)}
                 </div>
-                <button
-                  className="btn btn-circle w-5 h-5 btn-ghost"
-                  onClick={() => handlePointDelete(index)}
-                >
-                  <FontAwesomeIcon icon={faTrash} size="sm" />
-                </button>
+                <div>
+                  {index !== 0 && (
+                    <button
+                      className="btn btn-circle w-5 h-5 btn-ghost"
+                      onClick={() => handleMovePointUp(index)}
+                    >
+                      <FontAwesomeIcon icon={faCircleChevronUp} size="sm" />
+                    </button>
+                  )}
+                  {index < points.length - 1 ? (
+                    <button
+                      className="btn btn-circle w-5 h-5 btn-ghost"
+                      onClick={() => handleMovePointDown(index)}
+                    >
+                      <FontAwesomeIcon icon={faChevronCircleDown} size="sm" />
+                    </button>
+                  ) : (
+                    <button className="min-w-5" />
+                  )}
+                  <button
+                    className="btn btn-circle w-5 h-5 btn-ghost"
+                    onClick={() => handlePointDelete(index)}
+                  >
+                    <FontAwesomeIcon icon={faTrash} size="sm" />
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
