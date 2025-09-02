@@ -9,6 +9,7 @@ import { COLOR__ACCENT } from "../consts.ts";
 import { fetchRoute } from "../queries/fetchRoute";
 import { BROUTER_PROFILES, type BrouterResponse } from "../types";
 import { PointsList } from "./PointsList.tsx";
+import { RouteSummary } from "./RouteSummary.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -23,23 +24,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
-
-  const handleGPXDownload = async () => {
-    fetchRoute("gpx", points, brouterProfile).then((route) => {
-      if (!route) {
-        return;
-      }
-
-      const blob = new Blob([route], { type: "text/plain" });
-      const fileURL = URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = fileURL;
-      downloadLink.download = "example.gpx";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      URL.revokeObjectURL(fileURL);
-    });
-  };
 
   const handlePointDrag = useCallback(
     (
@@ -169,13 +153,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
   }, [map, routeTrack]);
 
-  const trackLength = Number(
-    routeTrack?.features[0]?.properties?.["track-length"] ?? 0
-  );
-  const elevationGain = Number(
-    routeTrack?.features[0]?.properties?.["filtered ascend"] ?? 0
-  );
-
   return (
     <>
       <div className="routing m-3">
@@ -198,16 +175,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           </div>
           <PointsList points={points} setPoints={setPoints} />
         </div>
-        {!!(points.length > 1) && (
-          <div className="p-3 mt-3 rounded-lg bg-base-100 text-primary-content">
-            <div className="flex items-center justify-between">
-              <span>{(trackLength / 1000).toFixed(1)} km</span>
-              <span>{elevationGain.toFixed(0)} m ele.</span>
-              <button className="btn btn-outline" onClick={handleGPXDownload}>
-                Download GPX
-              </button>
-            </div>
-          </div>
+        {routeTrack && (
+          <RouteSummary
+            brouterProfile={brouterProfile}
+            points={points}
+            routeTrack={routeTrack}
+            setPoints={setPoints}
+          />
         )}
       </div>
       {routeTrack && (

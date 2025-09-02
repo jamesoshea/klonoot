@@ -1,0 +1,82 @@
+import type { Dispatch } from "react";
+import type { Coordinate } from "../App";
+import { fetchRoute } from "../queries/fetchRoute";
+import type { BrouterResponse } from "../types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowDownUpAcrossLine,
+  faDownload,
+} from "@fortawesome/free-solid-svg-icons";
+
+export const RouteSummary = ({
+  brouterProfile,
+  points,
+  routeTrack,
+  setPoints,
+}: {
+  brouterProfile: string;
+  points: Coordinate[];
+  routeTrack: BrouterResponse;
+  setPoints: Dispatch<Coordinate[]>;
+}) => {
+  const handleGPXDownload = async () => {
+    fetchRoute("gpx", points, brouterProfile).then((route) => {
+      if (!route) {
+        return;
+      }
+
+      const blob = new Blob([route], { type: "text/plain" });
+      const fileURL = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = fileURL;
+      downloadLink.download = "example.gpx";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      URL.revokeObjectURL(fileURL);
+    });
+  };
+
+  const handleReverseRoute = () => {
+    const newPoints = [...points];
+    newPoints.reverse();
+    setPoints(newPoints);
+  };
+
+  if (!points.length) {
+    return;
+  }
+
+  const trackLength = Number(
+    routeTrack?.features[0]?.properties?.["track-length"] ?? 0
+  );
+  const elevationGain = Number(
+    routeTrack?.features[0]?.properties?.["filtered ascend"] ?? 0
+  );
+
+  return (
+    <div className="p-3 mt-3 rounded-lg bg-base-100 text-primary-content">
+      <div className="flex items-center justify-between">
+        <span>{(trackLength / 1000).toFixed(1)} km</span>
+        <span>{elevationGain.toFixed(0)} m ele.</span>
+        <div>
+          <div className="tooltip" data-tip="Reverse route">
+            <button
+              className="btn btn-circle w-8 h-8 btn-ghost"
+              onClick={handleReverseRoute}
+            >
+              <FontAwesomeIcon icon={faArrowDownUpAcrossLine} size="lg" />
+            </button>
+          </div>
+          <div className="tooltip" data-tip="Download GPX">
+            <button
+              className="btn btn-circle w-8 h-8 btn-ghost"
+              onClick={handleGPXDownload}
+            >
+              <FontAwesomeIcon icon={faDownload} size="lg" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
