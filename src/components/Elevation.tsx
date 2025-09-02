@@ -134,6 +134,7 @@ export const Elevation = ({
 
       points.forEach((point) => {
         if (point.wayTags.highway) {
+          // @ts-expect-error no idea
           ctx.fillStyle = HIGHWAY_COLORS[point.wayTags.highway as HIGHWAY];
         }
 
