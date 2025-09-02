@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleXmark,
-  faCircleQuestion,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
 import {
   CANVAS_HEIGHT,
@@ -15,6 +12,8 @@ import {
   SURFACE_COLOR_ORANGE,
   SURFACE_COLOR_YELLOW,
   SURFACE_COLORS,
+  TRAFFIC_COLOR_LOW,
+  TRAFFIC_COLOR_NONE,
 } from "../consts";
 import type { BrouterResponse, CYCLEWAY, SURFACE } from "../types";
 import {
@@ -35,7 +34,6 @@ export const Elevation = ({
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
-  const [legendIsOpen, setLegendIsOpen] = useState<boolean>(false);
 
   const trackLength = Number(
     routeTrack?.features[0]?.properties?.["track-length"] ?? 0
@@ -168,23 +166,8 @@ export const Elevation = ({
         </div>
         <div className="w-full" ref={canvasContainerRef}>
           <div className="bg-base-200">
-            {legendIsOpen ? (
-              <FontAwesomeIcon
-                className="absolute top-3 right-2 cursor-pointer z-100"
-                icon={faCircleXmark}
-                size="lg"
-                onClick={() => setLegendIsOpen(false)}
-              />
-            ) : (
-              <FontAwesomeIcon
-                className="absolute top-3 right-2 cursor-pointer z-100"
-                icon={faCircleQuestion}
-                size="lg"
-                onClick={() => setLegendIsOpen(true)}
-              />
-            )}
-            {legendIsOpen && (
-              <div className="absolute top-10 right-16">
+            <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
+              <div className="tooltip-content p-3">
                 <div className="flex gap-3 justify-between items-center w-full">
                   <div
                     className="min-h-3 min-w-3"
@@ -206,25 +189,43 @@ export const Elevation = ({
                   />
                   <p className="text-s">Unpaved (Good)</p>
                 </div>
-                <div className="flex gap-3 justify-between items-center w-full">
+                <div className="flex gap-3 justify-between items-center w-full mb-4">
                   <div
                     className="min-h-3 min-w-3"
                     style={{ background: SURFACE_COLOR_ORANGE }}
                   />
                   <p className="text-s">Unpaved (Poor)</p>
                 </div>
+
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: TRAFFIC_COLOR_LOW }}
+                  />
+                  <p className="text-s">Low traffic</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: TRAFFIC_COLOR_NONE }}
+                  />
+                  <p className="text-s">No traffic</p>
+                </div>
               </div>
-            )}
+              <FontAwesomeIcon
+                className="absolute top-3 right-2 cursor-pointer z-100"
+                icon={faCircleQuestion}
+                size="lg"
+              />
+            </div>
             <canvas
               height={CANVAS_HEIGHT}
               ref={elevationCanvasRef}
-              style={{ opacity: legendIsOpen ? 0 : 100 }}
               width={canvasWidth}
             ></canvas>
             <canvas
               height={10}
               ref={trafficCanvasRef}
-              style={{ opacity: legendIsOpen ? 0 : 100 }}
               width={canvasWidth}
             ></canvas>
           </div>
