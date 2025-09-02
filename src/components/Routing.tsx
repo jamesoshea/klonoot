@@ -1,9 +1,3 @@
-import {
-  faChevronCircleDown,
-  faCircleChevronUp,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
@@ -14,6 +8,7 @@ import { Search } from "./Search";
 import { COLOR__ACCENT } from "../consts.ts";
 import { fetchRoute } from "../queries/fetchRoute";
 import { BROUTER_PROFILES, type BrouterResponse } from "../types";
+import { PointsList } from "./PointsList.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -45,15 +40,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       URL.revokeObjectURL(fileURL);
     });
   };
-
-  const handlePointDelete = useCallback(
-    (index: number) => {
-      const newArray = [...points];
-      newArray.splice(index, 1);
-      setPoints(newArray);
-    },
-    [points]
-  );
 
   const handlePointDrag = useCallback(
     (
@@ -94,20 +80,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handleLineMouseLeave = () => {
     setCurrentPointDistance(-1);
-  };
-
-  const handleMovePointDown = (index: number) => {
-    const newArray = [...points];
-    const [point] = newArray.splice(index, 1);
-    newArray.splice(index + 1, 0, point);
-    setPoints(newArray);
-  };
-
-  const handleMovePointUp = (index: number) => {
-    const newArray = [...points];
-    const [point] = newArray.splice(index, 1);
-    newArray.splice(index - 1, 0, point);
-    setPoints(newArray);
   };
 
   useEffect(() => {
@@ -224,45 +196,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               ))}
             </select>
           </div>
-          <ul className="list min-w-full">
-            {!!points.length && (
-              <li className="pt-2 text-xs opacity-60">Anchor points</li>
-            )}
-            {points.map(([lat, lon], index) => (
-              <li className="list-row items-center p-1 min-w-full" key={index}>
-                <div>{index + 1}</div>
-                <div>
-                  {lat.toFixed(3)}, {lon.toFixed(3)}
-                </div>
-                <div>
-                  {index !== 0 && (
-                    <button
-                      className="btn btn-circle w-5 h-5 btn-ghost"
-                      onClick={() => handleMovePointUp(index)}
-                    >
-                      <FontAwesomeIcon icon={faCircleChevronUp} size="sm" />
-                    </button>
-                  )}
-                  {index < points.length - 1 ? (
-                    <button
-                      className="btn btn-circle w-5 h-5 btn-ghost"
-                      onClick={() => handleMovePointDown(index)}
-                    >
-                      <FontAwesomeIcon icon={faChevronCircleDown} size="sm" />
-                    </button>
-                  ) : (
-                    <button className="min-w-5" />
-                  )}
-                  <button
-                    className="btn btn-circle w-5 h-5 btn-ghost"
-                    onClick={() => handlePointDelete(index)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="sm" />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <PointsList points={points} setPoints={setPoints} />
         </div>
         {!!(points.length > 1) && (
           <div className="p-3 mt-3 rounded-lg bg-base-100 text-primary-content">
