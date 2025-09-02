@@ -6,7 +6,7 @@ This would serve purely as a route planning tool. There are already many fantast
 
 It relies on brouter for its routing, and leans heavily on Mapbox for the map and search implementation.
 
-I would like to find a way to get brouter to run serverless/ as an AWS Lambda, in Order to make it more scalable, and to cut down on server costs. I have rough plans for other features I would like to implement:
+I would like to find a way to get brouter to run serverless/ as an AWS Lambda, in order to make it more scalable, and to cut down on server costs. I have rough plans for other features I would like to implement:
 
 - Auth/persistence
 - ~~proper elevation profile~~
@@ -14,7 +14,7 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 - context menu on map click
 - gpx import
 - ~~brouter profile selection~~
-- docker-compose setup
+- ~~docker-compose setup~~
 - optimistic UI updates for point drags
 - integrate react-query
 - write unit tests

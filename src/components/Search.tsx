@@ -4,6 +4,8 @@ import { useState, type Dispatch } from "react";
 import { MAPBOX_ACCESS_TOKEN } from "../consts";
 import { SearchBox } from "@mapbox/search-js-react";
 import type { Coordinate } from "../App";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -74,45 +76,43 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
       {searchResult && (
         <div className="left-0 top-0 fixed z-10 min-w-screen min-h-screen">
           <div className="search-result card bg-base-100 text-primary-content rounded-lg flex flex-col items-center z-100">
-            <div className="card-body pl-1 pr-1">
-              <div className="card-actions justify-end">
-                <button
-                  className="btn btn-square btn-outline btn-sm"
+            <div className="card-body p-3">
+              <div className="card-actions justify-end mb-6">
+                <FontAwesomeIcon
+                  className="absolute top-3 right-2 cursor-pointer z-100"
+                  icon={faCircleXmark}
+                  size="lg"
                   onClick={handleClearSearchResult}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+                />
               </div>
               <h2 className="card-title">
                 {searchResult?.properties?.name ?? ""}
               </h2>
               <div>{searchResult?.properties?.place_formatted ?? ""}</div>
               <div className="card-actions justify-end mt-2">
-                <button
-                  className="btn btn-outline"
-                  onClick={() => addSearchResultToPoints("START")}
-                >
-                  Add to start
-                </button>
-                <button
-                  className="btn btn-outline"
-                  onClick={() => addSearchResultToPoints("END")}
-                >
-                  Add to end
-                </button>
+                {points.length ? (
+                  <>
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => addSearchResultToPoints("START")}
+                    >
+                      Add to start
+                    </button>
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => addSearchResultToPoints("END")}
+                    >
+                      Add to end
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="btn btn-outline"
+                    onClick={() => addSearchResultToPoints("END")}
+                  >
+                    Add to route
+                  </button>
+                )}
               </div>
             </div>
           </div>
