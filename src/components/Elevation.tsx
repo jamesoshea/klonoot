@@ -8,13 +8,15 @@ import {
 import {
   CANVAS_HEIGHT,
   COLOR__ACCENT,
+  CYCLEWAY_COLORS,
+  HIGHWAY_COLORS,
   SURFACE_COLOR_GRAY,
   SURFACE_COLOR_LIGHT_GRAY,
   SURFACE_COLOR_ORANGE,
   SURFACE_COLOR_YELLOW,
   SURFACE_COLORS,
 } from "../consts";
-import type { BrouterResponse, SURFACE } from "../types";
+import type { BrouterResponse, CYCLEWAY, SURFACE } from "../types";
 import {
   calculateMaxElevation,
   calculateMinElevation,
@@ -30,7 +32,8 @@ export const Elevation = ({
   routeTrack: BrouterResponse;
 }) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
   const [legendIsOpen, setLegendIsOpen] = useState<boolean>(false);
 
@@ -39,7 +42,7 @@ export const Elevation = ({
   );
 
   const drawElevationMap = useCallback(() => {
-    const canvas = canvasRef.current;
+    const canvas = elevationCanvasRef.current;
     if (canvas?.getContext) {
       const ctx = canvas.getContext("2d");
 
@@ -92,14 +95,58 @@ export const Elevation = ({
           ctx.fillStyle = COLOR__ACCENT;
           ctx.fillRect(point.left, 0, 1, CANVAS_HEIGHT);
           const textString = `${(currentPointDistance / 1000).toFixed(1)}km\n${
-            point.wayTags.surface
-          }`;
+            point.wayTags.surface ?? ""
+          }\n${(point.wayTags.cycleway || point.wayTags.highway) ?? ""}`;
           const flip = index > points.length * 0.9;
           drawTextWithBackground(ctx, textString, point.left + 5, 2, flip);
         }
       });
     }
   }, [canvasWidth, currentPointDistance, routeTrack]);
+
+  const drawTrafficMap = useCallback(() => {
+    const canvas = trafficCanvasRef.current;
+    if (canvas?.getContext) {
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        return;
+      }
+
+      const currentCanvasWidth = canvasContainerRef.current?.clientWidth ?? 0;
+      setCanvasWidth(currentCanvasWidth);
+
+      // Get the DPR and size of the canvas
+      const dpr = window.devicePixelRatio;
+
+      // Set the "actual" size of the canvas
+      canvas.width = currentCanvasWidth * dpr;
+      canvas.height = 10 * dpr;
+
+      // Scale the context to ensure correct drawing operations
+      ctx.scale(dpr, dpr);
+
+      canvas.style.width = `${currentCanvasWidth}px`;
+      canvas.style.height = `${10}px`;
+
+      const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
+
+      ctx.clearRect(0, 0, canvasWidth, 10);
+      const points = routeMarks.points.slice(1);
+
+      points.forEach((point) => {
+        if (point.wayTags.highway) {
+          ctx.fillStyle = HIGHWAY_COLORS[point.wayTags.highway as HIGHWAY];
+        }
+
+        if (point.wayTags.cycleway) {
+          ctx.fillStyle = CYCLEWAY_COLORS[point.wayTags.cycleway as CYCLEWAY];
+        }
+
+        ctx.fillRect(point.left, 0, 10, 10);
+      });
+    }
+  }, [canvasWidth, routeTrack]);
 
   useEffect(() => {
     window.addEventListener("resize", drawElevationMap);
@@ -110,6 +157,7 @@ export const Elevation = ({
   }, [drawElevationMap]);
 
   useEffect(drawElevationMap, [drawElevationMap]);
+  useEffect(drawTrafficMap, [drawTrafficMap]);
 
   return (
     <div className="elevation">
@@ -169,9 +217,15 @@ export const Elevation = ({
             )}
             <canvas
               height={CANVAS_HEIGHT}
-              width={canvasWidth}
-              ref={canvasRef}
+              ref={elevationCanvasRef}
               style={{ opacity: legendIsOpen ? 0 : 100 }}
+              width={canvasWidth}
+            ></canvas>
+            <canvas
+              height={10}
+              ref={trafficCanvasRef}
+              style={{ opacity: legendIsOpen ? 0 : 100 }}
+              width={canvasWidth}
             ></canvas>
           </div>
           <div className="w-full flex justify-between mt-1 text-xs opacity-60">

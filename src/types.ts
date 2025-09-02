@@ -1,5 +1,5 @@
 import type { FeatureCollection, LineString } from "geojson";
-import type { SURFACE_COLORS } from "./consts";
+import type { CYCLEWAY_COLORS, HIGHWAY_COLORS, SURFACE_COLORS } from "./consts";
 
 export enum BROUTER_PROFILES {
   TREKKING = "trekking",
@@ -9,6 +9,8 @@ export enum BROUTER_PROFILES {
 }
 
 export type SURFACE = keyof typeof SURFACE_COLORS;
+export type HIGHWAY = keyof typeof HIGHWAY_COLORS;
+export type CYCLEWAY = keyof typeof CYCLEWAY_COLORS;
 
 export type BrouterResponse = FeatureCollection<
   LineString,

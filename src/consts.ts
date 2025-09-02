@@ -1,5 +1,11 @@
 import { getThemeColor } from "./utils/colors";
 
+export const COLOR__ACCENT = getThemeColor("--color-accent");
+export const COLOR__BASE_200 = getThemeColor("--color-base-200");
+export const COLOR__BASE_200_80 = getThemeColor("--color-base-200", 204);
+export const COLOR__PRIMARY = getThemeColor("--color-primary");
+export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");
+
 export const CANVAS_HEIGHT = 128;
 
 export const MAPBOX_ACCESS_TOKEN =
@@ -10,9 +16,46 @@ export const SURFACE_COLOR_LIGHT_GRAY = "#ADAFAC";
 export const SURFACE_COLOR_ORANGE = "#BA5C12";
 export const SURFACE_COLOR_YELLOW = "#FACC6B";
 
-// const TRAFFIC_COLOR_NONE = "#6FA960";
-// const TRAFFIC_COLOR_LOW = "#9BC995";
-// const TRAFFIC_COLOR_NORMAL = "#FFFFFF";
+const TRAFFIC_COLOR_NONE = "#6FA960";
+const TRAFFIC_COLOR_LOW = "#9BC995";
+const TRAFFIC_COLOR_NORMAL = COLOR__BASE_200;
+
+export const HIGHWAY_COLORS = {
+  motorway: TRAFFIC_COLOR_NORMAL,
+  trunk: TRAFFIC_COLOR_NORMAL,
+  primary: TRAFFIC_COLOR_NORMAL,
+  secondary: TRAFFIC_COLOR_NORMAL,
+  tertiary: TRAFFIC_COLOR_LOW,
+  unclassified: TRAFFIC_COLOR_NORMAL,
+  residential: TRAFFIC_COLOR_LOW,
+  motorway_link: TRAFFIC_COLOR_NORMAL,
+  trunk_link: TRAFFIC_COLOR_NORMAL,
+  primary_link: TRAFFIC_COLOR_NORMAL,
+  secondary_link: TRAFFIC_COLOR_NORMAL,
+  tertiary_link: TRAFFIC_COLOR_LOW,
+  living_street: TRAFFIC_COLOR_LOW,
+  service: TRAFFIC_COLOR_LOW,
+  pedestrian: TRAFFIC_COLOR_NONE,
+  track: TRAFFIC_COLOR_NORMAL,
+  bus_guideway: TRAFFIC_COLOR_NORMAL,
+  escape: TRAFFIC_COLOR_NORMAL,
+  raceway: TRAFFIC_COLOR_NORMAL,
+  road: TRAFFIC_COLOR_NORMAL,
+  busway: TRAFFIC_COLOR_NORMAL,
+  footway: TRAFFIC_COLOR_NONE,
+  bridleway: TRAFFIC_COLOR_NONE,
+  steps: TRAFFIC_COLOR_NONE,
+  path: TRAFFIC_COLOR_NONE,
+  sidewalk: TRAFFIC_COLOR_NONE,
+  cycleway: TRAFFIC_COLOR_NONE,
+};
+
+export const CYCLEWAY_COLORS = {
+  lane: TRAFFIC_COLOR_LOW,
+  track: TRAFFIC_COLOR_NONE,
+  share_busway: TRAFFIC_COLOR_LOW,
+  shared_lane: TRAFFIC_COLOR_LOW,
+};
 
 export const SURFACE_COLORS = {
   // PAVED
@@ -52,9 +95,3 @@ export const SURFACE_COLORS = {
   ice: SURFACE_COLOR_ORANGE,
   salt: SURFACE_COLOR_ORANGE,
 };
-
-export const COLOR__ACCENT = getThemeColor("--color-accent");
-export const COLOR__BASE_300 = getThemeColor("--color-base-300");
-export const COLOR__BASE_200_80 = getThemeColor("--color-base-200", 204);
-export const COLOR__PRIMARY = getThemeColor("--color-primary");
-export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");
