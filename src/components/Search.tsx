@@ -75,7 +75,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
       />
       {searchResult && (
         <div className="left-0 top-0 fixed z-10 min-w-screen min-h-screen">
-          <div className="search-result card bg-base-100 text-primary-content rounded-lg flex flex-col items-center z-100">
+          <div className="search-result card bg-base-100 rounded-lg flex flex-col items-center z-100">
             <div className="card-body p-3">
               <div className="card-actions justify-end mb-6">
                 <FontAwesomeIcon

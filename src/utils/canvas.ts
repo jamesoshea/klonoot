@@ -1,4 +1,4 @@
-import { CANVAS_HEIGHT, COLOR__ACCENT, COLOR__BASE_300_80 } from "../consts";
+import { CANVAS_HEIGHT, COLOR__ACCENT, COLOR__BASE_200_80 } from "../consts";
 import type { BrouterResponse } from "../types";
 
 export const scale = (
@@ -100,7 +100,7 @@ export const drawTextWithBackground = (
   ctx.textBaseline = "top";
 
   /// color for background
-  ctx.fillStyle = COLOR__BASE_300_80;
+  ctx.fillStyle = COLOR__BASE_200_80;
 
   /// get width of text
   const width = ctx.measureText(txt).width;

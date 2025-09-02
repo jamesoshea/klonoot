@@ -55,6 +55,6 @@ export const SURFACE_COLORS = {
 
 export const COLOR__ACCENT = getThemeColor("--color-accent");
 export const COLOR__BASE_300 = getThemeColor("--color-base-300");
-export const COLOR__BASE_300_80 = getThemeColor("--color-base-300", 204);
+export const COLOR__BASE_200_80 = getThemeColor("--color-base-200", 204);
 export const COLOR__PRIMARY = getThemeColor("--color-primary");
 export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");
