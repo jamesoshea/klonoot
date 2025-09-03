@@ -4,8 +4,6 @@ import { useState, type Dispatch } from "react";
 import { MAPBOX_ACCESS_TOKEN } from "../consts";
 import { SearchBox } from "@mapbox/search-js-react";
 import type { Coordinate } from "../App";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -78,12 +76,12 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
           <div className="search-result card bg-base-100 rounded-lg flex flex-col items-center z-100">
             <div className="card-body p-3">
               <div className="card-actions justify-end mb-6">
-                <FontAwesomeIcon
-                  className="absolute top-3 right-2 cursor-pointer z-100"
-                  icon={faCircleXmark}
-                  size="lg"
+                <button
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                   onClick={handleClearSearchResult}
-                />
+                >
+                  ✕
+                </button>
               </div>
               <h2 className="card-title">
                 {searchResult?.properties?.name ?? ""}

@@ -1,0 +1,118 @@
+import type { Session, SupabaseClient } from "@supabase/supabase-js";
+import { useState } from "react";
+
+export const Auth = ({
+  session,
+  supabaseClient,
+}: {
+  session: Session | null;
+  supabaseClient: SupabaseClient;
+}) => {
+  const [email, setEmail] = useState<string>("");
+  const [otp, setOtp] = useState<string>("");
+  const [step, setStep] = useState("LOGIN");
+
+  const handleSocialLogin = async () => {
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+
+    setStep("VERIFY");
+
+    if (error) throw error;
+  };
+
+  const handleSocialConfirm = async () => {
+    const { error } = await supabaseClient.auth.verifyOtp({
+      email,
+      token: otp,
+      type: "magiclink",
+    });
+
+    if (error) throw error;
+  };
+
+  const handleSignOut = async () => {
+    await supabaseClient.auth.signOut();
+    setStep("LOGIN");
+  };
+
+  return (
+    <div className="modal-box">
+      <form method="dialog">
+        {/* if there is a button in form, it will close the modal */}
+        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          ✕
+        </button>
+      </form>
+      <h3 className="font-bold text-lg">Hello!</h3>
+      <p className="text-content">
+        To sign in, enter your email. We will email you a code to verify your
+        email address.
+      </p>
+      {session ? (
+        <>
+          <div>Signed in as {session.user.email}</div>
+          <button className="btn" onClick={handleSignOut}>
+            Sign out
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="py-4">
+            <label className="input validator w-full">
+              <svg
+                className="h-[1em] opacity-50"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  strokeWidth="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </g>
+              </svg>
+              {step === "LOGIN" ? (
+                <input
+                  className="w-full"
+                  placeholder="mail@example.com"
+                  required
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.currentTarget.value)}
+                />
+              ) : step === "VERIFY" ? (
+                <input
+                  className="w-full"
+                  placeholder="000000"
+                  required
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.currentTarget.value)}
+                />
+              ) : null}
+            </label>
+            <div className="validator-hint hidden">
+              Enter valid email address
+            </div>
+          </p>
+          {/* if there is a button in form, it will close the modal */}
+          <div className="flex justify-center">
+            {step === "LOGIN" ? (
+              <button className="btn" onClick={handleSocialLogin}>
+                Sign in
+              </button>
+            ) : step === "VERIFY" ? (
+              <button className="btn" onClick={handleSocialConfirm}>
+                Verify
+              </button>
+            ) : null}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

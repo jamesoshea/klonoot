@@ -13,6 +13,12 @@
   background-color: lightgrey;
 }
 
+.auth {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
 .elevation {
   z-index: 1;
   position: absolute;
