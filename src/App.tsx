@@ -72,6 +72,7 @@ function App() {
       <div id="map-container" ref={mapContainerRef} />
       <div
         className="auth"
+        // @ts-expect-error yeah I know
         onClick={() => document.getElementById("my_modal_1")?.showModal()}
       >
         <div className="bg-base-100 py-1 w-10 rounded-full cursor-pointer">
