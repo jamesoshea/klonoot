@@ -28,6 +28,8 @@ export const Auth = ({
     });
 
     if (error) throw error;
+    setEmail("");
+    setOtp("");
   };
 
   const handleSignOut = async () => {
@@ -36,27 +38,30 @@ export const Auth = ({
   };
 
   return (
-    <div className="modal-box">
+    <div className="modal-box p-3 rounded-md">
       <form method="dialog">
         {/* if there is a button in form, it will close the modal */}
         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
         </button>
       </form>
-      <h3 className="font-bold text-lg">Hello!</h3>
-      <p className="text-content">
-        To sign in, enter your email. We will email you a code to verify your
-        email address.
-      </p>
+      <h3 className="font-bold text-lg mb-3">Hello!</h3>
       {session ? (
         <>
-          <div>Signed in as {session.user.email}</div>
+          <div className="mb-2">Signed in as {session.user.email}</div>
           <button className="btn" onClick={handleSignOut}>
             Sign out
           </button>
         </>
       ) : (
         <>
+          <p className="text-content">
+            {step === "LOGIN"
+              ? "To sign in, enter your email. We will email you a code to verify your email address."
+              : step === "VERIFY"
+              ? "Please enter the code we sent to your email"
+              : ""}
+          </p>
           <p className="py-4">
             <label className="input validator w-full">
               <svg
@@ -95,9 +100,6 @@ export const Auth = ({
                 />
               ) : null}
             </label>
-            <div className="validator-hint hidden">
-              Enter valid email address
-            </div>
           </p>
           {/* if there is a button in form, it will close the modal */}
           <div className="flex justify-center">

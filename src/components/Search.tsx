@@ -91,13 +91,13 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
                 {points.length ? (
                   <>
                     <button
-                      className="btn btn-outline"
+                      className="btn"
                       onClick={() => addSearchResultToPoints("START")}
                     >
                       Add to start
                     </button>
                     <button
-                      className="btn btn-outline"
+                      className="btn"
                       onClick={() => addSearchResultToPoints("END")}
                     >
                       Add to end

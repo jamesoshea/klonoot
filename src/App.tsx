@@ -8,6 +8,8 @@ import { Routing } from "./components/Routing";
 import { Auth } from "./components/Auth";
 
 import { createClient, type Session } from "@supabase/supabase-js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -69,14 +71,16 @@ function App() {
       {map && mapLoaded && <Routing map={map} />}
       <div id="map-container" ref={mapContainerRef} />
       <div
-        className="auth cursor-pointer"
+        className="auth"
         onClick={() => document.getElementById("my_modal_1")?.showModal()}
       >
-        hello
-        <dialog id="my_modal_1" className="modal">
-          <Auth supabaseClient={supabase} session={session} />
-        </dialog>
+        <div className="bg-base-100 py-1 w-10 rounded-full cursor-pointer">
+          <FontAwesomeIcon icon={faCircleUser} size="2xl" />
+        </div>
       </div>
+      <dialog id="my_modal_1" className="modal">
+        <Auth supabaseClient={supabase} session={session} />
+      </dialog>
     </SessionContext.Provider>
   );
 }
