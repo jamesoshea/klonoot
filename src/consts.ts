@@ -95,3 +95,7 @@ export const SURFACE_COLORS = {
   ice: SURFACE_COLOR_ORANGE,
   salt: SURFACE_COLOR_ORANGE,
 };
+
+export enum QUERY_KEYS {
+  GET_USER_ROUTES,
+}

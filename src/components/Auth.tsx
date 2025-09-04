@@ -1,19 +1,15 @@
-import type { Session, SupabaseClient } from "@supabase/supabase-js";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { SessionContext } from "../contexts/SessionContext";
 
-export const Auth = ({
-  session,
-  supabaseClient,
-}: {
-  session: Session | null;
-  supabaseClient: SupabaseClient;
-}) => {
+export const Auth = () => {
   const [email, setEmail] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
   const [step, setStep] = useState("LOGIN");
 
+  const { supabase, session } = useContext(SessionContext);
+
   const handleSocialLogin = async () => {
-    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    const { error } = await supabase.auth.signInWithOtp({ email });
 
     setStep("VERIFY");
 
@@ -21,7 +17,7 @@ export const Auth = ({
   };
 
   const handleSocialConfirm = async () => {
-    const { error } = await supabaseClient.auth.verifyOtp({
+    const { error } = await supabase.auth.verifyOtp({
       email,
       token: otp,
       type: "magiclink",
@@ -33,7 +29,7 @@ export const Auth = ({
   };
 
   const handleSignOut = async () => {
-    await supabaseClient.auth.signOut();
+    await supabase.auth.signOut();
     setStep("LOGIN");
   };
 

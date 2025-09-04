@@ -1,20 +1,19 @@
-import { useEffect, useState, useRef, createContext } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import mapboxgl from "mapbox-gl";
+import { type Session } from "@supabase/supabase-js";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
 
 import { Routing } from "./components/Routing";
 import { Auth } from "./components/Auth";
+import { SessionContext } from "./contexts/SessionContext";
 
-import { createClient, type Session } from "@supabase/supabase-js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_OR_ANON_KEY
-);
+const queryClient = new QueryClient();
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -25,9 +24,9 @@ export type Coordinate = [number, number];
 const INITIAL_CENTER: Coordinate = [13.404954, 52.520008];
 const INITIAL_ZOOM = 10.12;
 
-const SessionContext = createContext<Session | null>(null);
-
 function App() {
+  const { supabase } = useContext(SessionContext);
+
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
@@ -64,24 +63,26 @@ function App() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase.auth]);
 
   return (
-    <SessionContext.Provider value={session}>
-      {map && mapLoaded && <Routing map={map} supabaseClient={supabase} />}
-      <div id="map-container" ref={mapContainerRef} />
-      <div
-        className="auth"
-        // @ts-expect-error yeah I know
-        onClick={() => document.getElementById("my_modal_1")?.showModal()}
-      >
-        <div className="bg-base-100 py-1 w-10 rounded-full cursor-pointer">
-          <FontAwesomeIcon icon={faCircleUser} size="2xl" />
+    <SessionContext.Provider value={{ supabase, session }}>
+      <QueryClientProvider client={queryClient}>
+        {map && mapLoaded && <Routing map={map} supabaseClient={supabase} />}
+        <div id="map-container" ref={mapContainerRef} />
+        <div
+          className="auth"
+          // @ts-expect-error yeah I know
+          onClick={() => document.getElementById("my_modal_1")?.showModal()}
+        >
+          <div className="bg-base-100 py-1 w-10 rounded-full cursor-pointer">
+            <FontAwesomeIcon icon={faCircleUser} size="2xl" />
+          </div>
         </div>
-      </div>
-      <dialog id="my_modal_1" className="modal">
-        <Auth supabaseClient={supabase} session={session} />
-      </dialog>
+        <dialog id="my_modal_1" className="modal">
+          <Auth />
+        </dialog>
+      </QueryClientProvider>
     </SessionContext.Provider>
   );
 }
