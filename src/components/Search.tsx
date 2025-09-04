@@ -50,15 +50,16 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   };
 
   return (
-    <div className="mb-2">
+    <div className="mb-2 w-100">
       {/* @ts-expect-error wat*/}
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
         theme={{
           variables: {
             padding: "0.5em",
-            borderRadius: "8px",
+            borderRadius: "4px",
             border: "1px solid black",
+            minWidth: "100%",
           },
         }}
         map={map}

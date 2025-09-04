@@ -96,6 +96,10 @@ export const SURFACE_COLORS = {
   salt: SURFACE_COLOR_ORANGE,
 };
 
+export enum MUTATION_KEYS {
+  CREATE_USER_ROUTE,
+}
+
 export enum QUERY_KEYS {
   GET_USER_ROUTES,
 }

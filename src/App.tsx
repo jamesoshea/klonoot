@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import mapboxgl from "mapbox-gl";
 import { type Session } from "@supabase/supabase-js";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
@@ -12,8 +12,7 @@ import "./App.css";
 import { Routing } from "./components/Routing";
 import { Auth } from "./components/Auth";
 import { SessionContext } from "./contexts/SessionContext";
-
-const queryClient = new QueryClient();
+import { queryClient } from "./queries/queryClient";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";

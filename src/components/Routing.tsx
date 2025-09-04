@@ -164,7 +164,7 @@ export const Routing = ({
   return (
     <>
       <div className="routing m-3">
-        <div className="p-3 rounded-lg bg-base-100 flex flex-col items-center">
+        <div className="p-3 rounded-lg bg-base-100">
           <UserRouteList />
         </div>
         <div className="p-3 mt-3 rounded-lg bg-base-100 flex flex-col items-center">
