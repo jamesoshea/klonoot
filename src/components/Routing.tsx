@@ -11,6 +11,7 @@ import { BROUTER_PROFILES, type BrouterResponse } from "../types";
 import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { UserRouteList } from "./UserRouteList.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -164,6 +165,9 @@ export const Routing = ({
     <>
       <div className="routing m-3">
         <div className="p-3 rounded-lg bg-base-100 flex flex-col items-center">
+          <UserRouteList />
+        </div>
+        <div className="p-3 mt-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
             <p className="pb-1 text-xs opacity-60">Brouter profile</p>
