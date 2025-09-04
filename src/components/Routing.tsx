@@ -10,6 +10,7 @@ import { fetchRoute } from "../queries/fetchRoute";
 import { BROUTER_PROFILES, type BrouterResponse } from "../types";
 import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -18,7 +19,13 @@ const profileNameMap = {
   ROAD_LOW_TRAFFIC: "Road (low traffic)",
 };
 
-export const Routing = ({ map }: { map: mapboxgl.Map }) => {
+export const Routing = ({
+  map,
+  supabaseClient,
+}: {
+  map: mapboxgl.Map;
+  supabaseClient: SupabaseClient;
+}) => {
   const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
@@ -181,6 +188,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             points={points}
             routeTrack={routeTrack}
             setPoints={setPoints}
+            supabaseClient={supabaseClient}
           />
         )}
       </div>

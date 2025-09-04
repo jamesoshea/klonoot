@@ -68,7 +68,7 @@ function App() {
 
   return (
     <SessionContext.Provider value={session}>
-      {map && mapLoaded && <Routing map={map} />}
+      {map && mapLoaded && <Routing map={map} supabaseClient={supabase} />}
       <div id="map-container" ref={mapContainerRef} />
       <div
         className="auth"

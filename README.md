@@ -8,7 +8,8 @@ It relies on brouter for its routing, and leans heavily on Mapbox for the map an
 
 I would like to find a way to get brouter to run serverless/ as an AWS Lambda, in order to make it more scalable, and to cut down on server costs. I have rough plans for other features I would like to implement:
 
-- Auth/persistence
+- ~~Auth~~
+- persistence
 - ~~proper elevation profile~~
 - ~~surfaces~~
 - context menu on map click
@@ -21,7 +22,9 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 
 # Running the app locally
 
-You'll need a locally-running brouter instance, and change the query for routes. After that, it's just the normal
+You'll need a locally-running brouter instance. I have dockerized a recent version of that instance in this repo: https://github.com/jamesoshea/brouter-dockerised
+
+After that, it's just the normal
 
 `npm i`
 

@@ -7,18 +7,22 @@ import {
   faArrowDownUpAcrossLine,
   faArrowRotateBackward,
   faDownload,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 export const RouteSummary = ({
   brouterProfile,
   points,
   routeTrack,
   setPoints,
+  supabaseClient,
 }: {
   brouterProfile: string;
   points: Coordinate[];
   routeTrack: BrouterResponse;
   setPoints: Dispatch<Coordinate[]>;
+  supabaseClient: SupabaseClient;
 }) => {
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
@@ -48,6 +52,17 @@ export const RouteSummary = ({
       (coord) => coord + 0.0001
     );
     setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
+  };
+
+  const handleSave = async () => {
+    const { data, error } = await supabaseClient
+      .from("routes")
+      .insert({
+        brouterProfile,
+        points,
+        name: `New route ${new Date().toLocaleDateString()}`,
+      })
+      .select();
   };
 
   if (!points.length) {
@@ -89,6 +104,14 @@ export const RouteSummary = ({
               onClick={handleGPXDownload}
             >
               <FontAwesomeIcon icon={faDownload} size="lg" />
+            </button>
+          </div>
+          <div className="tooltip" data-tip="Save">
+            <button
+              className="btn btn-circle w-8 h-8 btn-ghost"
+              onClick={handleSave}
+            >
+              <FontAwesomeIcon icon={faSave} size="lg" />
             </button>
           </div>
         </div>
