@@ -98,6 +98,7 @@ export const SURFACE_COLORS = {
 
 export enum MUTATION_KEYS {
   CREATE_USER_ROUTE,
+  UPDATE_USER_ROUTE_NAME,
 }
 
 export enum QUERY_KEYS {
