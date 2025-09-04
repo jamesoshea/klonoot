@@ -16,7 +16,6 @@ export const useUpdateRouteName = () => {
       routeId: string;
       newName: string;
     }) => {
-      console.log(routeId, newName);
       return supabase
         .from("routes")
         .update({ name: newName })

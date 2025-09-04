@@ -5,9 +5,17 @@ import { QUERY_KEYS } from "../consts";
 
 export const useGetUserRoutes = () => {
   const { supabase, session } = useContext(SessionContext);
-  return useQuery({
+  const { data, ...rest } = useQuery({
     queryKey: [QUERY_KEYS.GET_USER_ROUTES],
-    queryFn: async () =>
-      supabase.from("routes").select("*").eq("userId", session?.user.id),
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("routes")
+        .select("*")
+        .eq("userId", session?.user.id);
+
+      return data;
+    },
   });
+
+  return { data: data ?? [], ...rest };
 };

@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
 
 export const UserRouteList = () => {
-  const { data: queryData } = useGetUserRoutes();
+  const { data: userRoutes } = useGetUserRoutes();
 
   const {
     mutate: createNewUserRoute,
@@ -24,10 +24,8 @@ export const UserRouteList = () => {
   const [mode, setMode] = useState<"ADD" | "EDIT">("ADD");
   const [newRouteName, setNewRouteName] = useState<string>("");
   const [selectedRouteId, setSelectedRouteId] = useState<string>(
-    queryData?.data?.[0]?.id ?? ""
+    userRoutes[0]?.id ?? ""
   );
-
-  const userRoutes = queryData?.data ?? [];
 
   return (
     <div className="flex justify-between items-center w-100">
