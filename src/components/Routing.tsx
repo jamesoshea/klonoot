@@ -111,7 +111,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
 
     const enveloped = turf.envelope(features);
-    const [lng1, lat1, lng2, lat2] = enveloped.bbox;
+    const [lng1, lat1, lng2, lat2] = enveloped.bbox!;
 
     try {
       map.fitBounds([
