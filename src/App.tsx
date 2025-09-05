@@ -14,6 +14,7 @@ import { Routing } from "./components/Routing";
 import { queryClient } from "./queries/queryClient";
 import { SessionContext } from "./contexts/SessionContext";
 import type { Coordinate } from "./types";
+import { RouteContextProvider } from "./contexts/RouteContextProvider";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -64,22 +65,24 @@ function App() {
 
   return (
     <SessionContext.Provider value={{ supabase, session }}>
-      <QueryClientProvider client={queryClient}>
-        {map && mapLoaded && <Routing map={map} supabaseClient={supabase} />}
-        <div id="map-container" ref={mapContainerRef} />
-        <div
-          className="auth"
-          // @ts-expect-error yeah I know
-          onClick={() => document.getElementById("my_modal_1")?.showModal()}
-        >
-          <div className="bg-base-100 py-1 w-10 rounded-full cursor-pointer">
-            <FontAwesomeIcon icon={faCircleUser} size="2xl" />
+      <RouteContextProvider>
+        <QueryClientProvider client={queryClient}>
+          {map && mapLoaded && <Routing map={map} supabaseClient={supabase} />}
+          <div id="map-container" ref={mapContainerRef} />
+          <div
+            className="auth"
+            // @ts-expect-error yeah I know
+            onClick={() => document.getElementById("my_modal_1")?.showModal()}
+          >
+            <div className="bg-base-100 py-1 w-10 rounded-full cursor-pointer">
+              <FontAwesomeIcon icon={faCircleUser} size="2xl" />
+            </div>
           </div>
-        </div>
-        <dialog id="my_modal_1" className="modal">
-          <Auth />
-        </dialog>
-      </QueryClientProvider>
+          <dialog id="my_modal_1" className="modal">
+            <Auth />
+          </dialog>
+        </QueryClientProvider>
+      </RouteContextProvider>
     </SessionContext.Provider>
   );
 }
