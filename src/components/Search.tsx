@@ -50,28 +50,37 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   };
 
   return (
-    <div className="mb-2 w-100">
-      {/* @ts-expect-error wat*/}
-      <SearchBox
-        accessToken={MAPBOX_ACCESS_TOKEN}
-        theme={{
-          variables: {
-            padding: "0.5em",
-            borderRadius: "4px",
-            border: "1px solid black",
-            minWidth: "100%",
-          },
-        }}
-        map={map}
-        mapboxgl={mapboxgl}
-        placeholder="Search for somewhere"
-        value={searchTerm}
-        onChange={(d) => {
-          setSearchTerm(d);
-        }}
-        // @ts-expect-error this type is not exported
-        onRetrieve={handleRetrieveSearchResult}
-      />
+    <div className="mb-2 w-full">
+      <div className="flex items-center justify-between w-full">
+        <a href="https://map.org.uk" target="_blank" className="ml-[-0.5rem]">
+          <img
+            alt="Raised fist with the colours of the Palestinian flag"
+            src="/src/assets/palestine-flag-fist.webp"
+            className="cursor-pointer h-[48px]"
+          />
+        </a>
+        {/* @ts-expect-error wat*/}
+        <SearchBox
+          accessToken={MAPBOX_ACCESS_TOKEN}
+          theme={{
+            variables: {
+              padding: "0.5em",
+              borderRadius: "4px",
+              border: "1px solid black",
+              minWidth: "100%",
+            },
+          }}
+          map={map}
+          mapboxgl={mapboxgl}
+          placeholder="Search for somewhere"
+          value={searchTerm}
+          onChange={(d) => {
+            setSearchTerm(d);
+          }}
+          // @ts-expect-error this type is not exported
+          onRetrieve={handleRetrieveSearchResult}
+        />
+      </div>
       {searchResult && (
         <div className="left-0 top-0 fixed z-10 min-w-screen min-h-screen">
           <div className="search-result card bg-base-100 rounded-lg flex flex-col items-center z-100">
