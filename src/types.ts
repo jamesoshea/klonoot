@@ -1,6 +1,5 @@
 import type { FeatureCollection, LineString } from "geojson";
 import type { CYCLEWAY_COLORS, HIGHWAY_COLORS, SURFACE_COLORS } from "./consts";
-import type { Coordinate } from "./App";
 
 export enum BROUTER_PROFILES {
   TREKKING = "trekking",
@@ -17,6 +16,9 @@ export type BrouterResponse = FeatureCollection<
   LineString,
   { messages: string[][]; "track-length": string; "filtered ascend": string }
 >;
+
+/** lng, lat */
+export type Coordinate = [number, number];
 
 export type UserRoute = {
   id: string;

@@ -9,16 +9,14 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
 
-import { Routing } from "./components/Routing";
 import { Auth } from "./components/Auth";
-import { SessionContext } from "./contexts/SessionContext";
+import { Routing } from "./components/Routing";
 import { queryClient } from "./queries/queryClient";
+import { SessionContext } from "./contexts/SessionContext";
+import type { Coordinate } from "./types";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
-
-/** lng, lat */
-export type Coordinate = [number, number];
 
 const INITIAL_CENTER: Coordinate = [13.404954, 52.520008];
 const INITIAL_ZOOM = 10.12;

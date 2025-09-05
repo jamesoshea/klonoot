@@ -1,7 +1,3 @@
-import type { Dispatch } from "react";
-import type { Coordinate } from "../App";
-import { fetchRoute } from "../queries/fetchRoute";
-import type { BrouterResponse } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownUpAcrossLine,
@@ -9,7 +5,11 @@ import {
   faDownload,
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
+import type { Dispatch } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
+
+import { fetchRoute } from "../queries/fetchRoute";
+import type { BrouterResponse, Coordinate } from "../types";
 
 export const RouteSummary = ({
   brouterProfile,

@@ -6,7 +6,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { Coordinate } from "../App";
+import type { Coordinate } from "../types";
 
 export const PointsList = ({
   points,

@@ -1,9 +1,9 @@
+import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { type GeoJSONFeature } from "mapbox-gl";
 import { useState, type Dispatch } from "react";
 
 import { MAPBOX_ACCESS_TOKEN } from "../consts";
-import { SearchBox } from "@mapbox/search-js-react";
-import type { Coordinate } from "../App";
+import type { Coordinate } from "../types";
 
 type SearchProps = {
   map: mapboxgl.Map;

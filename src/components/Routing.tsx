@@ -1,18 +1,23 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 
-import type { Coordinate } from "../App";
 import { Elevation } from "./Elevation.tsx";
-import { Search } from "./Search";
-import { COLOR__ACCENT } from "../consts.ts";
-import { fetchRoute } from "../queries/fetchRoute";
-import { BROUTER_PROFILES, type BrouterResponse } from "../types";
 import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
+
+import { COLOR__ACCENT } from "../consts.ts";
+import { fetchRoute } from "../queries/fetchRoute";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
+
+import {
+  BROUTER_PROFILES,
+  type BrouterResponse,
+  type Coordinate,
+} from "../types";
 
 const profileNameMap = {
   TREKKING: "Trekking",
