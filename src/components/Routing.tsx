@@ -12,6 +12,7 @@ import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { UserRouteList } from "./UserRouteList.tsx";
+import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -27,11 +28,16 @@ export const Routing = ({
   map: mapboxgl.Map;
   supabaseClient: SupabaseClient;
 }) => {
+  const { data: userRoutes } = useGetUserRoutes();
+
   const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
-  const [points, setPoints] = useState<Coordinate[]>([]);
-  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
-  const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
+  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
+  const [points, setPoints] = useState<Coordinate[]>([]);
+  const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
+  const [selectedRouteId, setSelectedRouteId] = useState<string>(
+    userRoutes[0]?.id ?? ""
+  );
 
   const handlePointDrag = useCallback(
     (
@@ -72,6 +78,14 @@ export const Routing = ({
 
   const handleLineMouseLeave = () => {
     setCurrentPointDistance(-1);
+  };
+
+  const handleRouteSelect = (routeId: string) => {
+    const route = userRoutes.find((route) => route.id === routeId);
+    setSelectedRouteId(route.id);
+    setCurrentPointDistance(-1);
+    setPoints(route.points);
+    setBrouterProfile(route.brouterProfile);
   };
 
   useEffect(() => {
@@ -165,7 +179,13 @@ export const Routing = ({
     <>
       <div className="routing m-3">
         <div className="p-3 rounded-lg bg-base-100">
-          <UserRouteList />
+          <UserRouteList
+            selectedRoute={userRoutes.find(
+              (route) => route.id === selectedRouteId
+            )}
+            userRoutes={userRoutes}
+            onRouteSelect={handleRouteSelect}
+          />
         </div>
         <div className="p-3 mt-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
@@ -191,6 +211,7 @@ export const Routing = ({
             brouterProfile={brouterProfile}
             points={points}
             routeTrack={routeTrack}
+            selectedRouteId={selectedRouteId}
             setPoints={setPoints}
             supabaseClient={supabaseClient}
           />

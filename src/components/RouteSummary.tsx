@@ -15,12 +15,14 @@ export const RouteSummary = ({
   brouterProfile,
   points,
   routeTrack,
+  selectedRouteId,
   setPoints,
   supabaseClient,
 }: {
   brouterProfile: string;
   points: Coordinate[];
   routeTrack: BrouterResponse;
+  selectedRouteId: string;
   setPoints: Dispatch<Coordinate[]>;
   supabaseClient: SupabaseClient;
 }) => {
@@ -54,14 +56,14 @@ export const RouteSummary = ({
     setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
   };
 
-  const handleSave = async () => {
-    const { data, error } = await supabaseClient
+  const handleRouteSave = async () => {
+    await supabaseClient
       .from("routes")
-      .insert({
+      .update({
         brouterProfile,
         points,
-        name: `New route ${new Date().toLocaleDateString()}`,
       })
+      .eq("id", selectedRouteId)
       .select();
   };
 
@@ -109,7 +111,7 @@ export const RouteSummary = ({
           <div className="tooltip" data-tip="Save">
             <button
               className="btn btn-circle w-8 h-8 btn-ghost"
-              onClick={handleSave}
+              onClick={handleRouteSave}
             >
               <FontAwesomeIcon icon={faSave} size="lg" />
             </button>

@@ -6,14 +6,20 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 import { useCreateNewRoute } from "../queries/useCreateNewRoute";
 import { useState } from "react";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
+import type { UserRoute } from "../types";
 
-export const UserRouteList = () => {
-  const { data: userRoutes } = useGetUserRoutes();
-
+export const UserRouteList = ({
+  selectedRoute,
+  userRoutes,
+  onRouteSelect,
+}: {
+  selectedRoute: UserRoute;
+  userRoutes: UserRoute[];
+  onRouteSelect: (routeId: string) => void;
+}) => {
   const {
     mutate: createNewUserRoute,
     isPending: createNewUserRouteMutationIsPending,
@@ -23,19 +29,16 @@ export const UserRouteList = () => {
 
   const [mode, setMode] = useState<"ADD" | "EDIT">("ADD");
   const [newRouteName, setNewRouteName] = useState<string>("");
-  const [selectedRouteId, setSelectedRouteId] = useState<string>(
-    userRoutes[0]?.id ?? ""
-  );
 
   return (
     <div className="flex justify-between items-center w-100">
       {mode === "ADD" && (
         <select
-          defaultValue={userRoutes?.[0]?.id ?? null}
+          defaultValue={userRoutes?.[0]?.id ?? undefined}
           className="select"
-          onChange={(e) => setSelectedRouteId(e.target.value)}
+          onChange={(e) => onRouteSelect(e.target.value)}
         >
-          {userRoutes.map((userRoute) => (
+          {userRoutes.map((userRoute: UserRoute) => (
             <option value={userRoute.id}>{userRoute.name}</option>
           ))}
         </select>
@@ -80,7 +83,7 @@ export const UserRouteList = () => {
               className="btn btn-circle w-8 h-8 btn-ghost"
               onClick={() =>
                 updateRouteName({
-                  routeId: selectedRouteId,
+                  routeId: selectedRoute.id,
                   newName: newRouteName,
                 }).then(() => setMode("ADD"))
               }
