@@ -27,7 +27,7 @@ export const UserRouteList = () => {
   const [newRouteName, setNewRouteName] = useState<string>("");
 
   return (
-    <div className="flex justify-between items-center w-100">
+    <div className="flex justify-between items-center min-w-100 mt-2 p-3 rounded-lg bg-base-100">
       {mode === "ADD" && (
         <select
           className="select"
