@@ -35,7 +35,9 @@ export const UserRouteList = () => {
           onChange={(e) => setSelectedRouteId(e.target.value)}
         >
           {userRoutes.map((userRoute: UserRoute) => (
-            <option value={userRoute.id}>{userRoute.name}</option>
+            <option key={userRoute.id} value={userRoute.id}>
+              {userRoute.name}
+            </option>
           ))}
         </select>
       )}

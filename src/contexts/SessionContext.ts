@@ -1,10 +1,19 @@
 import { createContext, useContext } from "react";
 
-import { SupabaseClient, type Session } from "@supabase/supabase-js";
+import {
+  createClient,
+  SupabaseClient,
+  type Session,
+} from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL!,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+);
 
 export const SessionContext = createContext<{
-  supabase: SupabaseClient | null;
+  supabase: SupabaseClient;
   session: Session | null;
-}>({ supabase: null, session: null });
+}>({ supabase, session: null });
 
 export const useSessionContext = () => useContext(SessionContext);

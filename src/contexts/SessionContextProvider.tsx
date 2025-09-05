@@ -1,17 +1,13 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { SessionContext } from "./SessionContext";
-import { createClient, type Session } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_OR_ANON_KEY
-);
+import { SessionContext, useSessionContext } from "./SessionContext";
+import { type Session } from "@supabase/supabase-js";
 
 export const SessionContextProvider = ({
   children,
 }: {
   children: ReactNode;
 }) => {
+  const { supabase } = useSessionContext();
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -28,7 +24,7 @@ export const SessionContextProvider = ({
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase.auth]);
 
   return (
     <SessionContext.Provider value={{ supabase, session }}>
