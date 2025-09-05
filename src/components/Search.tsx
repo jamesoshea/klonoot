@@ -2,6 +2,8 @@ import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { type GeoJSONFeature } from "mapbox-gl";
 import { useState, type Dispatch } from "react";
 
+import fistUrl from "../assets/palestine-flag-fist.webp";
+
 import { MAPBOX_ACCESS_TOKEN } from "../consts";
 import type { Coordinate } from "../types";
 
@@ -55,7 +57,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         <a href="https://map.org.uk" target="_blank" className="ml-[-0.5rem]">
           <img
             alt="Raised fist with the colours of the Palestinian flag"
-            src="/src/assets/palestine-flag-fist.webp"
+            src={fistUrl}
             className="cursor-pointer h-[48px]"
           />
         </a>
