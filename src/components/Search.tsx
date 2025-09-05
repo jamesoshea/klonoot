@@ -64,6 +64,9 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         {/* @ts-expect-error wat*/}
         <SearchBox
           accessToken={MAPBOX_ACCESS_TOKEN}
+          map={map}
+          mapboxgl={mapboxgl}
+          placeholder="Search for somewhere"
           theme={{
             variables: {
               padding: "0.5em",
@@ -72,9 +75,6 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
               minWidth: "100%",
             },
           }}
-          map={map}
-          mapboxgl={mapboxgl}
-          placeholder="Search for somewhere"
           value={searchTerm}
           onChange={(d) => {
             setSearchTerm(d);

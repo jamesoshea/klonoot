@@ -27,7 +27,7 @@ export const UserRouteList = () => {
   const [newRouteName, setNewRouteName] = useState<string>("");
 
   return (
-    <div className="flex justify-between items-center mt-2 p-3 rounded-lg bg-base-100 gap-2">
+    <div className="flex justify-between items-center mt-2 p-3 rounded-lg bg-base-100">
       {mode === "ADD" && (
         <select
           className="select"
@@ -49,59 +49,67 @@ export const UserRouteList = () => {
           onChange={(e) => setNewRouteName(e.target.value)}
         />
       )}
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end">
         {mode === "ADD" && (
           <>
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              onClick={() => setMode("EDIT")}
-            >
-              <FontAwesomeIcon
-                className="cursor-pointer"
-                icon={faEdit}
-                size="lg"
-              />
-            </button>
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              disabled={createUserRouteMutationIsPending}
-              onClick={() => createUserRoute()}
-            >
-              <FontAwesomeIcon
-                className="cursor-pointer"
-                icon={faPlus}
-                size="lg"
-              />
-            </button>
+            <div className="tooltip" data-tip="Rename">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                onClick={() => setMode("EDIT")}
+              >
+                <FontAwesomeIcon
+                  className="cursor-pointer"
+                  icon={faEdit}
+                  size="lg"
+                />
+              </button>
+            </div>
+            <div className="tooltip" data-tip="Add new route">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                disabled={createUserRouteMutationIsPending}
+                onClick={() => createUserRoute()}
+              >
+                <FontAwesomeIcon
+                  className="cursor-pointer"
+                  icon={faPlus}
+                  size="lg"
+                />
+              </button>
+            </div>
           </>
         )}
         {mode === "EDIT" && (
           <>
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              onClick={() =>
-                updateRouteName({
-                  routeId: selectedUserRoute.id,
-                  newName: newRouteName,
-                }).then(() => setMode("ADD"))
-              }
-            >
-              <FontAwesomeIcon
-                className="cursor-pointer"
-                icon={faCheck}
-                size="lg"
-              />
-            </button>
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              onClick={() => setMode("ADD")}
-            >
-              <FontAwesomeIcon
-                className="cursor-pointer"
-                icon={faXmark}
-                size="lg"
-              />
-            </button>
+            <div className="tooltip" data-tip="Confirm">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                onClick={() =>
+                  updateRouteName({
+                    routeId: selectedUserRoute.id,
+                    newName: newRouteName,
+                  }).then(() => setMode("ADD"))
+                }
+              >
+                <FontAwesomeIcon
+                  className="cursor-pointer"
+                  icon={faCheck}
+                  size="lg"
+                />
+              </button>
+            </div>
+            <div className="tooltip" data-tip="Discard">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                onClick={() => setMode("ADD")}
+              >
+                <FontAwesomeIcon
+                  className="cursor-pointer"
+                  icon={faXmark}
+                  size="lg"
+                />
+              </button>
+            </div>
           </>
         )}
       </div>
