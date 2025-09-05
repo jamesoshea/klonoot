@@ -1,4 +1,3 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
 import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
@@ -26,13 +25,7 @@ const profileNameMap = {
   ROAD_LOW_TRAFFIC: "Road (low traffic)",
 };
 
-export const Routing = ({
-  map,
-  supabaseClient,
-}: {
-  map: mapboxgl.Map;
-  supabaseClient: SupabaseClient;
-}) => {
+export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { data: userRoutes } = useGetUserRoutes();
 
   const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
@@ -218,7 +211,6 @@ export const Routing = ({
             routeTrack={routeTrack}
             selectedRouteId={selectedRouteId}
             setPoints={setPoints}
-            supabaseClient={supabaseClient}
           />
         )}
       </div>

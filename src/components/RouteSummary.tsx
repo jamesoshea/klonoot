@@ -6,10 +6,10 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Dispatch } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
 
 import { fetchRoute } from "../queries/fetchRoute";
 import type { BrouterResponse, Coordinate } from "../types";
+import { useSessionContext } from "../contexts/SessionContext";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -17,15 +17,15 @@ export const RouteSummary = ({
   routeTrack,
   selectedRouteId,
   setPoints,
-  supabaseClient,
 }: {
   brouterProfile: string;
   points: Coordinate[];
   routeTrack: BrouterResponse;
   selectedRouteId: string;
   setPoints: Dispatch<Coordinate[]>;
-  supabaseClient: SupabaseClient;
 }) => {
+  const { supabase } = useSessionContext();
+
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
       if (!route) {
@@ -57,8 +57,8 @@ export const RouteSummary = ({
   };
 
   const handleRouteSave = async () => {
-    await supabaseClient
-      .from("routes")
+    await supabase
+      ?.from("routes")
       .update({
         brouterProfile,
         points,
