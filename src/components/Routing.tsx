@@ -17,6 +17,8 @@ import {
   type BrouterResponse,
   type Coordinate,
 } from "../types";
+import { useRouteContext } from "../contexts/RouteContext.tsx";
+import { useSessionContext } from "../contexts/SessionContext.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -27,15 +29,17 @@ const profileNameMap = {
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { data: userRoutes } = useGetUserRoutes();
+  const { selectedRouteId } = useRouteContext();
+  const { session } = useSessionContext();
 
-  const [brouterProfile, setBrouterProfile] = useState<string>("trekking");
-  const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
+  const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(
+    BROUTER_PROFILES.TREKKING
+  );
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
+
+  const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
-  const [selectedRouteId, setSelectedRouteId] = useState<string>(
-    userRoutes[0]?.id ?? ""
-  );
 
   const handlePointDrag = useCallback(
     (
@@ -78,13 +82,21 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setCurrentPointDistance(-1);
   };
 
-  const handleRouteSelect = (routeId: string) => {
-    const route = userRoutes.find((route) => route.id === routeId);
-    setSelectedRouteId(route.id);
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+
+    const route = userRoutes.find((route) => route.id === selectedRouteId);
+
+    if (!route) {
+      return;
+    }
+
     setCurrentPointDistance(-1);
     setPoints(route.points);
     setBrouterProfile(route.brouterProfile);
-  };
+  }, [selectedRouteId, session, userRoutes]);
 
   useEffect(() => {
     // add the digital elevation model tiles
@@ -176,15 +188,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   return (
     <>
       <div className="routing m-3">
-        <div className="p-3 rounded-lg bg-base-100">
-          <UserRouteList
-            selectedRoute={userRoutes.find(
-              (route) => route.id === selectedRouteId
-            )}
-            userRoutes={userRoutes}
-            onRouteSelect={handleRouteSelect}
-          />
-        </div>
+        {session && (
+          <div className="p-3 rounded-lg bg-base-100">
+            <UserRouteList />
+          </div>
+        )}
         <div className="p-3 mt-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
@@ -192,7 +200,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             <select
               className="select pr-0 bg-base-100 w-full"
               value={brouterProfile}
-              onChange={(e) => setBrouterProfile(e.target.value)}
+              onChange={(e) =>
+                setBrouterProfile(e.target.value as BROUTER_PROFILES)
+              }
             >
               {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
                 <option key={key} value={value}>
@@ -209,7 +219,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             brouterProfile={brouterProfile}
             points={points}
             routeTrack={routeTrack}
-            selectedRouteId={selectedRouteId}
             setPoints={setPoints}
           />
         )}

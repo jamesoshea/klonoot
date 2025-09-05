@@ -44,9 +44,9 @@ function App() {
   }, []);
 
   return (
-    <SessionContextProvider>
-      <RouteContextProvider>
-        <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <SessionContextProvider>
+        <RouteContextProvider>
           {map && mapLoaded && <Routing map={map} />}
           <div id="map-container" ref={mapContainerRef} />
           <div
@@ -61,9 +61,9 @@ function App() {
           <dialog id="my_modal_1" className="modal">
             <Auth />
           </dialog>
-        </QueryClientProvider>
-      </RouteContextProvider>
-    </SessionContextProvider>
+        </RouteContextProvider>
+      </SessionContextProvider>
+    </QueryClientProvider>
   );
 }
 

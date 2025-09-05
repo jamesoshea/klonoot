@@ -1,10 +1,11 @@
 import { useState, type ReactNode } from "react";
-import type { UserRoute } from "../types";
 import { RouteContext } from "./RouteContext";
+import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 
 export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
+  const { data: userRoutes } = useGetUserRoutes();
+
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
-  const [userRoutes, setUserRoutes] = useState<UserRoute[]>([]);
 
   const selectedUserRoute = userRoutes.find(
     (userRoute) => userRoute.id === selectedRouteId
@@ -15,8 +16,6 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
       value={{
         selectedRouteId,
         setSelectedRouteId,
-        userRoutes,
-        setUserRoutes,
         selectedUserRoute,
       }}
     >

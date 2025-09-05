@@ -1,19 +1,21 @@
 import { createContext, useContext, type Dispatch } from "react";
-import type { UserRoute } from "../types";
+import { BROUTER_PROFILES, type UserRoute } from "../types";
 
 export type RouteContextType = {
   selectedRouteId: string | null;
   setSelectedRouteId: Dispatch<string>;
-  selectedUserRoute?: UserRoute;
-  userRoutes: UserRoute[];
-  setUserRoutes: Dispatch<UserRoute[]>;
+  selectedUserRoute: UserRoute;
 };
 
 export const RouteContext = createContext<RouteContextType>({
   selectedRouteId: null,
   setSelectedRouteId: () => null,
-  userRoutes: [],
-  setUserRoutes: () => null,
+  selectedUserRoute: {
+    id: "",
+    brouterProfile: BROUTER_PROFILES.TREKKING,
+    name: "Example Route",
+    points: [],
+  },
 });
 
 export const useRouteContext = () => useContext(RouteContext);

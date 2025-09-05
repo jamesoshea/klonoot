@@ -8,23 +8,26 @@ import {
 import type { Dispatch } from "react";
 
 import { fetchRoute } from "../queries/fetchRoute";
-import type { BrouterResponse, Coordinate } from "../types";
+import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
 import { useSessionContext } from "../contexts/SessionContext";
+import { useUpdateRoute } from "../queries/useUpdateRoute";
 
 export const RouteSummary = ({
   brouterProfile,
   points,
   routeTrack,
-  selectedRouteId,
   setPoints,
 }: {
-  brouterProfile: string;
+  brouterProfile: BROUTER_PROFILES;
   points: Coordinate[];
   routeTrack: BrouterResponse;
-  selectedRouteId: string;
   setPoints: Dispatch<Coordinate[]>;
 }) => {
-  const { supabase } = useSessionContext();
+  const { session } = useSessionContext();
+  const {
+    mutate: updateUserRoute,
+    isPending: updateUserRouteMutationIsPending,
+  } = useUpdateRoute({ brouterProfile, points });
 
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
@@ -54,17 +57,6 @@ export const RouteSummary = ({
       (coord) => coord + 0.0001
     );
     setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
-  };
-
-  const handleRouteSave = async () => {
-    await supabase
-      ?.from("routes")
-      .update({
-        brouterProfile,
-        points,
-      })
-      .eq("id", selectedRouteId)
-      .select();
   };
 
   if (!points.length) {
@@ -108,14 +100,17 @@ export const RouteSummary = ({
               <FontAwesomeIcon icon={faDownload} size="lg" />
             </button>
           </div>
-          <div className="tooltip" data-tip="Save">
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              onClick={handleRouteSave}
-            >
-              <FontAwesomeIcon icon={faSave} size="lg" />
-            </button>
-          </div>
+          {session && (
+            <div className="tooltip" data-tip="Save">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                disabled={updateUserRouteMutationIsPending}
+                onClick={() => updateUserRoute()}
+              >
+                <FontAwesomeIcon icon={faSave} size="lg" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

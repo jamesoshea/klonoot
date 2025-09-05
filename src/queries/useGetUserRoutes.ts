@@ -6,6 +6,7 @@ import { QUERY_KEYS } from "../consts";
 export const useGetUserRoutes = () => {
   const { supabase, session } = useContext(SessionContext);
   const { data, ...rest } = useQuery({
+    enabled: !!session,
     queryKey: [QUERY_KEYS.GET_USER_ROUTES],
     queryFn: async () => {
       const { data } = await supabase

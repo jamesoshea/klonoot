@@ -6,25 +6,21 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useCreateNewRoute } from "../queries/useCreateNewRoute";
+import { useCreateRoute } from "../queries/useCreateRoute";
 import { useState } from "react";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
 import type { UserRoute } from "../types";
+import { useRouteContext } from "../contexts/RouteContext";
+import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 
-export const UserRouteList = ({
-  selectedRoute,
-  userRoutes,
-  onRouteSelect,
-}: {
-  selectedRoute: UserRoute;
-  userRoutes: UserRoute[];
-  onRouteSelect: (routeId: string) => void;
-}) => {
+export const UserRouteList = () => {
+  const { selectedUserRoute, setSelectedRouteId } = useRouteContext();
+
+  const { data: userRoutes } = useGetUserRoutes();
   const {
-    mutate: createNewUserRoute,
-    isPending: createNewUserRouteMutationIsPending,
-  } = useCreateNewRoute();
-
+    mutate: createUserRoute,
+    isPending: createUserRouteMutationIsPending,
+  } = useCreateRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
   const [mode, setMode] = useState<"ADD" | "EDIT">("ADD");
@@ -34,9 +30,9 @@ export const UserRouteList = ({
     <div className="flex justify-between items-center w-100">
       {mode === "ADD" && (
         <select
-          defaultValue={userRoutes?.[0]?.id ?? undefined}
           className="select"
-          onChange={(e) => onRouteSelect(e.target.value)}
+          value={selectedUserRoute.id}
+          onChange={(e) => setSelectedRouteId(e.target.value)}
         >
           {userRoutes.map((userRoute: UserRoute) => (
             <option value={userRoute.id}>{userRoute.name}</option>
@@ -66,8 +62,8 @@ export const UserRouteList = ({
             </button>
             <button
               className="btn btn-circle w-8 h-8 btn-ghost"
-              disabled={createNewUserRouteMutationIsPending}
-              onClick={() => createNewUserRoute()}
+              disabled={createUserRouteMutationIsPending}
+              onClick={() => createUserRoute()}
             >
               <FontAwesomeIcon
                 className="cursor-pointer"
@@ -83,7 +79,7 @@ export const UserRouteList = ({
               className="btn btn-circle w-8 h-8 btn-ghost"
               onClick={() =>
                 updateRouteName({
-                  routeId: selectedRoute.id,
+                  routeId: selectedUserRoute.id,
                   newName: newRouteName,
                 }).then(() => setMode("ADD"))
               }
