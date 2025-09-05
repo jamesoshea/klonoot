@@ -97,7 +97,31 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setCurrentPointDistance(-1);
     setPoints(route.points);
     setBrouterProfile(route.brouterProfile);
-  }, [selectedRouteId, session, userRoutes]);
+
+    if (!route.points.length) {
+      return;
+    }
+
+    const features = turf.points(route.points);
+    const center = turf.center(features);
+
+    map.flyTo({
+      center: [center.geometry.coordinates[0], center.geometry.coordinates[1]],
+      essential: true,
+    });
+
+    const enveloped = turf.envelope(features);
+    const [lng1, lat1, lng2, lat2] = enveloped.bbox;
+
+    try {
+      map.fitBounds([
+        [lng1, lat1],
+        [lng2, lat2],
+      ]);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [map, selectedRouteId, session, userRoutes]);
 
   useEffect(() => {
     // add the digital elevation model tiles
