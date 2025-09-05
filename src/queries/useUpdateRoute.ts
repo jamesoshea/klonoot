@@ -29,8 +29,7 @@ export const useUpdateRoute = ({
         ])
         .eq("id", selectedRouteId)
         .select(),
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_USER_ROUTES] });
     },
   });

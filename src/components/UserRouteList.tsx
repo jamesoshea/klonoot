@@ -31,7 +31,7 @@ export const UserRouteList = () => {
       {mode === "ADD" && (
         <select
           className="select"
-          value={selectedUserRoute.id}
+          value={selectedUserRoute?.id}
           onChange={(e) => setSelectedRouteId(e.target.value)}
         >
           {userRoutes.map((userRoute: UserRoute) => (

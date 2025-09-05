@@ -87,7 +87,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       return;
     }
 
-    const route = userRoutes.find((route) => route.id === selectedRouteId);
+    const route =
+      userRoutes.find((route) => route.id === selectedRouteId) ?? userRoutes[0];
 
     if (!route) {
       return;
