@@ -196,6 +196,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
 
     map.addLayer({
+      // TODO: fix this erroring out, when adding points in quick succession
       id: "route",
       type: "line",
       source: "route",
@@ -226,7 +227,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             >
               {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
                 <option key={key} value={value}>
-                  {/* @ts-expect-error not sure about this one */}
+                  {/* @ts-expect-error not sure about this one. TODO: fix it */}
                   {profileNameMap[key]}
                 </option>
               ))}

@@ -17,6 +17,7 @@ async function fetchRoute(
   points: Coordinate[],
   brouterProfile: string
 ) {
+  // TODO: migrate this to react-query
   if (points.length < 2) {
     return null;
   }

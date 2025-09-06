@@ -100,7 +100,7 @@ export const RouteSummary = ({
               <FontAwesomeIcon icon={faDownload} size="lg" />
             </button>
           </div>
-          {session && (
+          {session && ( // TODO: move this button
             <div className="tooltip" data-tip="Save">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"

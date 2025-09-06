@@ -14,7 +14,7 @@ export type CYCLEWAY = keyof typeof CYCLEWAY_COLORS;
 
 export type BrouterResponse = FeatureCollection<
   LineString,
-  { messages: string[][]; "track-length": string; "filtered ascend": string }
+  { messages: string[][]; "track-length": string; "filtered ascend": string } // TODO: type this fully
 >;
 
 /** lng, lat */

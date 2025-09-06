@@ -69,7 +69,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
             className="cursor-pointer h-[32px]"
           />
         </a>
-        {/* @ts-expect-error wat*/}
+        {/* @ts-expect-error wat TODO: fix it */}
         <SearchBox
           accessToken={MAPBOX_ACCESS_TOKEN}
           map={map}

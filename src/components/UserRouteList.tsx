@@ -85,6 +85,7 @@ export const UserRouteList = () => {
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
                 onClick={() =>
+                  // TODO: move into handle function, out of JSX
                   updateRouteName({
                     routeId: selectedUserRoute.id,
                     newName: newRouteName,
