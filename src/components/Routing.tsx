@@ -38,6 +38,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
 
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
+  const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
 
@@ -175,7 +176,19 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [map, handleLineMouseMove, handleNewPointSet]);
 
   useEffect(() => {
-    fetchRoute("geojson", points, brouterProfile).then((route) => {
+    // Set a timeout to update debounced value after 500ms
+    const handler = setTimeout(() => {
+      setDebouncedPoints(points);
+    }, 500);
+
+    // Cleanup the timeout if `query` changes before 500ms
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [points]);
+
+  useEffect(() => {
+    fetchRoute("geojson", debouncedPoints, brouterProfile).then((route) => {
       setRouteTrack(route);
     });
 
@@ -183,7 +196,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       if (map.getLayer("route")) map.removeLayer("route");
       if (map.getSource("route")) map.removeSource("route");
     };
-  }, [brouterProfile, map, points]);
+  }, [brouterProfile, map, debouncedPoints]);
 
   useEffect(() => {
     if (!routeTrack) {

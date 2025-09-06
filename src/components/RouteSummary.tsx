@@ -3,14 +3,11 @@ import {
   faArrowDownUpAcrossLine,
   faArrowRotateBackward,
   faDownload,
-  faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Dispatch } from "react";
 
 import { fetchRoute } from "../queries/fetchRoute";
 import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
-import { useSessionContext } from "../contexts/SessionContext";
-import { useUpdateRoute } from "../queries/useUpdateRoute";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -23,12 +20,6 @@ export const RouteSummary = ({
   routeTrack: BrouterResponse;
   setPoints: Dispatch<Coordinate[]>;
 }) => {
-  const { session } = useSessionContext();
-  const {
-    mutate: updateUserRoute,
-    isPending: updateUserRouteMutationIsPending,
-  } = useUpdateRoute({ brouterProfile, points });
-
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
       if (!route) {
@@ -100,17 +91,6 @@ export const RouteSummary = ({
               <FontAwesomeIcon icon={faDownload} size="lg" />
             </button>
           </div>
-          {session && ( // TODO: move this button
-            <div className="tooltip" data-tip="Save">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
-                disabled={updateUserRouteMutationIsPending}
-                onClick={() => updateUserRoute()}
-              >
-                <FontAwesomeIcon icon={faSave} size="lg" />
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

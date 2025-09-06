@@ -57,8 +57,6 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
     setSearchResult(res.features[0]);
   };
 
-  console.log(getThemeFont());
-
   return (
     <div className="mb-2 w-full">
       <div className="flex items-center justify-between w-full">

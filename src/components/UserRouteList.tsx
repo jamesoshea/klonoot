@@ -3,17 +3,27 @@ import {
   faCheck,
   faEdit,
   faPlus,
+  faSave,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-
-import { useCreateRoute } from "../queries/useCreateRoute";
 import { useState } from "react";
-import { useUpdateRouteName } from "../queries/useUpdateRouteName";
-import type { UserRoute } from "../types";
-import { useRouteContext } from "../contexts/RouteContext";
-import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 
-export const UserRouteList = () => {
+import { useRouteContext } from "../contexts/RouteContext";
+import { useCreateRoute } from "../queries/useCreateRoute";
+import { useGetUserRoutes } from "../queries/useGetUserRoutes";
+import { useUpdateRoute } from "../queries/useUpdateRoute";
+import { useUpdateRouteName } from "../queries/useUpdateRouteName";
+import type { BROUTER_PROFILES, Coordinate, UserRoute } from "../types";
+
+type MODE = "DEFAULT" | "RENAME";
+
+export const UserRouteList = ({
+  brouterProfile,
+  points,
+}: {
+  brouterProfile: BROUTER_PROFILES;
+  points: Coordinate[];
+}) => {
   const { selectedUserRoute, setSelectedRouteId } = useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
@@ -21,14 +31,26 @@ export const UserRouteList = () => {
     mutate: createUserRoute,
     isPending: createUserRouteMutationIsPending,
   } = useCreateRoute();
+  const {
+    mutate: updateUserRoute,
+    isPending: updateUserRouteMutationIsPending,
+  } = useUpdateRoute({ brouterProfile, points });
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
-  const [mode, setMode] = useState<"ADD" | "EDIT">("ADD");
+  const [mode, setMode] = useState<MODE>("DEFAULT");
   const [newRouteName, setNewRouteName] = useState<string>("");
+
+  const handleUpdateRouteName = async () => {
+    await updateRouteName({
+      routeId: selectedUserRoute.id,
+      newName: newRouteName,
+    });
+    setMode("DEFAULT");
+  };
 
   return (
     <div className="flex justify-between items-center gap-2 mt-2 p-3 rounded-lg bg-base-100">
-      {mode === "ADD" && (
+      {mode === "DEFAULT" && (
         <select
           className="select"
           value={selectedUserRoute?.id}
@@ -41,7 +63,7 @@ export const UserRouteList = () => {
           ))}
         </select>
       )}
-      {mode === "EDIT" && (
+      {mode === "RENAME" && (
         <input
           type="text"
           className="input"
@@ -50,18 +72,23 @@ export const UserRouteList = () => {
         />
       )}
       <div className="flex justify-end">
-        {mode === "ADD" && (
+        {mode === "DEFAULT" && (
           <>
             <div className="tooltip" data-tip="Rename">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                onClick={() => setMode("EDIT")}
+                onClick={() => setMode("RENAME")}
               >
-                <FontAwesomeIcon
-                  className="cursor-pointer"
-                  icon={faEdit}
-                  size="lg"
-                />
+                <FontAwesomeIcon icon={faEdit} size="lg" />
+              </button>
+            </div>
+            <div className="tooltip" data-tip="Save">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                disabled={updateUserRouteMutationIsPending}
+                onClick={() => updateUserRoute()}
+              >
+                <FontAwesomeIcon icon={faSave} size="lg" />
               </button>
             </div>
             <div className="tooltip" data-tip="Add new route">
@@ -70,27 +97,17 @@ export const UserRouteList = () => {
                 disabled={createUserRouteMutationIsPending}
                 onClick={() => createUserRoute()}
               >
-                <FontAwesomeIcon
-                  className="cursor-pointer"
-                  icon={faPlus}
-                  size="lg"
-                />
+                <FontAwesomeIcon icon={faPlus} size="lg" />
               </button>
             </div>
           </>
         )}
-        {mode === "EDIT" && (
+        {mode === "RENAME" && (
           <>
             <div className="tooltip" data-tip="Confirm">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                onClick={() =>
-                  // TODO: move into handle function, out of JSX
-                  updateRouteName({
-                    routeId: selectedUserRoute.id,
-                    newName: newRouteName,
-                  }).then(() => setMode("ADD"))
-                }
+                onClick={() => handleUpdateRouteName}
               >
                 <FontAwesomeIcon
                   className="cursor-pointer"
@@ -102,7 +119,7 @@ export const UserRouteList = () => {
             <div className="tooltip" data-tip="Discard">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                onClick={() => setMode("ADD")}
+                onClick={() => setMode("DEFAULT")}
               >
                 <FontAwesomeIcon
                   className="cursor-pointer"
