@@ -19,6 +19,9 @@ export const CSSColorToRGBA255Color = (
   return data.join(",");
 };
 
+export const getThemeFont = () =>
+  window.getComputedStyle(document.body).getPropertyValue("font-family");
+
 export const getThemeColor = (themeColor: string, opacity: number = 255) => {
   const primaryColorContentOKLCH = window
     .getComputedStyle(document.body)

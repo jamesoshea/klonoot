@@ -13,6 +13,22 @@
   background-color: lightgrey;
 }
 
+mapbox-search-box * {
+  max-height: 32px !important;
+}
+
+mapbox-search-box [class$="--SearchBox"] {
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 20%, #0000) !important;
+}
+
+mapbox-search-box [class$="--SearchBox"]:focus {
+  border: 1px solid black !important;
+}
+
+mapbox-search-box [class$="--SearchBox"] input:focus {
+  border: none !important;
+}
+
 .auth {
   position: absolute;
   right: 12px;

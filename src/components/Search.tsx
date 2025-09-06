@@ -4,8 +4,14 @@ import { useState, type Dispatch } from "react";
 
 import fistUrl from "../assets/palestine-flag-fist.webp";
 
-import { MAPBOX_ACCESS_TOKEN } from "../consts";
+import {
+  COLOR__BASE_100,
+  COLOR__BASE_200,
+  COLOR__BASE_CONTENT,
+  MAPBOX_ACCESS_TOKEN,
+} from "../consts";
 import type { Coordinate } from "../types";
+import { getThemeFont } from "../utils/colors";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -51,6 +57,8 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
     setSearchResult(res.features[0]);
   };
 
+  console.log(getThemeFont());
+
   return (
     <div className="mb-2 w-full">
       <div className="flex items-center justify-between w-full">
@@ -58,7 +66,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
           <img
             alt="Raised fist with the colours of the Palestinian flag"
             src={fistUrl}
-            className="cursor-pointer h-[48px]"
+            className="cursor-pointer h-[32px]"
           />
         </a>
         {/* @ts-expect-error wat*/}
@@ -69,10 +77,16 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
           placeholder="Search for somewhere"
           theme={{
             variables: {
-              padding: "0.5em",
-              borderRadius: "4px",
               border: "1px solid black",
+              borderRadius: "6px",
+              boxShadow: "none",
+              colorBackground: COLOR__BASE_100,
+              colorBackgroundHover: COLOR__BASE_200,
+              colorText: COLOR__BASE_CONTENT,
+              fontFamily: getThemeFont(),
+              lineHeight: "14px",
               minWidth: "100%",
+              unit: "0.875rem",
             },
           }}
           value={searchTerm}

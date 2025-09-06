@@ -1,10 +1,16 @@
 import { getThemeColor } from "./utils/colors";
 
 export const COLOR__ACCENT = getThemeColor("--color-accent");
+export const COLOR__BASE_100 = getThemeColor("--color-base-100");
 export const COLOR__BASE_200 = getThemeColor("--color-base-200");
 export const COLOR__BASE_200_80 = getThemeColor("--color-base-200", 204);
+export const COLOR__BASE_CONTENT = getThemeColor("--color-base-content");
 export const COLOR__PRIMARY = getThemeColor("--color-primary");
 export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");
+export const COLOR__PRIMARY_CONTENT_60 = getThemeColor(
+  "--color-primary-content",
+  153
+);
 
 export const CANVAS_HEIGHT = 128;
 
@@ -36,7 +42,7 @@ export const HIGHWAY_COLORS = {
   living_street: TRAFFIC_COLOR_LOW,
   service: TRAFFIC_COLOR_LOW,
   pedestrian: TRAFFIC_COLOR_NONE,
-  track: TRAFFIC_COLOR_NORMAL,
+  track: TRAFFIC_COLOR_LOW,
   bus_guideway: TRAFFIC_COLOR_NORMAL,
   escape: TRAFFIC_COLOR_NORMAL,
   raceway: TRAFFIC_COLOR_NORMAL,
