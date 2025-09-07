@@ -77,7 +77,7 @@ export const UserRouteList = ({
         <input
           type="text"
           className="input"
-          defaultValue={selectedUserRoute.name}
+          defaultValue={selectedUserRoute?.name}
           onChange={(e) => setNewRouteName(e.target.value)}
         />
       )}

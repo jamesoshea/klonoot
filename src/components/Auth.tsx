@@ -8,24 +8,27 @@ export const Auth = () => {
   // TODO: loading states
   // TODO: error handling
   const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [otp, setOtp] = useState<string>("");
   const [step, setStep] = useState<MODE>("LOGIN");
   const { supabase, session } = useContext(SessionContext);
 
-  const handleSocialLogin = async () => {
+  const handleEmailLogin = async () => {
+    setLoading(true);
     const { error } = await supabase.auth.signInWithOtp({ email });
-
-    setStep("VERIFY");
-
+    setLoading(false);
     if (error) throw error;
+    setStep("VERIFY");
   };
 
-  const handleSocialConfirm = async () => {
+  const handleEmailConfirm = async () => {
+    setLoading(true);
     const { error } = await supabase.auth.verifyOtp({
       email,
       token: otp,
       type: "magiclink",
     });
+    setLoading(false);
 
     if (error) throw error;
     setEmail("");
@@ -33,7 +36,9 @@ export const Auth = () => {
   };
 
   const handleSignOut = async () => {
+    setLoading(true);
     await supabase.auth.signOut();
+    setLoading(false);
     queryClient.clear();
     setStep("LOGIN");
   };
@@ -104,13 +109,23 @@ export const Auth = () => {
           </p>
           <div className="flex justify-center">
             {step === "LOGIN" ? (
-              <button className="btn" onClick={handleSocialLogin}>
+              <button className="btn" onClick={handleEmailLogin}>
+                {loading && <span className="loading loading-spinner" />}
                 Sign in
               </button>
             ) : step === "VERIFY" ? (
-              <button className="btn" onClick={handleSocialConfirm}>
-                Verify
-              </button>
+              <>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => setStep("LOGIN")}
+                >
+                  Back
+                </button>
+                <button className="btn ml-2" onClick={handleEmailConfirm}>
+                  {loading && <span className="loading loading-spinner" />}
+                  Verify
+                </button>
+              </>
             ) : null}
           </div>
         </>
