@@ -8,6 +8,9 @@ export enum BROUTER_PROFILES {
   ROAD_LOW_TRAFFIC = "fastbike-verylowtraffic",
 }
 
+export type BrouterProfile =
+  (typeof BROUTER_PROFILES)[keyof typeof BROUTER_PROFILES];
+
 export type SURFACE = keyof typeof SURFACE_COLORS;
 export type HIGHWAY = keyof typeof HIGHWAY_COLORS;
 export type CYCLEWAY = keyof typeof CYCLEWAY_COLORS;
@@ -24,5 +27,5 @@ export type UserRoute = {
   id: string;
   name: string;
   points: Coordinate[];
-  brouterProfile: (typeof BROUTER_PROFILES)[keyof typeof BROUTER_PROFILES];
+  brouterProfile: BrouterProfile;
 };

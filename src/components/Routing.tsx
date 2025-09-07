@@ -14,6 +14,7 @@ import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
 import {
   BROUTER_PROFILES,
+  type BrouterProfile,
   type BrouterResponse,
   type Coordinate,
 } from "../types";
@@ -105,7 +106,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
     const features = turf.points(route.points);
     const center = turf.center(features);
-
     map.flyTo({
       center: [center.geometry.coordinates[0], center.geometry.coordinates[1]],
       essential: true,
@@ -113,15 +113,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
     const enveloped = turf.envelope(features);
     const [lng1, lat1, lng2, lat2] = enveloped.bbox!;
-
-    try {
-      map.fitBounds([
-        [lng1, lat1],
-        [lng2, lat2],
-      ]);
-    } catch (e) {
-      console.log(e);
-    }
+    map.fitBounds([
+      [lng1, lat1],
+      [lng2, lat2],
+    ]);
   }, [map, selectedRouteId, session, userRoutes]);
 
   useEffect(() => {
@@ -209,7 +204,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
 
     map.addLayer({
-      // TODO: fix this erroring out, when adding points in quick succession
       id: "route",
       type: "line",
       source: "route",
@@ -235,20 +229,21 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               className="select pr-0 bg-base-100 w-full"
               value={brouterProfile}
               onChange={(e) =>
-                setBrouterProfile(e.target.value as BROUTER_PROFILES)
+                setBrouterProfile(e.target.value as BrouterProfile)
               }
             >
               {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
                 <option key={key} value={value}>
-                  {/* @ts-expect-error not sure about this one. TODO: fix it */}
-                  {profileNameMap[key]}
+                  {profileNameMap[key as keyof typeof BROUTER_PROFILES]}
                 </option>
               ))}
             </select>
           </div>
           <PointsList points={points} setPoints={setPoints} />
         </div>
-        {session && <UserRouteList />}
+        {session && (
+          <UserRouteList brouterProfile={brouterProfile} points={points} />
+        )}
         {routeTrack && (
           <RouteSummary
             brouterProfile={brouterProfile}

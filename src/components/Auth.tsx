@@ -1,13 +1,14 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../contexts/SessionContext";
 
+type MODE = "LOGIN" | "VERIFY";
+
 export const Auth = () => {
   // TODO: loading states
   // TODO: error handling
   const [email, setEmail] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
-  const [step, setStep] = useState("LOGIN"); // TODO: make this a union type or enum
-
+  const [step, setStep] = useState<MODE>("LOGIN");
   const { supabase, session } = useContext(SessionContext);
 
   const handleSocialLogin = async () => {

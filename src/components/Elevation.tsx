@@ -39,7 +39,6 @@ export const Elevation = ({
     routeTrack?.features[0]?.properties?.["track-length"] ?? 0
   );
 
-  // TODO: move to a util function?
   const drawElevationMap = useCallback(() => {
     const canvas = elevationCanvasRef.current;
     if (canvas?.getContext) {
@@ -150,11 +149,13 @@ export const Elevation = ({
 
   useEffect(() => {
     window.addEventListener("resize", drawElevationMap);
+    window.addEventListener("resize", drawTrafficMap);
 
     return () => {
       window.removeEventListener("resize", drawElevationMap);
+      window.addEventListener("resize", drawTrafficMap);
     };
-  }, [drawElevationMap]);
+  }, [drawElevationMap, drawTrafficMap]);
 
   useEffect(drawElevationMap, [drawElevationMap]);
   useEffect(drawTrafficMap, [drawTrafficMap]);
@@ -171,7 +172,6 @@ export const Elevation = ({
             <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
               <div className="tooltip-content p-3">
                 <div className="flex gap-3 justify-between items-center w-full">
-                  {/* TODO: use a .map */}
                   <div
                     className="min-h-3 min-w-3"
                     style={{ background: SURFACE_COLOR_GRAY }}

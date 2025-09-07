@@ -67,7 +67,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
             className="cursor-pointer h-[32px]"
           />
         </a>
-        {/* @ts-expect-error wat TODO: fix it */}
+        {/* @ts-expect-error @types/react version mismatch */}
         <SearchBox
           accessToken={MAPBOX_ACCESS_TOKEN}
           map={map}
