@@ -193,17 +193,15 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       .finally(() => {
         setLoading(false);
       });
-
-    return () => {
-      if (map.getLayer("route")) map.removeLayer("route");
-      if (map.getSource("route")) map.removeSource("route");
-    };
-  }, [brouterProfile, debouncedPoints, map, setLoading]);
+  }, [brouterProfile, debouncedPoints, setLoading]);
 
   useEffect(() => {
     if (!routeTrack) {
       return;
     }
+
+    if (map.getLayer("route")) map.removeLayer("route");
+    if (map.getSource("route")) map.removeSource("route");
 
     map.addSource("route", {
       type: "geojson",

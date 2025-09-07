@@ -6,7 +6,7 @@ import {
   faSave,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useRouteContext } from "../contexts/RouteContext";
 import { useCreateRoute } from "../queries/useCreateRoute";
@@ -30,14 +30,21 @@ export const UserRouteList = ({
 
   const { data: userRoutes } = useGetUserRoutes();
   const { mutate: createUserRoute } = useCreateRoute();
-  const { mutate: updateUserRoute } = useUpdateRoute({
-    brouterProfile,
-    points,
-  });
+  const { mutate: updateUserRoute } = useUpdateRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
+  const [changesMade, setChangesMade] = useState<boolean>(false);
   const [mode, setMode] = useState<MODE>("DEFAULT");
   const [newRouteName, setNewRouteName] = useState<string>("");
+
+  const handleUpdateRoute = async () => {
+    await updateUserRoute({
+      brouterProfile,
+      points,
+    });
+    setChangesMade(false);
+    setMode("DEFAULT");
+  };
 
   const handleUpdateRouteName = async () => {
     await updateRouteName({
@@ -46,6 +53,10 @@ export const UserRouteList = ({
     });
     setMode("DEFAULT");
   };
+
+  useEffect(() => {
+    setChangesMade(true);
+  }, [brouterProfile, points]);
 
   return (
     <div className="flex justify-between items-center gap-2 mt-2 p-3 rounded-lg bg-base-100">
@@ -66,7 +77,7 @@ export const UserRouteList = ({
         <input
           type="text"
           className="input"
-          defaultValue={userRoutes[0].name}
+          defaultValue={selectedUserRoute.name}
           onChange={(e) => setNewRouteName(e.target.value)}
         />
       )}
@@ -85,8 +96,8 @@ export const UserRouteList = ({
             <div className="tooltip" data-tip="Save">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                disabled={loading}
-                onClick={() => updateUserRoute()}
+                disabled={!changesMade || loading}
+                onClick={() => handleUpdateRoute()}
               >
                 <FontAwesomeIcon icon={faSave} size="lg" />
               </button>
@@ -107,7 +118,7 @@ export const UserRouteList = ({
             <div className="tooltip" data-tip="Confirm">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                onClick={() => handleUpdateRouteName}
+                onClick={() => handleUpdateRouteName()}
               >
                 <FontAwesomeIcon
                   className="cursor-pointer"

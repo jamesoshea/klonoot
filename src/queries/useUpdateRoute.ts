@@ -6,19 +6,19 @@ import { queryClient } from "./queryClient";
 import { useRouteContext } from "../contexts/RouteContext";
 import type { BROUTER_PROFILES, Coordinate } from "../types";
 
-export const useUpdateRoute = ({
-  brouterProfile,
-  points,
-}: {
-  brouterProfile: BROUTER_PROFILES;
-  points: Coordinate[];
-}) => {
+export const useUpdateRoute = () => {
   const { supabase } = useContext(SessionContext);
   const { selectedRouteId } = useRouteContext();
 
   return useMutation({
     mutationKey: [MUTATION_KEYS.CREATE_USER_ROUTE],
-    mutationFn: async () =>
+    mutationFn: async ({
+      brouterProfile,
+      points,
+    }: {
+      brouterProfile: BROUTER_PROFILES;
+      points: Coordinate[];
+    }) =>
       supabase
         ?.from("routes")
         .update([

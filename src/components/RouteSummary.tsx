@@ -67,8 +67,10 @@ export const RouteSummary = ({
   return (
     <div className="p-3 mt-2 rounded-lg bg-base-100">
       <div className="flex items-center justify-between">
-        <span>{(trackLength / 1000).toFixed(1)} km</span>
-        <span>{elevationGain.toFixed(0)} m ele.</span>
+        <div className="flex grow items-center justify-around">
+          <span>{(trackLength / 1000).toFixed(1)} km</span>
+          <span>{elevationGain.toFixed(0)} m ele.</span>
+        </div>
         <div>
           <div className="tooltip" data-tip="Route back to start">
             <button
