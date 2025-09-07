@@ -18,8 +18,9 @@ import {
   type BrouterResponse,
   type Coordinate,
 } from "../types";
-import { useRouteContext } from "../contexts/RouteContext.tsx";
+import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
+import { useLoadingContext } from "../contexts/LoadingContext.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -30,6 +31,7 @@ const profileNameMap = {
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { data: userRoutes } = useGetUserRoutes();
+  const { setLoading } = useLoadingContext();
   const { selectedRouteId } = useRouteContext();
   const { session } = useSessionContext();
 
@@ -183,15 +185,20 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [points]);
 
   useEffect(() => {
-    fetchRoute("geojson", debouncedPoints, brouterProfile).then((route) => {
-      setRouteTrack(route);
-    });
+    setLoading(true);
+    fetchRoute("geojson", debouncedPoints, brouterProfile)
+      .then((route) => {
+        setRouteTrack(route);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
     return () => {
       if (map.getLayer("route")) map.removeLayer("route");
       if (map.getSource("route")) map.removeSource("route");
     };
-  }, [brouterProfile, map, debouncedPoints]);
+  }, [brouterProfile, debouncedPoints, map, setLoading]);
 
   useEffect(() => {
     if (!routeTrack) {
