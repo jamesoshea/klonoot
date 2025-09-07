@@ -14,6 +14,7 @@ import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 import { useUpdateRoute } from "../queries/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
 import type { BROUTER_PROFILES, Coordinate, UserRoute } from "../types";
+import { useLoadingContext } from "../contexts/LoadingContext";
 
 type MODE = "DEFAULT" | "RENAME";
 
@@ -24,17 +25,15 @@ export const UserRouteList = ({
   brouterProfile: BROUTER_PROFILES;
   points: Coordinate[];
 }) => {
+  const { loading } = useLoadingContext();
   const { selectedUserRoute, setSelectedRouteId } = useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
-  const {
-    mutate: createUserRoute,
-    isPending: createUserRouteMutationIsPending,
-  } = useCreateRoute();
-  const {
-    mutate: updateUserRoute,
-    isPending: updateUserRouteMutationIsPending,
-  } = useUpdateRoute({ brouterProfile, points });
+  const { mutate: createUserRoute } = useCreateRoute();
+  const { mutate: updateUserRoute } = useUpdateRoute({
+    brouterProfile,
+    points,
+  });
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
   const [mode, setMode] = useState<MODE>("DEFAULT");
@@ -77,6 +76,7 @@ export const UserRouteList = ({
             <div className="tooltip" data-tip="Rename">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
+                disabled={loading}
                 onClick={() => setMode("RENAME")}
               >
                 <FontAwesomeIcon icon={faEdit} size="lg" />
@@ -85,7 +85,7 @@ export const UserRouteList = ({
             <div className="tooltip" data-tip="Save">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                disabled={updateUserRouteMutationIsPending}
+                disabled={loading}
                 onClick={() => updateUserRoute()}
               >
                 <FontAwesomeIcon icon={faSave} size="lg" />
@@ -94,7 +94,7 @@ export const UserRouteList = ({
             <div className="tooltip" data-tip="Add new route">
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
-                disabled={createUserRouteMutationIsPending}
+                disabled={loading}
                 onClick={() => createUserRoute()}
               >
                 <FontAwesomeIcon icon={faPlus} size="lg" />

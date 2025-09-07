@@ -8,6 +8,7 @@ import type { Dispatch } from "react";
 
 import { fetchRoute } from "../queries/fetchRoute";
 import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
+import { useLoadingContext } from "../contexts/LoadingContext";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -20,6 +21,8 @@ export const RouteSummary = ({
   routeTrack: BrouterResponse;
   setPoints: Dispatch<Coordinate[]>;
 }) => {
+  const { loading } = useLoadingContext();
+
   const handleGPXDownload = async () => {
     fetchRoute("gpx", points, brouterProfile).then((route) => {
       if (!route) {
@@ -70,6 +73,7 @@ export const RouteSummary = ({
           <div className="tooltip" data-tip="Route back to start">
             <button
               className="btn btn-circle w-8 h-8 btn-ghost"
+              disabled={loading}
               onClick={handleRouteBackToStart}
             >
               <FontAwesomeIcon icon={faArrowRotateBackward} size="lg" />
@@ -78,6 +82,7 @@ export const RouteSummary = ({
           <div className="tooltip" data-tip="Reverse route">
             <button
               className="btn btn-circle w-8 h-8 btn-ghost"
+              disabled={loading}
               onClick={handleReverseRoute}
             >
               <FontAwesomeIcon icon={faArrowDownUpAcrossLine} size="lg" />
@@ -86,6 +91,7 @@ export const RouteSummary = ({
           <div className="tooltip" data-tip="Download GPX">
             <button
               className="btn btn-circle w-8 h-8 btn-ghost"
+              disabled={loading}
               onClick={handleGPXDownload}
             >
               <FontAwesomeIcon icon={faDownload} size="lg" />
