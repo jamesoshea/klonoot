@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../contexts/SessionContext";
+import { queryClient } from "../queries/queryClient";
 
 type MODE = "LOGIN" | "VERIFY";
 
@@ -33,6 +34,7 @@ export const Auth = () => {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    queryClient.clear();
     setStep("LOGIN");
   };
 
