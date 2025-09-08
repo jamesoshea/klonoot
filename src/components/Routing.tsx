@@ -236,12 +236,20 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           points,
         });
       }
+
+      if (event === "SIGNED_OUT") {
+        setBrouterProfile(BROUTER_PROFILES.TREKKING);
+        setPoints([]);
+
+        if (map.getLayer("route")) map.removeLayer("route");
+        if (map.getSource("route")) map.removeSource("route");
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [brouterProfile, createUserRoute, points, supabase.auth]);
+  }, [brouterProfile, createUserRoute, map, points, supabase.auth]);
 
   return (
     <>

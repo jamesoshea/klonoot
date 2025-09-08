@@ -5,7 +5,6 @@ import { queryClient } from "../queries/queryClient";
 type MODE = "LOGIN" | "VERIFY";
 
 export const Auth = () => {
-  // TODO: loading states
   // TODO: error handling
   const [email, setEmail] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
