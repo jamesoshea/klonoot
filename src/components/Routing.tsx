@@ -21,6 +21,7 @@ import {
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { useLoadingContext } from "../contexts/LoadingContext.ts";
+import { useCreateRoute } from "../queries/useCreateRoute.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -30,10 +31,12 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
-  const { data: userRoutes } = useGetUserRoutes();
   const { setLoading } = useLoadingContext();
   const { selectedRouteId } = useRouteContext();
-  const { session } = useSessionContext();
+  const { session, supabase } = useSessionContext();
+
+  const { data: userRoutes } = useGetUserRoutes();
+  const { mutateAsync: createUserRoute } = useCreateRoute();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(
     BROUTER_PROFILES.TREKKING
@@ -222,6 +225,23 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       },
     });
   }, [map, routeTrack]);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === "SIGNED_IN") {
+        await createUserRoute({
+          brouterProfile,
+          points,
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [brouterProfile, createUserRoute, points, supabase.auth]);
 
   return (
     <>

@@ -3,8 +3,8 @@ import { useContext } from "react";
 import { SessionContext } from "../contexts/SessionContext";
 import { MUTATION_KEYS, QUERY_KEYS } from "../consts";
 import { queryClient } from "./queryClient";
-import { BROUTER_PROFILES } from "../types";
 import { useRouteContext } from "../contexts/RouteContext";
+import type { BROUTER_PROFILES, Coordinate } from "../types";
 
 export const useCreateRoute = () => {
   const { supabase } = useContext(SessionContext);
@@ -12,14 +12,20 @@ export const useCreateRoute = () => {
 
   return useMutation({
     mutationKey: [MUTATION_KEYS.CREATE_USER_ROUTE],
-    mutationFn: async () =>
+    mutationFn: async ({
+      brouterProfile,
+      points,
+    }: {
+      brouterProfile: BROUTER_PROFILES;
+      points: Coordinate[];
+    }) =>
       supabase
         ?.from("routes")
         .insert([
           {
-            brouterProfile: BROUTER_PROFILES.TREKKING,
+            brouterProfile,
             name: `New Route ${new Date().toLocaleDateString()}`,
-            points: [],
+            points,
           },
         ])
         .select(),

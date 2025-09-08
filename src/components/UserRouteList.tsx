@@ -13,7 +13,7 @@ import { useCreateRoute } from "../queries/useCreateRoute";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 import { useUpdateRoute } from "../queries/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
-import type { BROUTER_PROFILES, Coordinate, UserRoute } from "../types";
+import { BROUTER_PROFILES, type Coordinate, type UserRoute } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
 
 type MODE = "DEFAULT" | "RENAME";
@@ -29,7 +29,7 @@ export const UserRouteList = ({
   const { selectedUserRoute, setSelectedRouteId } = useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
-  const { mutate: createUserRoute } = useCreateRoute();
+  const { mutateAsync: createUserRoute } = useCreateRoute();
   const { mutate: updateUserRoute } = useUpdateRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
@@ -44,6 +44,13 @@ export const UserRouteList = ({
     });
     setChangesMade(false);
     setMode("DEFAULT");
+  };
+
+  const handleCreateBlankUserRoute = () => {
+    createUserRoute({
+      brouterProfile: BROUTER_PROFILES.TREKKING,
+      points: [],
+    });
   };
 
   const handleUpdateRouteName = async () => {
@@ -106,7 +113,7 @@ export const UserRouteList = ({
               <button
                 className="btn btn-circle w-8 h-8 btn-ghost"
                 disabled={loading}
-                onClick={() => createUserRoute()}
+                onClick={() => handleCreateBlankUserRoute()}
               >
                 <FontAwesomeIcon icon={faPlus} size="lg" />
               </button>
