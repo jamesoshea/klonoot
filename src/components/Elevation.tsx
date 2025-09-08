@@ -21,6 +21,7 @@ import {
   calculateMinElevation,
   createRouteMarks,
   drawTextWithBackground,
+  scale,
 } from "../utils/canvas";
 
 export const Elevation = ({
@@ -91,16 +92,26 @@ export const Elevation = ({
           currentPointDistance < points[index + 1].distance
         ) {
           ctx.fillStyle = COLOR__ACCENT;
-          ctx.fillRect(point.left, 0, 1, CANVAS_HEIGHT);
+          const leftPoint = scale(
+            currentPointDistance,
+            0,
+            trackLength,
+            0,
+            currentCanvasWidth
+          );
+
+          ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
+
           const textString = `${(currentPointDistance / 1000).toFixed(1)}km\n${
             point.wayTags.surface ?? ""
           }\n${(point.wayTags.cycleway || point.wayTags.highway) ?? ""}`;
+
           const flip = index > points.length * 0.9;
-          drawTextWithBackground(ctx, textString, point.left + 5, 2, flip);
+          drawTextWithBackground(ctx, textString, leftPoint + 5, 2, flip);
         }
       });
     }
-  }, [canvasWidth, currentPointDistance, routeTrack]);
+  }, [canvasWidth, currentPointDistance, routeTrack, trackLength]);
 
   const drawTrafficMap = useCallback(() => {
     const canvas = trafficCanvasRef.current;

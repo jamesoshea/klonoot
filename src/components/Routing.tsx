@@ -89,6 +89,29 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setCurrentPointDistance(-1);
   };
 
+  // on component mount: add elevation tiles to map
+  useEffect(() => {
+    // add the digital elevation model tiles
+    const addTerrain = () => {
+      if (map.getSource("mapbox-dem")) return;
+
+      map.addSource("mapbox-dem", {
+        type: "raster-dem",
+        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+        tileSize: 512,
+        maxzoom: 20,
+      });
+      map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
+    };
+
+    map.once("idle", addTerrain);
+
+    return () => {
+      map.off("idle", addTerrain);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // authenticated users: select route from list
   useEffect(() => {
     if (!session) {
       return;
@@ -124,27 +147,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     ]);
   }, [map, selectedRouteId, session, userRoutes]);
 
-  useEffect(() => {
-    // add the digital elevation model tiles
-    const addTerrain = () => {
-      if (map.getSource("mapbox-dem")) return;
-
-      map.addSource("mapbox-dem", {
-        type: "raster-dem",
-        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-        tileSize: 512,
-        maxzoom: 20,
-      });
-      map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
-    };
-
-    map.once("idle", addTerrain);
-
-    return () => {
-      map.off("idle", addTerrain);
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  // set markers upon points change
   useEffect(() => {
     markersInState.forEach((marker) => marker.remove());
     setMarkersInState(
@@ -163,6 +166,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     );
   }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // add event listeners for map interactions
   useEffect(() => {
     map.on("click", handleNewPointSet);
     map.on("mousemove", "route", handleLineMouseMove);
@@ -175,6 +179,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, [map, handleLineMouseMove, handleNewPointSet]);
 
+  // debounce point changes
   useEffect(() => {
     // Set a timeout to update debounced value after 500ms
     const handler = setTimeout(() => {
@@ -187,6 +192,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, [points]);
 
+  // refetch route upon profile change or point change
   useEffect(() => {
     setLoading(true);
     fetchRoute("geojson", debouncedPoints, brouterProfile)
@@ -198,6 +204,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       });
   }, [brouterProfile, debouncedPoints, setLoading]);
 
+  // draw route on map
   useEffect(() => {
     if (!routeTrack) {
       return;
@@ -226,6 +233,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
   }, [map, routeTrack]);
 
+  // listen for auth changes and add side-effects
   useEffect(() => {
     const {
       data: { subscription },

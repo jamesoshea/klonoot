@@ -8,7 +8,7 @@ It relies on brouter for its routing, and leans heavily on Mapbox for the map an
 
 I would like to find a way to get brouter to run serverless/ as an AWS Lambda, in order to make it more scalable, and to cut down on server costs. I have rough plans for other features I would like to implement:
 
-- clear map on sign-out
+- ~~clear map on sign-out~~
 - improve elevation marker line behaviour
 - hideable elevation profile
 - named waypoints / via points
