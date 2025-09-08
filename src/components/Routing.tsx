@@ -1,6 +1,7 @@
 import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
+import * as ReactDOM from "react-dom";
 
 import { Elevation } from "./Elevation.tsx";
 import { PointsList } from "./PointsList.tsx";
@@ -22,6 +23,7 @@ import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { useLoadingContext } from "../contexts/LoadingContext.ts";
 import { useCreateRoute } from "../queries/useCreateRoute.ts";
+import { createRoot } from "react-dom/client";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -47,6 +49,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
+
+  const handlePointClick = (e: MouseEvent, index: number) => {
+    e.stopPropagation();
+  };
 
   const handlePointDrag = useCallback(
     (
@@ -154,8 +160,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       points.map((point, index) => {
         const element = document.createElement("div");
         element.className =
-          "rounded-2xl min-w-6 min-h-6 bg-primary text-primary-content text-center";
+          "rounded-2xl min-w-6 min-h-6 bg-primary text-primary-content text-center cursor-pointer";
         element.innerText = (index + 1).toString();
+        element.onclick = (e) => handlePointClick(e, index);
         const marker = new mapboxgl.Marker({ draggable: true, element })
           .setLngLat(point)
           .addTo(map);
