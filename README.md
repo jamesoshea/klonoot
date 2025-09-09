@@ -25,6 +25,7 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 - Context menu on map marker click
 - GPX import
 - Optimistic UI updates for point drags
+- Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
 
 ## Running the app locally
 
