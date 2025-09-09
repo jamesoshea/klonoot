@@ -1,7 +1,6 @@
 import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
-import * as ReactDOM from "react-dom";
 
 import { Elevation } from "./Elevation.tsx";
 import { PointsList } from "./PointsList.tsx";
@@ -23,7 +22,7 @@ import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { useLoadingContext } from "../contexts/LoadingContext.ts";
 import { useCreateRoute } from "../queries/useCreateRoute.ts";
-import { createRoot } from "react-dom/client";
+import { PointInfo } from "./PointInfo.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -49,9 +48,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
+  const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
 
   const handlePointClick = (e: MouseEvent, index: number) => {
     e.stopPropagation();
+    setSelectedPoint(points[index]);
   };
 
   const handlePointDrag = useCallback(
@@ -164,7 +165,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         element.innerText = (index + 1).toString();
         element.onclick = (e) => handlePointClick(e, index);
         const marker = new mapboxgl.Marker({ draggable: true, element })
-          .setLngLat(point)
+          .setLngLat([point[0], point[1]])
           .addTo(map);
 
         marker.on("dragend", (e) => handlePointDrag(e, index));
@@ -297,6 +298,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             brouterProfile={brouterProfile}
             points={points}
             routeTrack={routeTrack}
+            setPoints={setPoints}
+          />
+        )}
+        {routeTrack && selectedPoint && (
+          <PointInfo
+            points={points}
+            selectedPoint={selectedPoint}
             setPoints={setPoints}
           />
         )}
