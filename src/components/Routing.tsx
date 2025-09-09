@@ -267,6 +267,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, [brouterProfile, createUserRoute, map, points, supabase.auth]);
 
+  useEffect(() => {
+    setSelectedPoint(null);
+  }, [selectedRouteId]);
+
   return (
     <>
       <div className="routing m-3">
@@ -306,6 +310,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             points={points}
             selectedPoint={selectedPoint}
             setPoints={setPoints}
+            setSelectedPoint={setSelectedPoint}
           />
         )}
       </div>

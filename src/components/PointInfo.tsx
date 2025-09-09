@@ -7,10 +7,12 @@ export const PointInfo = ({
   points,
   setPoints,
   selectedPoint,
+  setSelectedPoint,
 }: {
   points: Coordinate[];
   setPoints: Dispatch<Coordinate[]>;
   selectedPoint: Coordinate;
+  setSelectedPoint: Dispatch<Coordinate | null>;
 }) => {
   const [pointName, setPointName] = useState<string>(selectedPoint[2] ?? "");
 
@@ -25,7 +27,7 @@ export const PointInfo = ({
     setPoints(newPoints);
   };
 
-  const nameChanged = selectedPoint[2] !== pointName;
+  const nameChanged = (selectedPoint[2] ?? "") !== pointName;
 
   useEffect(() => {
     setPointName(selectedPoint[2] ?? "");
@@ -40,13 +42,26 @@ export const PointInfo = ({
         </p>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <input
-          type="text"
-          className="input w-full"
-          placeholder="Name this point"
-          value={pointName}
-          onChange={(e) => setPointName(e.target.value)}
-        />
+        <div className="w-full relative">
+          <input
+            type="text"
+            className="input w-full"
+            placeholder="Name this point"
+            value={pointName}
+            onChange={(e) => setPointName(e.target.value)}
+          />
+          <div className="tooltip absolute top-2 right-2 cursor-pointer z-100">
+            <div className="tooltip-content p-3">
+              Naming a point will ensure that it appears on the route, no matter
+              how unsuitable the route might be.
+            </div>
+            <FontAwesomeIcon
+              className="cursor-pointer z-100"
+              icon={faCircleQuestion}
+              size="lg"
+            />
+          </div>
+        </div>
         {nameChanged && (
           <div className="tooltip" data-tip="Confirm">
             <button
@@ -62,17 +77,12 @@ export const PointInfo = ({
           </div>
         )}
       </div>
-      <div className="tooltip absolute top-2 right-2 cursor-pointer z-100">
-        <div className="tooltip-content p-3">
-          Naming a point will ensure that it appears on the route, no matter how
-          unsuitable the route might be.
-        </div>
-        <FontAwesomeIcon
-          className="cursor-pointer z-100"
-          icon={faCircleQuestion}
-          size="lg"
-        />
-      </div>
+      <button
+        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+        onClick={() => setSelectedPoint(null)}
+      >
+        ✕
+      </button>
     </div>
   );
 };
