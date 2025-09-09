@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { type LngLatLike } from "mapbox-gl";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -29,7 +29,7 @@ function App() {
   useEffect(() => {
     const newMap = new mapboxgl.Map({
       container: mapContainerRef.current as HTMLElement,
-      center: INITIAL_CENTER,
+      center: INITIAL_CENTER as LngLatLike,
       zoom: INITIAL_ZOOM,
       style: "mapbox://styles/mapbox/outdoors-v12", // style URL
     });

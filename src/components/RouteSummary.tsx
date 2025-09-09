@@ -47,9 +47,9 @@ export const RouteSummary = ({
   };
 
   const handleRouteBackToStart = () => {
-    const theFirstPointButMovedSlightly = points[0]
-      .slice(0, 2)
-      .map((coord) => coord + 0.0001);
+    const theFirstPointButMovedSlightly = [points[0][0], points[0][1]].map(
+      (coord) => coord + 0.0001
+    );
     setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
   };
 
