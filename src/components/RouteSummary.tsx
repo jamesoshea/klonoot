@@ -66,7 +66,7 @@ export const RouteSummary = ({
 
   return (
     <div className="p-3 mt-2 rounded-lg bg-base-100">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <div className="flex grow items-center justify-around">
           <span>{(trackLength / 1000).toFixed(1)} km</span>
           <span>{elevationGain.toFixed(0)} m ele.</span>
