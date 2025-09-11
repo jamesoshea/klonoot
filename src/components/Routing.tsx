@@ -75,6 +75,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         newIndex = 1;
       } else {
         // check distance between new point and all existing points
+        // TODO: change this slightly.
+        // find closest point on line and add point btween two neighbours?
         const distances = points
           .map((point) => turf.point([point[0], point[1]]))
           .map((turfPoint, index) => ({
@@ -83,9 +85,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           }))
           .sort((a, b) => a.distance - b.distance);
 
-        // TODO: change this slightly.
-        // Check if line is closer than first / last point, and if so, add to middle of route
-        // https://turfjs.org/docs/api/pointToLineDistance
         const firstPointIsClosest = distances[0].index === 0;
         const lastPointIsClosest = distances[0].index === points.length - 1;
 
