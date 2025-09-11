@@ -69,7 +69,36 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
-      setPoints([...points, [e.lngLat.lng, e.lngLat.lat]]);
+      let newIndex = 0;
+
+      if (points.length < 2) {
+        newIndex = 1;
+      } else {
+        // check distance between new point and all existing points
+        const distances = points
+          .map((point) => turf.point([point[0], point[1]]))
+          .map((turfPoint, index) => ({
+            index,
+            distance: turf.distance([e.lngLat.lng, e.lngLat.lat], turfPoint),
+          }))
+          .sort((a, b) => a.distance - b.distance);
+
+        // TODO: change this slightly.
+        // Check if line is closer than first / last point, and if so, add to middle of route
+        // https://turfjs.org/docs/api/pointToLineDistance
+        const firstPointIsClosest = distances[0].index === 0;
+        const lastPointIsClosest = distances[0].index === points.length - 1;
+
+        newIndex = firstPointIsClosest
+          ? 0 // add to start of route
+          : lastPointIsClosest
+          ? points.length // add to end of route
+          : Math.max(...distances.slice(0, 2).map(({ index }) => index)); // add in middle of route, between two closest points
+      }
+
+      const newPoints = [...points];
+      newPoints.splice(newIndex, 0, [e.lngLat.lng, e.lngLat.lat]);
+      setPoints(newPoints);
     },
     [points]
   );
@@ -214,12 +243,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   // draw route on map
   useEffect(() => {
+    if (map.getLayer("route")) map.removeLayer("route");
+    if (map.getSource("route")) map.removeSource("route");
+
     if (!routeTrack) {
       return;
     }
-
-    if (map.getLayer("route")) map.removeLayer("route");
-    if (map.getSource("route")) map.removeSource("route");
 
     map.addSource("route", {
       type: "geojson",
