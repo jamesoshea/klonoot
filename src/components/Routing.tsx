@@ -1,6 +1,6 @@
-import * as turf from "@turf/turf";
 import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
+import * as turf from "@turf/turf";
 
 import { Elevation } from "./Elevation.tsx";
 import { PointsList } from "./PointsList.tsx";
@@ -23,6 +23,7 @@ import { useSessionContext } from "../contexts/SessionContext.ts";
 import { useLoadingContext } from "../contexts/LoadingContext.ts";
 import { useCreateRoute } from "../queries/useCreateRoute.ts";
 import { PointInfo } from "./PointInfo.tsx";
+import { setNewPoint } from "../utils/route.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -68,43 +69,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   );
 
   const handleNewPointSet = useCallback(
-    (e: mapboxgl.MapMouseEvent) => {
-      const newPoint = [e.lngLat.lng, e.lngLat.lat];
-      let newIndex = 0;
-
-      if (points.length < 2) {
-        newIndex = 1;
-      } else {
-        // check distance between new point and all existing points
-        // TODO: change this slightly.
-        // find closest point on line and add point btween two neighbours?
-        // https://turfjs.org/docs/api/nearestPointOnLine
-
-        const line = turf.lineString(
-          points.map((point) => [point[0], point[1]])
-        );
-
-        const nearestPointOnLine = turf.nearestPointOnLine(line, newPoint);
-
-        const distancesAlongLine = points.map((point) =>
-          turf.nearestPointOnLine(line, [point[0], point[1]])
-        );
-
-        newIndex = distancesAlongLine.findIndex(
-          (distance) =>
-            Number(distance.properties.location.toPrecision(5)) >
-            Number(nearestPointOnLine.properties.location.toPrecision(5))
-        );
-
-        if (newIndex === -1) {
-          newIndex = points.length;
-        }
-      }
-
-      const newPoints = [...points];
-      newPoints.splice(newIndex, 0, newPoint as Coordinate);
-      setPoints(newPoints);
-    },
+    (e: mapboxgl.MapMouseEvent) => setPoints(setNewPoint(e, points)),
     [points]
   );
 
