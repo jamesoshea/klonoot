@@ -69,6 +69,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
+      const newPoint = [e.lngLat.lng, e.lngLat.lat];
       let newIndex = 0;
 
       if (points.length < 2) {
@@ -77,26 +78,31 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         // check distance between new point and all existing points
         // TODO: change this slightly.
         // find closest point on line and add point btween two neighbours?
-        const distances = points
-          .map((point) => turf.point([point[0], point[1]]))
-          .map((turfPoint, index) => ({
-            index,
-            distance: turf.distance([e.lngLat.lng, e.lngLat.lat], turfPoint),
-          }))
-          .sort((a, b) => a.distance - b.distance);
+        // https://turfjs.org/docs/api/nearestPointOnLine
 
-        const firstPointIsClosest = distances[0].index === 0;
-        const lastPointIsClosest = distances[0].index === points.length - 1;
+        const line = turf.lineString(
+          points.map((point) => [point[0], point[1]])
+        );
 
-        newIndex = firstPointIsClosest
-          ? 0 // add to start of route
-          : lastPointIsClosest
-          ? points.length // add to end of route
-          : Math.max(...distances.slice(0, 2).map(({ index }) => index)); // add in middle of route, between two closest points
+        const nearestPointOnLine = turf.nearestPointOnLine(line, newPoint);
+
+        const distancesAlongLine = points.map((point) =>
+          turf.nearestPointOnLine(line, [point[0], point[1]])
+        );
+
+        newIndex = distancesAlongLine.findIndex(
+          (distance) =>
+            Number(distance.properties.location.toPrecision(5)) >
+            Number(nearestPointOnLine.properties.location.toPrecision(5))
+        );
+
+        if (newIndex === -1) {
+          newIndex = points.length;
+        }
       }
 
       const newPoints = [...points];
-      newPoints.splice(newIndex, 0, [e.lngLat.lng, e.lngLat.lat]);
+      newPoints.splice(newIndex, 0, newPoint as Coordinate);
       setPoints(newPoints);
     },
     [points]
