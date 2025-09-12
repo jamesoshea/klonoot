@@ -10,11 +10,6 @@ export const setNewPoint = (e: MapMouseEvent, points: Coordinate[]) => {
   if (points.length < 2) {
     newIndex = 1;
   } else {
-    // check distance between new point and all existing points
-    // TODO: change this slightly.
-    // find closest point on line and add point btween two neighbours?
-    // https://turfjs.org/docs/api/nearestPointOnLine
-
     const line = turf.lineString(points.map((point) => [point[0], point[1]]));
 
     const nearestPointOnLine = turf.nearestPointOnLine(line, newPoint);
