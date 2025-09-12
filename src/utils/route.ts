@@ -3,6 +3,7 @@ import * as turf from "@turf/turf";
 import type { Coordinate } from "../types";
 
 export const setNewPoint = (e: MapMouseEvent, points: Coordinate[]) => {
+  console.log(e, points);
   const newPoint = [e.lngLat.lng, e.lngLat.lat];
   let newIndex = 0;
 
@@ -35,5 +36,6 @@ export const setNewPoint = (e: MapMouseEvent, points: Coordinate[]) => {
 
   const newPoints = [...points];
   newPoints.splice(newIndex, 0, newPoint as Coordinate);
+  console.log(newPoints);
   return newPoints;
 };
