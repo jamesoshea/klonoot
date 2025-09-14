@@ -39,10 +39,8 @@ export const PointsList = ({
   };
 
   return (
-    <ul className="list min-w-full max-h-[200px] overflow-auto">
-      {!!points.length && (
-        <li className="pt-2 text-xs opacity-60">Anchor points</li>
-      )}
+    <ul className="list min-w-full max-h-[200px] overflow-auto mt-2">
+      <li className="text-xs opacity-60">Anchor points</li>
       {points.map(([lat, lon, name], index) => (
         <li className="list-row items-center p-1 min-w-full" key={index}>
           <div>{index + 1}</div>

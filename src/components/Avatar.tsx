@@ -12,7 +12,7 @@ export const Avatar = () => {
     <div
       className="auth"
       // @ts-expect-error yeah I know
-      onClick={() => document.getElementById("my_modal_1")?.showModal()}
+      onClick={() => document.getElementById("auth_modal")?.showModal()}
     >
       <div
         className={`bg-base-100 flex justify-center items-center py-1 w-10 rounded-full cursor-pointer ${

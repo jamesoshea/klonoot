@@ -31,6 +31,12 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
 
 .auth {
   position: absolute;
+  right: 48px;
+  top: 12px;
+}
+
+.about {
+  position: absolute;
   right: 12px;
   top: 12px;
 }
