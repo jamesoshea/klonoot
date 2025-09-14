@@ -147,10 +147,15 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
     const enveloped = turf.envelope(features);
     const [lng1, lat1, lng2, lat2] = enveloped.bbox!;
-    map.fitBounds([
-      [lng1, lat1],
-      [lng2, lat2],
-    ]);
+    map.fitBounds(
+      [
+        [lng1, lat1],
+        [lng2, lat2],
+      ],
+      {
+        padding: 64,
+      }
+    );
   }, [map, selectedRouteId, session, userRoutes]);
 
   // set markers upon points change

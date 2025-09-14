@@ -48,7 +48,7 @@ export const About = () => {
       </div>
       <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
-        <div className="collapse-title font-semibold">Roadmap</div>
+        <div className="collapse-title font-semibold">Planned Improvements</div>
         <div className="collapse-content">
           <h3>Technical Improvements</h3>
           <ul className="list">
