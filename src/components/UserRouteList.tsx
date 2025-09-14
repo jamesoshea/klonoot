@@ -26,7 +26,8 @@ export const UserRouteList = ({
   points: Coordinate[];
 }) => {
   const { loading } = useLoadingContext();
-  const { selectedUserRoute, setSelectedRouteId } = useRouteContext();
+  const { selectedUserRoute, selectedRouteId, setSelectedRouteId } =
+    useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
   const { mutateAsync: createUserRoute } = useCreateRoute();
@@ -41,6 +42,7 @@ export const UserRouteList = ({
     await updateUserRoute({
       brouterProfile,
       points,
+      selectedRouteId,
     });
     setChangesMade(false);
     setMode("DEFAULT");
@@ -64,6 +66,12 @@ export const UserRouteList = ({
   useEffect(() => {
     setChangesMade(true);
   }, [brouterProfile, points]);
+
+  useEffect(() => {
+    if (userRoutes.length) {
+      setSelectedRouteId(userRoutes[0].id);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex justify-between items-center gap-2 mt-2 p-3 rounded-lg bg-base-100">
