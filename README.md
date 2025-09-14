@@ -18,7 +18,6 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 
 - More automated testing
 - Test coverage
-- Documentation / site / contact / impressum etc.
 - Caching routes with react-query to improve performance
 
 ##### Features
