@@ -54,7 +54,6 @@ export const About = () => {
           <ul className="list">
             <li>- More automated testing</li>
             <li>- Test coverage</li>
-            <li>- Documentation / site / contact / impressum etc.</li>
             <li>- Caching routes with react-query to improve performance</li>
           </ul>
           <h3 className="mt-2">Features</h3>
