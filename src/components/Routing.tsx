@@ -9,21 +9,19 @@ import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
 
 import { COLOR__ACCENT } from "../consts.ts";
-import { fetchRoute } from "../queries/fetchRoute";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
 import {
   BROUTER_PROFILES,
   type BrouterProfile,
-  type BrouterResponse,
   type Coordinate,
 } from "../types";
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
-import { useLoadingContext } from "../contexts/LoadingContext.ts";
 import { useCreateRoute } from "../queries/useCreateRoute.ts";
 import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
+import { useFetchRoute } from "../queries/useFetchRoute.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -33,7 +31,6 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
-  const { setLoading } = useLoadingContext();
   const { selectedRouteId } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
@@ -48,8 +45,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
-  const [routeTrack, setRouteTrack] = useState<BrouterResponse | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
+  const { data: routeTrack } = useFetchRoute({
+    brouterProfile,
+    points: debouncedPoints,
+    format: "geojson",
+  });
 
   const handlePointClick = (e: MouseEvent, index: number) => {
     e.stopPropagation();
@@ -203,18 +204,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       clearTimeout(handler);
     };
   }, [points]);
-
-  // refetch route upon profile change or point change
-  useEffect(() => {
-    setLoading(true);
-    fetchRoute("geojson", debouncedPoints, brouterProfile)
-      .then((route) => {
-        setRouteTrack(route);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [brouterProfile, debouncedPoints, setLoading]);
 
   // draw route on map
   useEffect(() => {
