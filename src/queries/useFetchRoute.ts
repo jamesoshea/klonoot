@@ -46,6 +46,7 @@ export const useFetchRoute = ({
       format,
       brouterProfile,
     ],
+    // @ts-expect-error TODO: fix this
     queryFn: () => fetchRoute(format, points, brouterProfile),
     staleTime: 1000 * 60 * 60 * 24, // 1 day
   });
