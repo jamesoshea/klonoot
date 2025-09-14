@@ -43,6 +43,10 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
   width: calc(100vw - 24px);
 }
 
+.elevation.collapsed {
+  max-width: 278px;
+}
+
 .routing {
   z-index: 1;
   position: absolute;
@@ -55,14 +59,4 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
   position: absolute;
   top: 12px;
   left: 324px;
-}
-
-.reset-button {
-  position: absolute;
-  top: 50px;
-  z-index: 1;
-  left: 12px;
-  padding: 4px 10px;
-  border-radius: 10px;
-  cursor: pointer;
 }

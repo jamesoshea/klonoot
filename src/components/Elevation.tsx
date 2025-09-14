@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faCircleQuestion,
+} from "@fortawesome/free-solid-svg-icons";
 
 import {
   CANVAS_HEIGHT,
@@ -32,9 +36,11 @@ export const Elevation = ({
   routeTrack: BrouterResponse;
 }) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
+  const [canvasWidth, setCanvasWidth] = useState<number>(0);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [canvasWidth, setCanvasWidth] = useState<number>(0);
 
   const trackLength = Number(
     routeTrack?.features[0]?.properties?.["track-length"] ?? 0
@@ -168,70 +174,74 @@ export const Elevation = ({
     };
   }, [drawElevationMap, drawTrafficMap]);
 
-  useEffect(drawElevationMap, [drawElevationMap]);
-  useEffect(drawTrafficMap, [drawTrafficMap]);
+  useEffect(drawElevationMap, [collapsed, drawElevationMap]);
+  useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);
 
   return (
-    <div className="elevation">
+    <div className={`indicator elevation ${collapsed ? "collapsed" : ""}`}>
       <div className="rounded-lg bg-base-100 flex items-start gap-2 p-2 w-full h-full">
         <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[128px]">
           <span>{calculateMaxElevation(routeTrack)}m</span>
           <span>{calculateMinElevation(routeTrack)}m</span>
         </div>
-        <div className="w-full" ref={canvasContainerRef}>
-          <div className="bg-base-200">
-            <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
-              <div className="tooltip-content p-3">
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: SURFACE_COLOR_GRAY }}
-                  />
-                  <p className="text-s">Paved (Good)</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
-                  />
-                  <p className="text-s">Paved (Poor)</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: SURFACE_COLOR_YELLOW }}
-                  />
-                  <p className="text-s">Unpaved (Good)</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full mb-4">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: SURFACE_COLOR_ORANGE }}
-                  />
-                  <p className="text-s">Unpaved (Poor)</p>
-                </div>
-
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: TRAFFIC_COLOR_LOW }}
-                  />
-                  <p className="text-s">Low traffic</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: TRAFFIC_COLOR_NONE }}
-                  />
-                  <p className="text-s">No traffic</p>
-                </div>
+        <div className="w-full">
+          <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
+            <div className="tooltip-content p-3">
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_GRAY }}
+                />
+                <p className="text-s">Paved (Good)</p>
               </div>
-              <FontAwesomeIcon
-                className="cursor-pointer z-100"
-                icon={faCircleQuestion}
-                size="lg"
-              />
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
+                />
+                <p className="text-s">Paved (Poor)</p>
+              </div>
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_YELLOW }}
+                />
+                <p className="text-s">Unpaved (Good)</p>
+              </div>
+              <div className="flex gap-3 justify-between items-center w-full mb-4">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: SURFACE_COLOR_ORANGE }}
+                />
+                <p className="text-s">Unpaved (Poor)</p>
+              </div>
+
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: TRAFFIC_COLOR_LOW }}
+                />
+                <p className="text-s">Low traffic</p>
+              </div>
+              <div className="flex gap-3 justify-between items-center w-full">
+                <div
+                  className="min-h-3 min-w-3"
+                  style={{ background: TRAFFIC_COLOR_NONE }}
+                />
+                <p className="text-s">No traffic</p>
+              </div>
             </div>
+            <FontAwesomeIcon
+              className="cursor-pointer z-100"
+              icon={faCircleQuestion}
+              size="lg"
+            />
+          </div>
+          <div
+            className="bg-base-200"
+            ref={canvasContainerRef}
+            style={{ maxWidth: collapsed ? 237 : "initial" }}
+          >
             <canvas
               height={CANVAS_HEIGHT}
               ref={elevationCanvasRef}
@@ -248,6 +258,28 @@ export const Elevation = ({
             <span>{(trackLength / 1000).toFixed(0)}km</span>
           </div>
         </div>
+      </div>
+      <div className="indicator">
+        <span className="indicator-item indicator-middle">
+          <button
+            className="btn btn-soft btn-sm btn-circle"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? (
+              <FontAwesomeIcon
+                className="cursor-pointer z-100"
+                icon={faChevronRight}
+                size="lg"
+              />
+            ) : (
+              <FontAwesomeIcon
+                className="cursor-pointer z-100"
+                icon={faChevronLeft}
+                size="lg"
+              />
+            )}
+          </button>
+        </span>
       </div>
     </div>
   );
