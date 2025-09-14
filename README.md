@@ -16,12 +16,13 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 
 ##### Technical Improvements
 
-- Automated testing and test coverage
+- More automated testing
+- Test coverage
 - Documentation / site / contact / impressum etc.
+- Caching routes with react-query to improve performance
 
 ##### Features
 
-- Hideable elevation profile
 - Undo / redo
 - Context menu on map marker click
 - GPX import

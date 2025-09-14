@@ -39,7 +39,7 @@ export const PointsList = ({
   };
 
   return (
-    <ul className="list min-w-full">
+    <ul className="list min-w-full max-h-[200px] overflow-auto">
       {!!points.length && (
         <li className="pt-2 text-xs opacity-60">Anchor points</li>
       )}
