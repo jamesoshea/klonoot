@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownUpAcrossLine,
-  faArrowRotateBackward,
+  faArrowsLeftRightToLine,
+  faArrowsRotate,
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Dispatch } from "react";
@@ -78,7 +79,7 @@ export const RouteSummary = ({
               disabled={loading}
               onClick={handleRouteBackToStart}
             >
-              <FontAwesomeIcon icon={faArrowRotateBackward} size="lg" />
+              <FontAwesomeIcon icon={faArrowsLeftRightToLine} size="lg" />
             </button>
           </div>
           <div className="tooltip" data-tip="Reverse route">
@@ -87,7 +88,7 @@ export const RouteSummary = ({
               disabled={loading}
               onClick={handleReverseRoute}
             >
-              <FontAwesomeIcon icon={faArrowDownUpAcrossLine} size="lg" />
+              <FontAwesomeIcon icon={faArrowsRotate} size="lg" />
             </button>
           </div>
           <div className="tooltip" data-tip="Download GPX">

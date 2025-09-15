@@ -40,12 +40,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(
     BROUTER_PROFILES.TREKKING
   );
-  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
-
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
+  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
+
   const { data: routeTrack } = useFetchRoute({
     brouterProfile,
     points: debouncedPoints,

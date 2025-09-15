@@ -4,6 +4,7 @@ import {
   faChevronCircleDown,
   faCircleChevronUp,
   faTrash,
+  faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Coordinate } from "../types";
@@ -40,7 +41,15 @@ export const PointsList = ({
 
   return (
     <ul className="list min-w-full max-h-[200px] overflow-auto mt-2">
-      <li className="text-xs opacity-60">Anchor points</li>
+      <li className="list-row items-center p-1 min-w-full">
+        <div className="text-xs opacity-60">Anchor points</div>
+        <div />
+        <div>
+          <button className="btn btn-circle w-5 h-5 btn-ghost">
+            <FontAwesomeIcon icon={faUndo} size="sm" />
+          </button>
+        </div>
+      </li>
       {points.map(([lat, lon, name], index) => (
         <li className="list-row items-center p-1 min-w-full" key={index}>
           <div>{index + 1}</div>
