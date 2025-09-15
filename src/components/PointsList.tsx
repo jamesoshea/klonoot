@@ -10,11 +10,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Coordinate } from "../types";
 
 export const PointsList = ({
+  numberOfPatches,
   points,
   setPoints,
+  onUndo,
 }: {
+  numberOfPatches: number;
   points: Coordinate[];
   setPoints: Dispatch<Coordinate[]>;
+  onUndo: () => void;
 }) => {
   const handlePointDelete = useCallback(
     (index: number) => {
@@ -45,8 +49,11 @@ export const PointsList = ({
         <div className="text-xs opacity-60">Anchor points</div>
         <div />
         <div>
-          <button className="btn btn-circle w-5 h-5 btn-ghost">
-            <FontAwesomeIcon icon={faUndo} size="sm" />
+          <button
+            className="btn btn-circle w-5 h-5 btn-ghost"
+            disabled={numberOfPatches < 2}
+          >
+            <FontAwesomeIcon icon={faUndo} size="sm" onClick={onUndo} />
           </button>
         </div>
       </li>

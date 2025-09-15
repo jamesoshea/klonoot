@@ -43,6 +43,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
+  const [patches, setPatches] = useState<Coordinate[][]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
 
@@ -94,6 +95,16 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handleLineMouseLeave = () => {
     setCurrentPointDistance(-1);
+  };
+
+  const handleUndo = () => {
+    if (patches.length < 2) {
+      return;
+    }
+
+    const newPatches = patches.slice(0, -1);
+    setPatches(newPatches);
+    setPoints(newPatches.slice(-1)[0]);
   };
 
   // on component mount: add elevation tiles to map
@@ -179,6 +190,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     );
   }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    setPatches([...patches, points]);
+  }, [points]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // add event listeners for map interactions
   useEffect(() => {
     map.on("click", handleNewPointSet);
@@ -262,7 +277,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   useEffect(() => {
     setSelectedPoint(null);
+    setPatches([]);
   }, [selectedRouteId]);
+
+  console.log(patches);
 
   return (
     <>
@@ -285,7 +303,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               ))}
             </select>
           </div>
-          <PointsList points={points} setPoints={setPoints} />
+          <PointsList
+            numberOfPatches={patches.length}
+            points={points}
+            setPoints={setPoints}
+            onUndo={handleUndo}
+          />
         </div>
         {session && (
           <UserRouteList brouterProfile={brouterProfile} points={points} />
