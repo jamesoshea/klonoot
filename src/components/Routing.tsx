@@ -49,6 +49,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
 
   const { data: routeTrack } = useFetchRoute({
+    enabled: points.length > 1,
     brouterProfile,
     points: debouncedPoints,
     format: "geojson",

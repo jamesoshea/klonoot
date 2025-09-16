@@ -30,7 +30,7 @@ async function fetchRoute(
 }
 
 export const useFetchRoute = ({
-  enabled = true,
+  enabled,
   format,
   points,
   brouterProfile,
@@ -41,13 +41,14 @@ export const useFetchRoute = ({
   brouterProfile: BROUTER_PROFILES;
 }) => {
   return useQuery({
-    enabled: enabled && points.length > 1,
+    enabled: enabled,
     queryKey: [
       QUERY_KEYS.FETCH_ROUTE,
       JSON.stringify(points),
       format,
       brouterProfile,
     ],
+    // @ts-expect-error TODO: fix this
     queryFn: () => fetchRoute(format, points, brouterProfile),
     staleTime: 1000 * 60 * 60 * 24, // 1 day
   });
