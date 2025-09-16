@@ -279,7 +279,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   return (
     <>
       <div className="routing m-3">
-        <div className="p-3 rounded-lg bg-base-100 flex flex-col items-center">
+        {session && (
+          <UserRouteList brouterProfile={brouterProfile} points={points} />
+        )}
+        <div className="mt-2 p-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
             <p className="pb-1 text-xs opacity-60">Brouter profile</p>
@@ -303,18 +306,18 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             setPoints={setPoints}
             onUndo={handleUndo}
           />
+          {routeTrack && (
+            <>
+              <div className="divider my-1"></div>
+              <RouteSummary
+                brouterProfile={brouterProfile}
+                points={points}
+                routeTrack={routeTrack}
+                setPoints={setPoints}
+              />
+            </>
+          )}
         </div>
-        {session && (
-          <UserRouteList brouterProfile={brouterProfile} points={points} />
-        )}
-        {routeTrack && (
-          <RouteSummary
-            brouterProfile={brouterProfile}
-            points={points}
-            routeTrack={routeTrack}
-            setPoints={setPoints}
-          />
-        )}
         {routeTrack && selectedPoint && (
           <PointInfo
             points={points}

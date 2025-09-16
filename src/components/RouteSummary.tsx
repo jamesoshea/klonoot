@@ -67,40 +67,38 @@ export const RouteSummary = ({
   );
 
   return (
-    <div className="p-3 mt-2 rounded-lg bg-base-100">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex grow items-center justify-around">
-          <span>{(trackLength / 1000).toFixed(1)} km</span>
-          <span>{elevationGain.toFixed(0)} m ele.</span>
+    <div className="flex items-center justify-between gap-2 min-w-full">
+      <div className="flex grow items-center justify-around">
+        <span>{(trackLength / 1000).toFixed(1)} km</span>
+        <span>{elevationGain.toFixed(0)} m ele.</span>
+      </div>
+      <div>
+        <div className="tooltip" data-tip="Route back to start">
+          <button
+            className="btn btn-circle w-8 h-8 btn-ghost"
+            disabled={loading}
+            onClick={handleRouteBackToStart}
+          >
+            <FontAwesomeIcon icon={faArrowsLeftRightToLine} size="lg" />
+          </button>
         </div>
-        <div>
-          <div className="tooltip" data-tip="Route back to start">
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              disabled={loading}
-              onClick={handleRouteBackToStart}
-            >
-              <FontAwesomeIcon icon={faArrowsLeftRightToLine} size="lg" />
-            </button>
-          </div>
-          <div className="tooltip" data-tip="Reverse route">
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              disabled={loading}
-              onClick={handleReverseRoute}
-            >
-              <FontAwesomeIcon icon={faArrowsRotate} size="lg" />
-            </button>
-          </div>
-          <div className="tooltip" data-tip="Download GPX">
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              disabled={loading}
-              onClick={handleGPXDownload}
-            >
-              <FontAwesomeIcon icon={faDownload} size="lg" />
-            </button>
-          </div>
+        <div className="tooltip" data-tip="Reverse route">
+          <button
+            className="btn btn-circle w-8 h-8 btn-ghost"
+            disabled={loading}
+            onClick={handleReverseRoute}
+          >
+            <FontAwesomeIcon icon={faArrowsRotate} size="lg" />
+          </button>
+        </div>
+        <div className="tooltip" data-tip="Download GPX">
+          <button
+            className="btn btn-circle w-8 h-8 btn-ghost"
+            disabled={loading}
+            onClick={handleGPXDownload}
+          >
+            <FontAwesomeIcon icon={faDownload} size="lg" />
+          </button>
         </div>
       </div>
     </div>

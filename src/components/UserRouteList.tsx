@@ -74,7 +74,7 @@ export const UserRouteList = ({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex justify-between items-center gap-2 mt-2 p-3 rounded-lg bg-base-100">
+    <div className="flex justify-between items-center gap-2 p-3 rounded-lg bg-base-100">
       {mode === "DEFAULT" && (
         <select
           className="select"

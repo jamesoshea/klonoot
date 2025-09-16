@@ -72,7 +72,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
           accessToken={MAPBOX_ACCESS_TOKEN}
           map={map}
           mapboxgl={mapboxgl}
-          placeholder="Search for somewhere"
+          placeholder="Search for a place..."
           theme={{
             variables: {
               border: "1px solid black",

@@ -44,8 +44,8 @@ export const PointsList = ({
   };
 
   return (
-    <ul className="list min-w-full max-h-[200px] overflow-auto mt-2">
-      <li className="list-row items-center p-1 min-w-full">
+    <ul className="list min-w-full max-h-[200px] overflow-auto mt-1">
+      <li className="list-row items-center py-1 px-0 min-w-full">
         <div className="text-xs opacity-60">Anchor points</div>
         <div />
         <div>

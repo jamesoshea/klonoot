@@ -36,7 +36,7 @@ export const PointInfo = ({
   return (
     <div className="p-3 mt-2 rounded-lg bg-base-100 relative">
       <div className="flex mb-2 items-center justify-between gap-2">
-        <p>
+        <p className="text-xs opacity-60">
           Point {index + 1} ({selectedPoint[0].toFixed(3)},{" "}
           {selectedPoint[1].toFixed(3)}){" "}
         </p>
@@ -78,7 +78,7 @@ export const PointInfo = ({
         )}
       </div>
       <button
-        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+        className="btn btn-xs btn-circle btn-ghost absolute right-1 top-1"
         onClick={() => setSelectedPoint(null)}
       >
         ✕
