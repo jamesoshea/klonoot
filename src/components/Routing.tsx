@@ -22,6 +22,7 @@ import { useCreateRoute } from "../queries/useCreateRoute.ts";
 import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
+import { addTerrain } from "../utils/map.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -110,22 +111,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   // on component mount: add elevation tiles to map
   useEffect(() => {
     // add the digital elevation model tiles
-    const addTerrain = () => {
-      if (map.getSource("mapbox-dem")) return;
 
-      map.addSource("mapbox-dem", {
-        type: "raster-dem",
-        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-        tileSize: 512,
-        maxzoom: 20,
-      });
-      map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
-    };
-
-    map.once("idle", addTerrain);
+    map.once("idle", () => addTerrain(map));
 
     return () => {
-      map.off("idle", addTerrain);
+      map.off("idle", () => addTerrain(map));
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

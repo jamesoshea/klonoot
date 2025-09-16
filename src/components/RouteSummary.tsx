@@ -6,9 +6,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { Dispatch } from "react";
 
-import { fetchRoute } from "../queries/fetchRoute";
 import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
+import { useFetchRoute } from "../queries/useFetchRoute";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -23,21 +23,23 @@ export const RouteSummary = ({
 }) => {
   const { loading } = useLoadingContext();
 
-  const handleGPXDownload = async () => {
-    fetchRoute("gpx", points, brouterProfile).then((route) => {
-      if (!route) {
-        return;
-      }
+  const { refetch } = useFetchRoute({
+    brouterProfile,
+    enabled: false,
+    points,
+    format: "gpx",
+  });
 
-      const blob = new Blob([route], { type: "text/plain" });
-      const fileURL = URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = fileURL;
-      downloadLink.download = "example.gpx";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      URL.revokeObjectURL(fileURL);
-    });
+  const handleGPXDownload = async () => {
+    const { data: route } = await refetch();
+    const blob = new Blob([route], { type: "text/plain" });
+    const fileURL = URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = fileURL;
+    downloadLink.download = "example.gpx";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    URL.revokeObjectURL(fileURL);
   };
 
   const handleReverseRoute = () => {

@@ -30,23 +30,24 @@ async function fetchRoute(
 }
 
 export const useFetchRoute = ({
+  enabled = true,
   format,
   points,
   brouterProfile,
 }: {
+  enabled: boolean;
   format: "gpx" | "geojson";
   points: Coordinate[];
   brouterProfile: BROUTER_PROFILES;
 }) => {
   return useQuery({
-    enabled: points.length > 1,
+    enabled: enabled && points.length > 1,
     queryKey: [
       QUERY_KEYS.FETCH_ROUTE,
       JSON.stringify(points),
       format,
       brouterProfile,
     ],
-    // @ts-expect-error TODO: fix this
     queryFn: () => fetchRoute(format, points, brouterProfile),
     staleTime: 1000 * 60 * 60 * 24, // 1 day
   });
