@@ -98,7 +98,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   };
 
   const handleUndo = () => {
-    if (patches.length < 2) {
+    if (!patches.length) {
       return;
     }
 
@@ -191,6 +191,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (JSON.stringify(patches.slice(-1)[0]) === JSON.stringify(points)) {
+      // we got here by applying a patch. Don't apply it again
+      return;
+    }
+
     setPatches([...patches, points]);
   }, [points]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -279,8 +284,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setSelectedPoint(null);
     setPatches([]);
   }, [selectedRouteId]);
-
-  console.log(patches);
 
   return (
     <>
