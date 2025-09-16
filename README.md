@@ -21,7 +21,6 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 
 ##### Features
 
-- Undo / redo
 - Context menu on map marker click
 - GPX import
 - Optimistic UI updates for point drags
