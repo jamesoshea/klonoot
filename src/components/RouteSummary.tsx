@@ -25,14 +25,14 @@ export const RouteSummary = ({
 
   const { refetch } = useFetchRoute({
     brouterProfile,
-    enabled: false,
+    enabled: false, // we only want to make the request when the user asks for a GPX. Brouter calls can be slow
     points,
     format: "gpx",
   });
 
   const handleGPXDownload = async () => {
     const { data: route } = await refetch();
-    const blob = new Blob([route], { type: "text/plain" });
+    const blob = new Blob([route as unknown as string], { type: "text/plain" }); // TODO: remove this once the hook is correctly typed
     const fileURL = URL.createObjectURL(blob);
     const downloadLink = document.createElement("a");
     downloadLink.href = fileURL;
