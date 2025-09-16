@@ -5,16 +5,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
 
-import { Auth } from "./components/Auth";
 import { Routing } from "./components/Routing";
 import { LoadingContextProvider } from "./contexts/LoadingContextProvider";
 import { RouteContextProvider } from "./contexts/RouteContextProvider";
 import { SessionContextProvider } from "./contexts/SessionContextProvider";
 import { queryClient } from "./queries/queryClient";
 import type { Coordinate } from "./types";
-import { Avatar } from "./components/Avatar";
-import { AboutButton } from "./components/AboutButton";
-import { About } from "./components/About";
+import { Nav } from "./components/Nav";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -51,14 +48,7 @@ function App() {
           <LoadingContextProvider>
             {map && mapLoaded && <Routing map={map} />}
             <div id="map-container" ref={mapContainerRef} />
-            <Avatar />
-            <dialog id="auth_modal" className="modal">
-              <Auth />
-            </dialog>
-            <AboutButton />
-            <dialog id="about_modal" className="modal">
-              <About />
-            </dialog>
+            <Nav />
           </LoadingContextProvider>
         </RouteContextProvider>
       </SessionContextProvider>

@@ -1,13 +1,7 @@
 export const About = () => {
   return (
-    <div className="modal-box p-3 rounded-md">
-      <form method="dialog">
-        {/* if there is a button in form, it will close the modal */}
-        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div className="collapse collapse-arrow bg-base-100 mt-7">
+    <div>
+      <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title font-semibold">Manifesto</div>
         <div className="collapse-content text-sm">

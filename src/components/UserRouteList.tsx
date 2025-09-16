@@ -2,14 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
   faEdit,
-  faPlus,
   faSave,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
 import { useRouteContext } from "../contexts/RouteContext";
-import { useCreateRoute } from "../queries/useCreateRoute";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 import { useUpdateRoute } from "../queries/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
@@ -30,7 +28,6 @@ export const UserRouteList = ({
     useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
-  const { mutateAsync: createUserRoute } = useCreateRoute();
   const { mutate: updateUserRoute } = useUpdateRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
@@ -46,13 +43,6 @@ export const UserRouteList = ({
     });
     setChangesMade(false);
     setMode("DEFAULT");
-  };
-
-  const handleCreateBlankUserRoute = () => {
-    createUserRoute({
-      brouterProfile: BROUTER_PROFILES.TREKKING,
-      points: [],
-    });
   };
 
   const handleUpdateRouteName = async () => {
@@ -115,15 +105,6 @@ export const UserRouteList = ({
                 onClick={() => handleUpdateRoute()}
               >
                 <FontAwesomeIcon icon={faSave} size="lg" />
-              </button>
-            </div>
-            <div className="tooltip" data-tip="Add new route">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
-                disabled={loading}
-                onClick={() => handleCreateBlankUserRoute()}
-              >
-                <FontAwesomeIcon icon={faPlus} size="lg" />
               </button>
             </div>
           </>

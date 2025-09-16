@@ -29,16 +29,8 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
   border: none !important;
 }
 
-.auth {
-  position: absolute;
-  right: 48px;
-  top: 12px;
-}
-
-.about {
-  position: absolute;
-  right: 12px;
-  top: 12px;
+.nav-menu {
+  max-width: 278px;
 }
 
 .elevation {

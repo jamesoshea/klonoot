@@ -1,6 +1,11 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../contexts/SessionContext";
 import { queryClient } from "../queries/queryClient";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faSignOut } from "@fortawesome/free-solid-svg-icons";
+
+import { useCreateRoute } from "../queries/useCreateRoute";
+import { BROUTER_PROFILES } from "../types";
 
 type MODE = "LOGIN" | "VERIFY";
 
@@ -10,7 +15,10 @@ export const Auth = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [otp, setOtp] = useState<string>("");
   const [step, setStep] = useState<MODE>("LOGIN");
+
   const { supabase, session } = useContext(SessionContext);
+
+  const { mutateAsync: createUserRoute } = useCreateRoute();
 
   const handleEmailLogin = async () => {
     setLoading(true);
@@ -34,6 +42,13 @@ export const Auth = () => {
     setOtp("");
   };
 
+  const handleCreateRoute = () => {
+    createUserRoute({
+      brouterProfile: BROUTER_PROFILES.TREKKING,
+      points: [],
+    });
+  };
+
   const handleSignOut = async () => {
     setLoading(true);
     await supabase.auth.signOut();
@@ -43,29 +58,29 @@ export const Auth = () => {
   };
 
   return (
-    <div className="modal-box p-3 rounded-md">
-      <form method="dialog">
-        {/* if there is a button in form, it will close the modal */}
-        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <h3 className="font-bold text-lg mb-3">Hello!</h3>
+    <div>
       {session ? (
-        <>
-          <div className="mb-2">Signed in as {session.user.email}</div>
-          <button className="btn" onClick={handleSignOut}>
+        <div className="join join-vertical w-full">
+          <button
+            className="btn btn-ghost btn-block"
+            onClick={handleCreateRoute}
+          >
+            <FontAwesomeIcon icon={faPlus} size="lg" />
+            Create new route
+          </button>
+          <button className="btn btn-ghost btn-block" onClick={handleSignOut}>
+            <FontAwesomeIcon icon={faSignOut} size="lg" />
             Sign out
           </button>
-        </>
+        </div>
       ) : (
         <>
           <p className="text-content">
             {step === "LOGIN"
               ? "To sign in, enter your email. We will email you a code to verify your email address."
               : step === "VERIFY"
-              ? "Please enter the code we sent to your email"
-              : ""}
+                ? "Please enter the code we sent to your email"
+                : ""}
           </p>
           <p className="py-4">
             <label className="input validator w-full">

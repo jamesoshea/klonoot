@@ -4,27 +4,31 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useSessionContext } from "../contexts/SessionContext";
 import { useLoadingContext } from "../contexts/LoadingContext";
 
-export const Avatar = () => {
+export const Avatar = ({
+  showEmail,
+  onClick,
+}: {
+  showEmail: boolean;
+  onClick: () => void;
+}) => {
   const { loading } = useLoadingContext();
   const { session } = useSessionContext();
 
   return (
-    <div
-      className="auth"
-      // @ts-expect-error yeah I know
-      onClick={() => document.getElementById("auth_modal")?.showModal()}
-    >
-      <div
-        className={`bg-base-100 flex justify-center items-center py-1 w-10 rounded-full cursor-pointer ${
-          session || loading ? "" : "opacity-60"
-        }`}
-      >
-        {loading ? (
-          <span className="loading loading-spinner loading-xl"></span>
-        ) : (
-          <FontAwesomeIcon icon={faCircleUser} size="2xl" />
-        )}
-      </div>
+    <div className="flex flex-row-reverse items-center justify-between w-full">
+      {loading ? (
+        <span className="loading loading-spinner loading-xl"></span>
+      ) : (
+        <FontAwesomeIcon
+          className={`cursor-pointer ${session || loading ? "" : "opacity-60"}`}
+          icon={faCircleUser}
+          size="2xl"
+          onClick={onClick}
+        />
+      )}
+      {session && showEmail && (
+        <p className="text-xs opacity-60">Signed in as {session.user.email}</p>
+      )}
     </div>
   );
 };
