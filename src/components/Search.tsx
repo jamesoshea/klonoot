@@ -2,7 +2,7 @@ import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { type GeoJSONFeature } from "mapbox-gl";
 import { useState, type Dispatch } from "react";
 
-import fistUrl from "../assets/palestine-flag-fist.webp";
+// import fistUrl from "../assets/palestine-flag-fist.webp";
 
 import {
   COLOR__BASE_100,
