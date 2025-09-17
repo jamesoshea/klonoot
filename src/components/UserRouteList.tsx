@@ -3,12 +3,14 @@ import {
   faCheck,
   faEdit,
   faSave,
+  faTrash,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
 import { useRouteContext } from "../contexts/RouteContext";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes";
+import { useDeleteRoute } from "../queries/useDeleteRoute";
 import { useUpdateRoute } from "../queries/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
 import { BROUTER_PROFILES, type Coordinate, type UserRoute } from "../types";
@@ -29,6 +31,7 @@ export const UserRouteList = ({
 
   const { data: userRoutes } = useGetUserRoutes();
   const { mutate: updateUserRoute } = useUpdateRoute();
+  const { mutate: deleteUserRoute } = useDeleteRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
   const [changesMade, setChangesMade] = useState<boolean>(false);
@@ -42,7 +45,13 @@ export const UserRouteList = ({
       selectedRouteId,
     });
     setChangesMade(false);
-    setMode("DEFAULT");
+  };
+
+  const handleDeleteRoute = async () => {
+    await deleteUserRoute({
+      selectedRouteId,
+    });
+    setChangesMade(false);
   };
 
   const handleUpdateRouteName = async () => {
@@ -105,6 +114,15 @@ export const UserRouteList = ({
                 onClick={() => handleUpdateRoute()}
               >
                 <FontAwesomeIcon icon={faSave} size="lg" />
+              </button>
+            </div>
+            <div className="tooltip" data-tip="Delete">
+              <button
+                className="btn btn-circle w-8 h-8 btn-ghost"
+                disabled={loading}
+                onClick={() => handleDeleteRoute()}
+              >
+                <FontAwesomeIcon icon={faTrash} size="lg" />
               </button>
             </div>
           </>
