@@ -13,10 +13,14 @@ export const Nav = () => {
         onClick={() => setMenuIsOpen(!menuIsOpen)}
       />
       {menuIsOpen && (
-        <div className="mt-2">
-          <Auth />
-          <About />
-        </div>
+        <>
+          <div className="divider m-0" />
+          <div>
+            <Auth />
+            <div className="divider m-0" />
+            <About />
+          </div>
+        </>
       )}
     </div>
   );

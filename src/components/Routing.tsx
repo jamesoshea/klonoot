@@ -308,7 +308,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           />
           {routeTrack && (
             <>
-              <div className="divider my-1"></div>
+              <div className="divider my-1" />
               <RouteSummary
                 brouterProfile={brouterProfile}
                 points={points}

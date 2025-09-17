@@ -1,7 +1,7 @@
 export const About = () => {
   return (
     <div>
-      <div className="collapse collapse-arrow bg-base-100">
+      {/* <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title font-semibold">Manifesto</div>
         <div className="collapse-content text-sm">
@@ -39,7 +39,7 @@ export const About = () => {
           <br />
           Might makes spite.
         </div>
-      </div>
+      </div> */}
       <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title font-semibold">Planned Improvements</div>
@@ -66,6 +66,20 @@ export const About = () => {
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title font-semibold">FAQ</div>
         <div className="collapse-content text-sm">Coming soon</div>
+      </div>
+      <div className="collapse collapse-arrow bg-base-100">
+        <input type="checkbox" name="my-accordion-2" />
+        <div className="collapse-title font-semibold">Source code</div>
+        <div className="collapse-content text-sm">
+          The code for this UI is available at{" "}
+          <a
+            className="text-secondary"
+            href="https://github.com/jamesoshea/klonoot"
+            target="_blank"
+          >
+            https://github.com/jamesoshea/klonoot
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
 }
 
 .nav-menu {
-  max-width: 278px;
+  max-width: 252px;
 }
 
 .elevation {
@@ -42,7 +42,7 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
 }
 
 .elevation.collapsed {
-  max-width: 278px;
+  max-width: 252px;
 }
 
 .routing {

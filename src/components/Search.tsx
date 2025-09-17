@@ -60,13 +60,13 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   return (
     <div className="mb-2 w-full">
       <div className="flex items-center justify-between w-full">
-        <a href="https://map.org.uk" target="_blank" className="ml-[-0.5rem]">
+        {/* <a href="https://map.org.uk" target="_blank" className="ml-[-0.5rem]">
           <img
             alt="Raised fist with the colours of the Palestinian flag"
             src={fistUrl}
             className="cursor-pointer h-[32px]"
           />
-        </a>
+        </a> */}
         {/* @ts-expect-error @types/react version mismatch */}
         <SearchBox
           accessToken={MAPBOX_ACCESS_TOKEN}
