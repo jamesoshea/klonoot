@@ -1,9 +1,7 @@
-import { MapMouseEvent } from "mapbox-gl";
 import * as turf from "@turf/turf";
 import type { Coordinate } from "../types";
 
-export const setNewPoint = (e: MapMouseEvent, points: Coordinate[]) => {
-  const newPoint = [e.lngLat.lng, e.lngLat.lat];
+export const setNewPoint = (newPoint: Coordinate, points: Coordinate[]) => {
   let newIndex = 0;
 
   if (points.length < 2) {
@@ -11,7 +9,10 @@ export const setNewPoint = (e: MapMouseEvent, points: Coordinate[]) => {
   } else {
     const line = turf.lineString(points.map((point) => [point[0], point[1]]));
 
-    const nearestPointOnLine = turf.nearestPointOnLine(line, newPoint);
+    const nearestPointOnLine = turf.nearestPointOnLine(line, [
+      newPoint[0],
+      newPoint[1],
+    ]);
 
     const distancesAlongLine = points.map((point) =>
       turf.nearestPointOnLine(line, [point[0], point[1]])

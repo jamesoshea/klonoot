@@ -80,7 +80,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   );
 
   const handleNewPointSet = useCallback(
-    (e: mapboxgl.MapMouseEvent) => setPoints(setNewPoint(e, points)),
+    (e: mapboxgl.MapMouseEvent) =>
+      setPoints(setNewPoint([e.lngLat.lng, e.lngLat.lat, "", false], points)),
     [points]
   );
 

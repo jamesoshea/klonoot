@@ -1,4 +1,3 @@
-import { MapMouseEvent } from "mapbox-gl";
 import { describe, expect, test } from "vitest";
 
 import { setNewPoint } from "./route";
@@ -20,12 +19,10 @@ describe("setNewPoint", () => {
       [13.470302459360397, 52.5103152000853],
       [13.496206624193093, 52.498639209578556],
     ];
-    const event = {
-      lngLat: { lng: 13.487468910213238, lat: 52.5342696157567 },
-    };
+    const point = [13.487468910213238, 52.5342696157567];
 
     expect(
-      setNewPoint(event as MapMouseEvent, mockPoints as Coordinate[])
+      setNewPoint(point as Coordinate, mockPoints as Coordinate[])
     ).toEqual(result);
   });
 
@@ -42,12 +39,10 @@ describe("setNewPoint", () => {
       [13.470302459360397, 52.5103152000853],
       [13.496206624193093, 52.498639209578556],
     ];
-    const event = {
-      lngLat: { lng: 13.496206624193093, lat: 52.498639209578556 },
-    };
+    const point = [13.496206624193093, 52.498639209578556];
 
     expect(
-      setNewPoint(event as MapMouseEvent, mockPoints as Coordinate[])
+      setNewPoint(point as Coordinate, mockPoints as Coordinate[])
     ).toEqual(result);
   });
 });

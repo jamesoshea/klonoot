@@ -12,6 +12,7 @@ import {
 } from "../consts";
 import type { Coordinate } from "../types";
 import { getThemeFont } from "../utils/colors";
+import { setNewPoint } from "../utils/route";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -28,27 +29,17 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState<GeoJSONFeature | null>(null);
 
-  const addSearchResultToPoints = (position: "START" | "END") => {
+  const addSearchResultToPoints = () => {
     const newArray = [...points];
-    if (position === "START") {
-      newArray.unshift([
-        searchResult?.properties?.coordinates.longitude,
-        searchResult?.properties?.coordinates.latitude,
-        "",
-        false,
-      ]);
-    }
 
-    if (position === "END") {
-      newArray.push([
-        searchResult?.properties?.coordinates.longitude,
-        searchResult?.properties?.coordinates.latitude,
-        "",
-        false,
-      ]);
-    }
+    const newPoint: Coordinate = [
+      searchResult?.properties?.coordinates.longitude,
+      searchResult?.properties?.coordinates.latitude,
+      searchResult?.properties?.name ?? "",
+      false,
+    ];
 
-    setPoints(newArray);
+    setPoints(setNewPoint(newPoint, newArray));
     handleClearSearchResult();
   };
 
@@ -116,29 +107,12 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
               </h2>
               <div>{searchResult?.properties?.place_formatted ?? ""}</div>
               <div className="card-actions justify-end mt-2">
-                {points.length ? (
-                  <>
-                    <button
-                      className="btn"
-                      onClick={() => addSearchResultToPoints("START")}
-                    >
-                      Add to start
-                    </button>
-                    <button
-                      className="btn"
-                      onClick={() => addSearchResultToPoints("END")}
-                    >
-                      Add to end
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="btn btn-outline"
-                    onClick={() => addSearchResultToPoints("END")}
-                  >
-                    Add to route
-                  </button>
-                )}
+                <button
+                  className="btn btn-outline"
+                  onClick={addSearchResultToPoints}
+                >
+                  Add to route
+                </button>
               </div>
             </div>
           </div>
