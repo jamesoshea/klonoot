@@ -66,7 +66,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       index: number
     ) => {
       const newArray = [...points];
-      newArray.splice(index, 1, [e.target._lngLat.lng, e.target._lngLat.lat]);
+      const newPoint: Coordinate = [
+        e.target._lngLat.lng,
+        e.target._lngLat.lat,
+        points[index][2],
+        points[index][3],
+      ];
+      newArray.splice(index, 1, newPoint);
       setPoints(newArray);
     },
     [points]

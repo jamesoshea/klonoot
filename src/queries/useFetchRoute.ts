@@ -19,8 +19,24 @@ async function fetchRoute(
   points: Coordinate[],
   brouterProfile: BROUTER_PROFILES
 ) {
-  const formattedLngLats = points.map((point) => point.join(",")).join("|");
-  const formattedQueryString = `lonlats=${formattedLngLats}&profile=${brouterProfile}&alternativeidx=0&format=${format}`;
+  const formattedLngLats = points
+    .map((point) => [point[0], point[1], point[2]]) // lng, lat, name
+    .map((point) => point.join(","))
+    .join("|");
+
+  const directPoints = points.reduce<number[]>((acc, point, index) => {
+    if (point[3]) {
+      acc.push(index);
+    }
+
+    return acc;
+  }, []);
+
+  const formattedDirectPoints = directPoints.length
+    ? `&straight=${directPoints.join(",")}`
+    : "";
+
+  const formattedQueryString = `lonlats=${formattedLngLats}&profile=${brouterProfile}&alternativeidx=0&format=${format}${formattedDirectPoints}`;
 
   const baseUrl = import.meta.env.PROD ? "/api" : "http://localhost:17777";
 

@@ -34,6 +34,8 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
       newArray.unshift([
         searchResult?.properties?.coordinates.longitude,
         searchResult?.properties?.coordinates.latitude,
+        "",
+        false,
       ]);
     }
 
@@ -41,6 +43,8 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
       newArray.push([
         searchResult?.properties?.coordinates.longitude,
         searchResult?.properties?.coordinates.latitude,
+        "",
+        false,
       ]);
     }
 

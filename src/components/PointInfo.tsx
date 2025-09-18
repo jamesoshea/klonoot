@@ -1,4 +1,4 @@
-import { useEffect, useState, type Dispatch } from "react";
+import { useEffect, useState, type ChangeEvent, type Dispatch } from "react";
 import type { Coordinate } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
@@ -21,13 +21,19 @@ export const PointInfo = ({
       routePoint[0] === selectedPoint[0] && routePoint[1] === selectedPoint[1]
   );
 
+  const nameChanged = (selectedPoint[2] ?? "") !== pointName;
+
   const handleUpdatePointName = () => {
     const newPoints = [...points];
     points[index][2] = pointName;
     setPoints(newPoints);
   };
 
-  const nameChanged = (selectedPoint[2] ?? "") !== pointName;
+  const handleUpdatePointIsDirect = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPoints = [...points];
+    points[index][3] = e.target.checked;
+    setPoints(newPoints);
+  };
 
   useEffect(() => {
     setPointName(selectedPoint[2] ?? "");
@@ -62,6 +68,7 @@ export const PointInfo = ({
             />
           </div>
         </div>
+
         {nameChanged && (
           <div className="tooltip" data-tip="Confirm">
             <button
@@ -77,6 +84,15 @@ export const PointInfo = ({
           </div>
         )}
       </div>
+      <label className="label">
+        <input
+          type="checkbox"
+          className="checkbox"
+          checked={points[index][3]}
+          onChange={handleUpdatePointIsDirect}
+        />
+        Route from this point directly (as the crow flies)
+      </label>
       <button
         className="btn btn-xs btn-circle btn-ghost absolute right-1 top-1"
         onClick={() => setSelectedPoint(null)}

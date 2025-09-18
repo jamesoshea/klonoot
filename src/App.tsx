@@ -10,13 +10,12 @@ import { LoadingContextProvider } from "./contexts/LoadingContextProvider";
 import { RouteContextProvider } from "./contexts/RouteContextProvider";
 import { SessionContextProvider } from "./contexts/SessionContextProvider";
 import { queryClient } from "./queries/queryClient";
-import type { Coordinate } from "./types";
 import { Nav } from "./components/Nav";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
 
-const INITIAL_CENTER: Coordinate = [13.404954, 52.520008];
+const INITIAL_CENTER: LngLatLike = [13.404954, 52.520008];
 const INITIAL_ZOOM = 10.12;
 
 function App() {
@@ -28,7 +27,7 @@ function App() {
   useEffect(() => {
     const newMap = new mapboxgl.Map({
       container: mapContainerRef.current as HTMLElement,
-      center: INITIAL_CENTER as LngLatLike,
+      center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
       style: "mapbox://styles/mapbox/outdoors-v12", // style URL
     });
