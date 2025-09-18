@@ -84,11 +84,11 @@ export const PointInfo = ({
           </div>
         )}
       </div>
-      <label className="label">
+      <label className="label mt-2">
         <input
           type="checkbox"
           className="checkbox"
-          checked={points[index][3]}
+          checked={!!points[index]?.[3]}
           onChange={handleUpdatePointIsDirect}
         />
         Route from this point directly (as the crow flies)

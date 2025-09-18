@@ -74,6 +74,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       ];
       newArray.splice(index, 1, newPoint);
       setPoints(newArray);
+      setSelectedPoint(newPoint);
     },
     [points]
   );
@@ -173,8 +174,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setMarkersInState(
       points.map((point, index) => {
         const element = document.createElement("div");
-        element.className =
-          "rounded-2xl min-w-6 min-h-6 bg-primary text-primary-content text-center cursor-pointer";
+        element.className = `rounded-2xl min-w-6 min-h-6 text-center cursor-pointer ${point[3] ? "bg-primary-content text-primary" : "bg-primary text-primary-content"}`;
         element.innerText = (index + 1).toString();
         element.onclick = (e) => handlePointClick(e, index);
         const marker = new mapboxgl.Marker({ draggable: true, element })
