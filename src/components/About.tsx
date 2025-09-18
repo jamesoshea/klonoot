@@ -52,7 +52,6 @@ export const About = () => {
           <h3 className="mt-2">Features</h3>
           <ul className="list">
             <li>- Incline stats when mousing over route track</li>
-            <li>- Follow ways / "as the crow flies" routing between points</li>
             <li>
               - Optimistic UI updates for point drags (only querying for parts
               of route from brouter to improve performance)

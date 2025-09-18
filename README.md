@@ -22,7 +22,6 @@ I would like to find a way to get brouter to run serverless/ as an AWS Lambda, i
 ##### Features
 
 - Incline stats when mousing over route track
-- Follow ways / "as the crow flies" routing between points
 - Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)
 - Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
 - GPX import
