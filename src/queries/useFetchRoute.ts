@@ -57,7 +57,7 @@ export const useFetchRoute = ({
   brouterProfile: BROUTER_PROFILES;
 }) => {
   return useQuery({
-    enabled: enabled,
+    enabled,
     queryKey: [
       QUERY_KEYS.FETCH_ROUTE,
       JSON.stringify(points),
@@ -65,7 +65,7 @@ export const useFetchRoute = ({
       brouterProfile,
     ],
     // @ts-expect-error TODO: fix this
-    queryFn: () => fetchRoute(format, points, brouterProfile),
-    staleTime: 1000 * 60 * 60 * 24, // 1 day
+    queryFn: async () => await fetchRoute(format, points, brouterProfile),
+    staleTime: 1000 * 60 * 60 * 24, // 1 day,
   });
 };

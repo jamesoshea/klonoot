@@ -84,10 +84,10 @@ export const PointInfo = ({
           </div>
         )}
       </div>
-      <label className="label mt-2">
+      <label className="label mt-2 text-xs">
         <input
           type="checkbox"
-          className="checkbox"
+          className="checkbox checkbox-sm"
           checked={!!points[index]?.[3]}
           onChange={handleUpdatePointIsDirect}
         />

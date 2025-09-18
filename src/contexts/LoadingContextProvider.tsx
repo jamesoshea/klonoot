@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { LoadingContext } from "./LoadingContext";
 
-import { queryClient } from "../queries/queryClient";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 
 export const LoadingContextProvider = ({
   children,
@@ -9,9 +9,10 @@ export const LoadingContextProvider = ({
   children: ReactNode;
 }) => {
   const [loadingOverride, setLoading] = useState<boolean>(false);
+  const isFetching = useIsFetching();
+  const isMutating = useIsMutating();
 
-  const loading =
-    loadingOverride || !!queryClient.isFetching() || !!queryClient.isMutating();
+  const loading = loadingOverride || !!isFetching || !!isMutating;
 
   return (
     <LoadingContext.Provider
