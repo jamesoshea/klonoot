@@ -51,7 +51,7 @@ mapbox-search-box [class$="--ClearBtn"] {
 }
 
 .nav-menu {
-  max-width: 252px;
+  max-width: 266px;
 }
 
 .elevation {
@@ -63,7 +63,7 @@ mapbox-search-box [class$="--ClearBtn"] {
 }
 
 .elevation.collapsed {
-  max-width: 252px;
+  max-width: 266px;
 }
 
 .routing {

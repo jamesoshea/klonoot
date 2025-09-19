@@ -42,7 +42,7 @@ export const PointInfo = ({
   }, [selectedPoint]);
 
   return (
-    <div className="p-3 mt-2 rounded-lg bg-base-100 relative">
+    <div className="px-3 py-2 mt-2 rounded-lg bg-base-100 relative">
       <div className="flex mb-2 items-center justify-between gap-2">
         <p className="text-xs opacity-60">
           Point {index + 1} ({selectedPoint[0].toFixed(3)},{" "}

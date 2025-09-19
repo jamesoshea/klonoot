@@ -240,7 +240,7 @@ export const Elevation = ({
           <div
             className="bg-base-200"
             ref={canvasContainerRef}
-            style={{ maxWidth: collapsed ? 212 : "initial" }}
+            style={{ maxWidth: collapsed ? 220 : "initial" }}
           >
             <canvas
               height={CANVAS_HEIGHT}
