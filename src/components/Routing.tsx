@@ -18,7 +18,6 @@ import {
 } from "../types";
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
-import { useCreateRoute } from "../queries/useCreateRoute.ts";
 import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
@@ -37,7 +36,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { session, supabase } = useSessionContext();
 
   const { data: userRoutes } = useGetUserRoutes();
-  const { mutateAsync: createUserRoute } = useCreateRoute();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(
     BROUTER_PROFILES.TREKKING
@@ -258,13 +256,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === "SIGNED_IN" && points.length) {
-        await createUserRoute({
-          brouterProfile,
-          points,
-        });
-      }
-
       if (event === "SIGNED_OUT") {
         setBrouterProfile(BROUTER_PROFILES.TREKKING);
         setPoints([]);
@@ -277,7 +268,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [brouterProfile, createUserRoute, map, points, supabase.auth]);
+  }, [brouterProfile, map, points, supabase.auth]);
 
   useEffect(() => {
     setSelectedPoint(null);
