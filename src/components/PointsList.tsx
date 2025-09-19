@@ -8,6 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Coordinate } from "../types";
+import { ICON_BUTTON_SIZES } from "../consts";
+import { IconButton } from "./shared/IconButton";
 
 export const PointsList = ({
   numberOfPatches,
@@ -50,12 +52,12 @@ export const PointsList = ({
         <div />
         <div className="tooltip z-100" data-tip="Undo">
           {/* TODO: fix this. why is it not showing? */}
-          <button
-            className="btn btn-circle w-5 h-5 btn-ghost"
+          <IconButton
             disabled={numberOfPatches < 2}
-          >
-            <FontAwesomeIcon icon={faUndo} size="sm" onClick={onUndo} />
-          </button>
+            icon={faUndo}
+            size={ICON_BUTTON_SIZES.MEDIUM}
+            onClick={onUndo}
+          />
         </div>
       </li>
       {points.map(([lat, lon, name], index) => (

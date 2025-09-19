@@ -2,6 +2,7 @@ import { useState } from "react";
 import { About } from "./About";
 import { Auth } from "./Auth";
 import { Avatar } from "./Avatar";
+import { Divider } from "./shared/Divider";
 
 export const Nav = () => {
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
@@ -14,7 +15,7 @@ export const Nav = () => {
       />
       {menuIsOpen && (
         <>
-          <div className="divider m-0" />
+          <Divider />
           <div>
             <Auth />
             <About />

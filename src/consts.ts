@@ -112,3 +112,9 @@ export enum QUERY_KEYS {
   GET_USER_ROUTES,
   FETCH_ROUTE,
 }
+
+export enum ICON_BUTTON_SIZES {
+  SMALL,
+  MEDIUM,
+  LARGE,
+}

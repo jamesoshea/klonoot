@@ -23,6 +23,7 @@ import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain } from "../utils/map.ts";
+import { Divider } from "./shared/Divider.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -315,7 +316,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           />
           {routeTrack && (
             <>
-              <div className="divider my-1" />
+              <Divider />
               <RouteSummary
                 brouterProfile={brouterProfile}
                 points={points}
