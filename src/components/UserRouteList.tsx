@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
   faEdit,
@@ -15,6 +14,8 @@ import { useUpdateRoute } from "../queries/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
 import { BROUTER_PROFILES, type Coordinate, type UserRoute } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
+import { IconButton } from "./shared/IconButton";
+import { ICON_BUTTON_SIZES } from "../consts";
 
 type MODE = "DEFAULT" | "RENAME";
 
@@ -99,59 +100,45 @@ export const UserRouteList = ({
         {mode === "DEFAULT" && (
           <>
             <div className="tooltip" data-tip="Rename">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
-                disabled={loading}
+              <IconButton
+                icon={faEdit}
+                size={ICON_BUTTON_SIZES.LARGE}
                 onClick={() => setMode("RENAME")}
-              >
-                <FontAwesomeIcon icon={faEdit} size="lg" />
-              </button>
+              />
             </div>
             <div className="tooltip" data-tip="Save">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
+              <IconButton
                 disabled={!changesMade || loading}
-                onClick={() => handleUpdateRoute()}
-              >
-                <FontAwesomeIcon icon={faSave} size="lg" />
-              </button>
+                icon={faSave}
+                size={ICON_BUTTON_SIZES.LARGE}
+                onClick={handleUpdateRoute}
+              />
             </div>
             <div className="tooltip" data-tip="Delete">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
+              <IconButton
                 disabled={loading}
-                onClick={() => handleDeleteRoute()}
-              >
-                <FontAwesomeIcon icon={faTrash} size="lg" />
-              </button>
+                icon={faTrash}
+                size={ICON_BUTTON_SIZES.LARGE}
+                onClick={handleDeleteRoute}
+              />
             </div>
           </>
         )}
         {mode === "RENAME" && (
           <>
             <div className="tooltip" data-tip="Confirm">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
-                onClick={() => handleUpdateRouteName()}
-              >
-                <FontAwesomeIcon
-                  className="cursor-pointer"
-                  icon={faCheck}
-                  size="lg"
-                />
-              </button>
+              <IconButton
+                icon={faCheck}
+                size={ICON_BUTTON_SIZES.LARGE}
+                onClick={handleUpdateRouteName}
+              />
             </div>
             <div className="tooltip" data-tip="Discard">
-              <button
-                className="btn btn-circle w-8 h-8 btn-ghost"
+              <IconButton
+                icon={faXmark}
+                size={ICON_BUTTON_SIZES.LARGE}
                 onClick={() => setMode("DEFAULT")}
-              >
-                <FontAwesomeIcon
-                  className="cursor-pointer"
-                  icon={faXmark}
-                  size="lg"
-                />
-              </button>
+              />
             </div>
           </>
         )}

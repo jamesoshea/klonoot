@@ -9,6 +9,8 @@ import type { Dispatch } from "react";
 import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
 import { useFetchRoute } from "../queries/useFetchRoute";
+import { IconButton } from "./shared/IconButton";
+import { ICON_BUTTON_SIZES } from "../consts";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -122,22 +124,20 @@ export const RouteSummary = ({
           </details>
         </div>
         <div className="tooltip" data-tip="Reverse route">
-          <button
-            className="btn btn-circle w-8 h-8 btn-ghost"
+          <IconButton
             disabled={loading}
+            icon={faArrowsRotate}
+            size={ICON_BUTTON_SIZES.LARGE}
             onClick={handleReverseRoute}
-          >
-            <FontAwesomeIcon icon={faArrowsRotate} size="lg" />
-          </button>
+          />
         </div>
         <div className="tooltip" data-tip="Download GPX">
-          <button
-            className="btn btn-circle w-8 h-8 btn-ghost"
+          <IconButton
             disabled={loading}
+            icon={faDownload}
+            size={ICON_BUTTON_SIZES.LARGE}
             onClick={handleGPXDownload}
-          >
-            <FontAwesomeIcon icon={faDownload} size="lg" />
-          </button>
+          />
         </div>
       </div>
     </div>

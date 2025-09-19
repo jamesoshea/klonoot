@@ -2,6 +2,8 @@ import { useEffect, useState, type ChangeEvent, type Dispatch } from "react";
 import type { Coordinate } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { IconButton } from "./shared/IconButton";
+import { ICON_BUTTON_SIZES } from "../consts";
 
 export const PointInfo = ({
   points,
@@ -71,16 +73,11 @@ export const PointInfo = ({
 
         {nameChanged && (
           <div className="tooltip" data-tip="Confirm">
-            <button
-              className="btn btn-circle w-8 h-8 btn-ghost"
-              onClick={() => handleUpdatePointName()}
-            >
-              <FontAwesomeIcon
-                className="cursor-pointer"
-                icon={faCheck}
-                size="lg"
-              />
-            </button>
+            <IconButton
+              icon={faCheck}
+              size={ICON_BUTTON_SIZES.LARGE}
+              onClick={handleUpdatePointName}
+            />
           </div>
         )}
       </div>

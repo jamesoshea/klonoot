@@ -1,12 +1,12 @@
 import { useCallback, type Dispatch } from "react";
 
 import {
-  faChevronCircleDown,
+  faCircleChevronDown,
   faCircleChevronUp,
   faTrash,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import type { Coordinate } from "../types";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { IconButton } from "./shared/IconButton";
@@ -66,29 +66,26 @@ export const PointsList = ({
           <div>{name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>
           <div>
             {index !== 0 && (
-              <button
-                className="btn btn-circle w-5 h-5 btn-ghost"
+              <IconButton
+                icon={faCircleChevronUp}
+                size={ICON_BUTTON_SIZES.MEDIUM}
                 onClick={() => handleMovePointUp(index)}
-              >
-                <FontAwesomeIcon icon={faCircleChevronUp} size="sm" />
-              </button>
+              />
             )}
             {index < points.length - 1 ? (
-              <button
-                className="btn btn-circle w-5 h-5 btn-ghost"
+              <IconButton
+                icon={faCircleChevronDown}
+                size={ICON_BUTTON_SIZES.MEDIUM}
                 onClick={() => handleMovePointDown(index)}
-              >
-                <FontAwesomeIcon icon={faChevronCircleDown} size="sm" />
-              </button>
+              />
             ) : (
               <button className="min-w-5" />
             )}
-            <button
-              className="btn btn-circle w-5 h-5 btn-ghost"
+            <IconButton
+              icon={faTrash}
+              size={ICON_BUTTON_SIZES.MEDIUM}
               onClick={() => handlePointDelete(index)}
-            >
-              <FontAwesomeIcon icon={faTrash} size="sm" />
-            </button>
+            />
           </div>
         </li>
       ))}
