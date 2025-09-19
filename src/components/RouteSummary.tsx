@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowsLeftRightToLine,
   faArrowsRotate,
   faDownload,
+  faLeftRight,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Dispatch } from "react";
 
@@ -55,6 +55,20 @@ export const RouteSummary = ({
     setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
   };
 
+  const handleRouteOutAndBack = () => {
+    const reversedPoints = [...points]
+      .reverse()
+      .slice(1)
+      .map(([lng, lat, name, direct]) => [
+        lng + 0.0001,
+        lat + 0.0001,
+        name,
+        direct,
+      ]);
+    const newPoints = [...points, ...reversedPoints];
+    setPoints(newPoints as Coordinate[]);
+  };
+
   if (!points.length) {
     return;
   }
@@ -74,13 +88,31 @@ export const RouteSummary = ({
       </div>
       <div>
         <div className="tooltip" data-tip="Route back to start">
-          <button
-            className="btn btn-circle w-8 h-8 btn-ghost"
-            disabled={loading}
-            onClick={handleRouteBackToStart}
-          >
-            <FontAwesomeIcon icon={faArrowsLeftRightToLine} size="lg" />
-          </button>
+          <details className="dropdown">
+            <summary className="btn btn-circle w-8 h-8 btn-ghost">
+              <FontAwesomeIcon icon={faLeftRight} size="lg" />
+            </summary>
+            <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 shadow-sm">
+              <li>
+                <button
+                  className="btn btn-ghost px-1"
+                  disabled={loading}
+                  onClick={handleRouteBackToStart}
+                >
+                  Direct
+                </button>
+              </li>
+              <li>
+                <button
+                  className="btn btn-ghost px-1"
+                  disabled={loading}
+                  onClick={handleRouteOutAndBack}
+                >
+                  Out and back
+                </button>
+              </li>
+            </ul>
+          </details>
         </div>
         <div className="tooltip" data-tip="Reverse route">
           <button

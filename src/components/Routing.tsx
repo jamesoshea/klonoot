@@ -257,7 +257,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === "SIGNED_IN") {
+      if (event === "SIGNED_IN" && points.length) {
         await createUserRoute({
           brouterProfile,
           points,

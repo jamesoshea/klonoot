@@ -13,6 +13,10 @@
   background-color: lightgrey;
 }
 
+mapbox-search-box {
+  width: 100%;
+}
+
 mapbox-search-box * {
   max-height: 32px !important;
 }
@@ -27,6 +31,23 @@ mapbox-search-box [class$="--SearchBox"]:focus {
 
 mapbox-search-box [class$="--SearchBox"] input:focus {
   border: none !important;
+}
+
+mapbox-search-box [class$="--ActionIcon"]:hover {
+  background-color: var(--color-base-300);
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+mapbox-search-box [class$="--ActionIcon"]:hover svg {
+  color: var(--color-primary-content) !important;
+}
+
+mapbox-search-box [class$="--SearchIcon"] {
+  transform: scale(0.8);
+}
+mapbox-search-box [class$="--ClearBtn"] {
+  transform: scale(0.55);
 }
 
 .nav-menu {
@@ -55,6 +76,6 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
 .search-result {
   z-index: 1;
   position: absolute;
-  top: 12px;
-  left: 324px;
+  top: 16px;
+  left: 278px;
 }

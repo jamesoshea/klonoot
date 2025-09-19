@@ -75,14 +75,14 @@ export const Auth = () => {
         </div>
       ) : (
         <>
-          <p className="text-content">
+          <p className="text-content text-center">
             {step === "LOGIN"
               ? "To sign in, enter your email. We will email you a code to verify your email address."
               : step === "VERIFY"
                 ? "Please enter the code we sent to your email"
                 : ""}
           </p>
-          <p className="py-4">
+          <p className="py-2">
             <label className="input validator w-full">
               <svg
                 className="h-[1em] opacity-50"

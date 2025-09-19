@@ -17,7 +17,6 @@ export const Nav = () => {
           <div className="divider m-0" />
           <div>
             <Auth />
-            <div className="divider m-0" />
             <About />
           </div>
         </>
