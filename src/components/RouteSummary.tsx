@@ -104,7 +104,7 @@ export const RouteSummary = ({
             <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 shadow-sm">
               <li>
                 <button
-                  className="btn btn-ghost px-1"
+                  className="btn btn-ghost px-1 rounded-none"
                   disabled={loading}
                   onClick={handleRouteBackToStart}
                 >
@@ -113,7 +113,7 @@ export const RouteSummary = ({
               </li>
               <li>
                 <button
-                  className="btn btn-ghost px-1"
+                  className="btn btn-ghost px-1 rounded-none"
                   disabled={loading}
                   onClick={handleRouteOutAndBack}
                 >
