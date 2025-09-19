@@ -1,0 +1,50 @@
+## Roadmap
+
+### Larger Projects
+
+- Run brouter serverless/ as an AWS Lambda
+- Support graphhopper and give users a choice of routing algorithm
+- Reserch MapLibre
+- E2E testing
+  - Log in
+  - Add a point
+  - Add a second point
+  - Check route
+  - Search for a place (a permanent place, like a mountain)
+  - Add to route
+  - Check route
+  - Save route
+  - Create new route
+  - Add 2 points
+  - Check route
+  - Delete route
+  - Log out
+
+### Smaller Projects
+
+##### Technical Improvements
+
+- More unit tests (where?)
+- Test coverage
+- Create reusable components for repeated markup:
+  - SquareButton
+  - CircleInfoIcon
+- Use input type="number" for OTP
+- Lighthouse audit
+- Test app with those with less than 20/20 vision
+  - Font size
+  - Contrast
+- Increase z-index of nav menu
+
+##### Features
+
+- Explainer for brouter profiles
+- Remove search result border
+- Access retrictions on route
+- Incline stats when mousing over route track
+- Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)
+- Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
+- GPX import
+- Bulk route export
+- Weather en-route
+- PointInfo component: "What's here" functionality (e.g. google maps)

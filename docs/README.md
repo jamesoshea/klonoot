@@ -10,23 +10,6 @@ It relies on [brouter](https://github.com/abrensch/brouter) for its routing, and
 
 Authentication and persistence are managed using Supabase.
 
-## Roadmap
-
-I would like to find a way to get brouter to run serverless/ as an AWS Lambda, in order to make it more scalable, and to cut down on server costs. I have rough plans for other features I would like to implement:
-
-##### Technical Improvements
-
-- More automated testing
-- Test coverage
-
-##### Features
-
-- Incline stats when mousing over route track
-- Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)
-- Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
-- GPX import
-- Bulk route export
-
 ## Running the app locally
 
 You'll need a locally-running brouter instance. I have dockerized a recent version of brouter in this repo: https://github.com/jamesoshea/brouter-dockerised. It is available for use on Docker Hub: `jimoshea89/brouter:latest` and `jimoshea89/brouter:amd64`.
