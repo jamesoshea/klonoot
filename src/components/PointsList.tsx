@@ -45,10 +45,11 @@ export const PointsList = ({
 
   return (
     <ul className="list min-w-full max-h-[200px] overflow-auto mt-1">
-      <li className="list-row items-center p-0 min-w-full">
+      <li className="list-row items-center p-0 px-1 min-w-full">
         <div className="text-xs opacity-60">Anchor points</div>
         <div />
-        <div>
+        <div className="tooltip z-100" data-tip="Undo">
+          {/* TODO: fix this. why is it not showing? */}
           <button
             className="btn btn-circle w-5 h-5 btn-ghost"
             disabled={numberOfPatches < 2}

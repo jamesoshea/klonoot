@@ -81,10 +81,17 @@ export const RouteSummary = ({
   );
 
   return (
-    <div className="flex items-center justify-between gap-2 min-w-full">
-      <div className="flex grow items-center justify-around">
-        <span>{(trackLength / 1000).toFixed(1)} km</span>
-        <span>{elevationGain.toFixed(0)} m ele.</span>
+    <div className="flex items-center justify-around gap-2 min-w-full">
+      <div className="stats">
+        <div className="stat px-4 pl-2 py-0">
+          <div className="stat-title">Distance</div>
+          <div className="">{(trackLength / 1000).toFixed(1)} km</div>
+        </div>
+
+        <div className="stat px-4 py-0">
+          <div className="stat-title">Elevation</div>
+          <div className="">{elevationGain.toFixed(0)} m</div>
+        </div>
       </div>
       <div>
         <div className="tooltip" data-tip="Route back to start">
