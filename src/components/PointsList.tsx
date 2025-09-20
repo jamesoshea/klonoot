@@ -46,44 +46,44 @@ export const PointsList = ({
   };
 
   return (
-    <ul className="list min-w-full max-h-[200px] overflow-auto mt-1">
+    <ul className="list min-w-full max-h-[200px] overflow-y-auto overflow-x-hidden mt-1">
       <li className="list-row items-center p-0 px-1 min-w-full">
         <div className="text-xs opacity-60">Anchor points</div>
         <div />
+        {/* TODO: fix this. why is it not showing? */}
         <div className="tooltip z-100" data-tip="Undo">
-          {/* TODO: fix this. why is it not showing? */}
           <IconButton
             disabled={numberOfPatches < 2}
             icon={faUndo}
-            size={ICON_BUTTON_SIZES.MEDIUM}
+            size={ICON_BUTTON_SIZES.SMALL}
             onClick={onUndo}
           />
         </div>
       </li>
       {points.map(([lat, lon, name], index) => (
-        <li className="list-row items-center p-1 min-w-full" key={index}>
+        <li className="list-row items-center p-1" key={index}>
           <div>{index + 1}</div>
           <div>{name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>
           <div>
             {index !== 0 && (
               <IconButton
                 icon={faCircleChevronUp}
-                size={ICON_BUTTON_SIZES.MEDIUM}
+                size={ICON_BUTTON_SIZES.SMALL}
                 onClick={() => handleMovePointUp(index)}
               />
             )}
             {index < points.length - 1 ? (
               <IconButton
                 icon={faCircleChevronDown}
-                size={ICON_BUTTON_SIZES.MEDIUM}
+                size={ICON_BUTTON_SIZES.SMALL}
                 onClick={() => handleMovePointDown(index)}
               />
             ) : (
-              <button className="min-w-5" />
+              <button className={`min-w-${ICON_BUTTON_SIZES.SMALL}`} />
             )}
             <IconButton
               icon={faTrash}
-              size={ICON_BUTTON_SIZES.MEDIUM}
+              size={ICON_BUTTON_SIZES.SMALL}
               onClick={() => handlePointDelete(index)}
             />
           </div>

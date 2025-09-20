@@ -15,7 +15,7 @@ export const Avatar = ({
   const { session } = useSessionContext();
 
   return (
-    <div className="flex flex-row-reverse items-center justify-between w-full">
+    <div className="flex flex-row-reverse items-center justify-start gap-1 w-full">
       {loading ? (
         <span className="loading loading-spinner loading-xl"></span>
       ) : (
@@ -26,8 +26,10 @@ export const Avatar = ({
           onClick={onClick}
         />
       )}
-      {session && showEmail && (
-        <p className="text-xs opacity-60">Signed in as {session.user.email}</p>
+      {showEmail && (
+        <p className="text-xs opacity-60">
+          {session ? `Signed in as ${session.user.email}` : "Not signed in"}
+        </p>
       )}
     </div>
   );

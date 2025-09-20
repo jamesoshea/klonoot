@@ -16,21 +16,25 @@ export const IconButton = ({
   onClick,
 }: IconButtonProps) => {
   const buttonSizeMap = {
-    [ICON_BUTTON_SIZES.SMALL]: 3,
-    [ICON_BUTTON_SIZES.MEDIUM]: 5,
-    [ICON_BUTTON_SIZES.LARGE]: 8,
+    [ICON_BUTTON_SIZES.SMALL]: "16px",
+    [ICON_BUTTON_SIZES.MEDIUM]: "20px",
+    [ICON_BUTTON_SIZES.LARGE]: "25.6px",
   };
 
   const iconSizeMap = {
-    [ICON_BUTTON_SIZES.SMALL]: "xs",
-    [ICON_BUTTON_SIZES.MEDIUM]: "sm",
+    [ICON_BUTTON_SIZES.SMALL]: "sm",
+    [ICON_BUTTON_SIZES.MEDIUM]: "md",
     [ICON_BUTTON_SIZES.LARGE]: "lg",
   };
 
   return (
     <button
-      className={`btn btn-circle w-${buttonSizeMap[size]} h-${buttonSizeMap[size]} btn-ghost`}
+      className={`btn btn-circle btn-ghost`}
       disabled={disabled}
+      style={{
+        height: buttonSizeMap[size],
+        width: buttonSizeMap[size],
+      }}
       onClick={onClick}
     >
       <FontAwesomeIcon

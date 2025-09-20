@@ -114,14 +114,14 @@ export const Auth = () => {
                   className="w-full"
                   placeholder="000000"
                   required
-                  type="text"
+                  type="number"
                   value={otp}
                   onChange={(e) => setOtp(e.currentTarget.value)}
                 />
               ) : null}
             </label>
           </p>
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-2">
             {step === "LOGIN" ? (
               <button className="btn" onClick={handleEmailLogin}>
                 {loading && <span className="loading loading-spinner" />}

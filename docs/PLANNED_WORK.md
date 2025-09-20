@@ -29,12 +29,10 @@
 - Create reusable components for repeated markup:
   - SquareButton
   - CircleInfoIcon
-- Use input type="number" for OTP
 - Lighthouse audit
 - Test app with those with less than 20/20 vision
   - Font size
   - Contrast
-- Increase z-index of nav menu
 
 ##### Features
 
