@@ -174,7 +174,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setMarkersInState(
       points.map((point, index) => {
         const element = document.createElement("div");
-        element.className = `rounded-2xl min-w-6 min-h-6 text-center cursor-pointer ${point[3] ? "bg-primary-content text-primary" : "bg-primary text-primary-content"}`;
+        element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 ${point[3] ? "bg-neutral-content text-neutral" : "bg-neutral text-neutral-content"}`;
         element.innerText = (index + 1).toString();
         element.onclick = (e) => handlePointClick(e, index);
         const marker = new mapboxgl.Marker({ draggable: true, element })
@@ -247,6 +247,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       paint: {
         "line-color": COLOR__ACCENT,
         "line-width": 8,
+        "line-opacity": 0.7,
       },
     });
   }, [map, routeTrack]);

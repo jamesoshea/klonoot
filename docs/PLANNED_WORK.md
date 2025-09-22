@@ -24,6 +24,10 @@
 
 ##### Technical Improvements
 
+- Elevation profile glitch when routing "as the crow flies"
+
+##### Technical Improvements
+
 - More unit tests (where?)
 - Test coverage
 - Create reusable components for repeated markup:

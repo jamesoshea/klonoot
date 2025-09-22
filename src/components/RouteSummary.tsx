@@ -83,8 +83,8 @@ export const RouteSummary = ({
   );
 
   return (
-    <div className="flex items-center justify-around gap-2 min-w-full">
-      <div className="stats">
+    <div className="flex items-center justify-end gap-2 min-w-full">
+      <div className="stats flex-grow">
         <div className="stat px-4 pl-2 py-0">
           <div className="stat-title">Distance</div>
           <div className="">{(trackLength / 1000).toFixed(1)} km</div>

@@ -232,7 +232,7 @@ export const Elevation = ({
               </div>
             </div>
             <FontAwesomeIcon
-              className="cursor-pointer z-100"
+              className="cursor-pointer z-100 text-neutral"
               icon={faCircleQuestion}
               size="lg"
             />

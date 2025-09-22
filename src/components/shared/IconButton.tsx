@@ -29,7 +29,7 @@ export const IconButton = ({
 
   return (
     <button
-      className={`btn btn-circle btn-ghost`}
+      className="btn btn-circle btn-ghost text-neutral"
       disabled={disabled}
       style={{
         height: buttonSizeMap[size],
