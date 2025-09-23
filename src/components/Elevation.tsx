@@ -180,7 +180,7 @@ export const Elevation = ({
   return (
     <div className={`indicator elevation ${collapsed ? "collapsed" : ""}`}>
       <div className="rounded-lg bg-base-100 flex items-start gap-2 p-2 w-full h-full">
-        <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[128px]">
+        <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[112px]">
           <span>{calculateMaxElevation(routeTrack)}m</span>
           <span>{calculateMinElevation(routeTrack)}m</span>
         </div>

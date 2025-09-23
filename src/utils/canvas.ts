@@ -1,6 +1,10 @@
 import { CANVAS_HEIGHT, COLOR__ACCENT, COLOR__BASE_200_80 } from "../consts";
 import type { BrouterResponse } from "../types";
 
+const filterElevationNoise = (message: string[]) => {
+  return Number(message[2]) !== -8192;
+};
+
 export const scale = (
   number: number,
   inMin: number,
@@ -14,6 +18,7 @@ export const scale = (
 export const calculateMaxElevation = (routeTrack: BrouterResponse): number =>
   routeTrack.features[0]?.properties?.["messages"]
     .slice(1)
+    .filter(filterElevationNoise)
     .reduce(
       (acc: number, cur) => (Number(cur[2]) > acc ? Number(cur[2]) : acc),
       0
@@ -22,6 +27,7 @@ export const calculateMaxElevation = (routeTrack: BrouterResponse): number =>
 export const calculateMinElevation = (routeTrack: BrouterResponse): number =>
   routeTrack.features[0]?.properties?.["messages"]
     .slice(1)
+    .filter(filterElevationNoise)
     .reduce(
       (acc: number, cur) => (Number(cur[2]) < acc ? Number(cur[2]) : acc),
       Infinity
@@ -66,6 +72,22 @@ export const createRouteMarks = (
             acc[tag] = value;
             return acc;
           }, {});
+
+        if (Number(message[2]) === -8192) {
+          // brouter quirks for directly-routed points
+          return {
+            points: [
+              ...acc.points,
+              {
+                distance: acc.distance + Number(message[3]),
+                left: scaleXWithParams(acc.distance + Number(message[3])),
+                top: acc.points.slice(-1)?.[0]?.top ?? 0, // use the previous height, if it exists
+                wayTags,
+              },
+            ],
+            distance: acc.distance + Number(message[3]),
+          };
+        }
 
         return {
           points: [
