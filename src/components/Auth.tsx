@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../contexts/SessionContext";
 import { queryClient } from "../queries/queryClient";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faSignOut } from "@fortawesome/free-solid-svg-icons";
 
 import { useCreateRoute } from "../queries/useCreateRoute";
 import { BROUTER_PROFILES } from "../types";
+import { SquareButton } from "./shared/SquareButton";
 
 type MODE = "LOGIN" | "VERIFY";
 
@@ -61,17 +61,16 @@ export const Auth = () => {
     <div>
       {session ? (
         <div className="join join-vertical w-full">
-          <button
-            className="btn btn-ghost btn-block"
+          <SquareButton
+            icon={faPlus}
+            text="Create new route"
             onClick={handleCreateRoute}
-          >
-            <FontAwesomeIcon icon={faPlus} size="lg" />
-            Create new route
-          </button>
-          <button className="btn btn-ghost btn-block" onClick={handleSignOut}>
-            <FontAwesomeIcon icon={faSignOut} size="lg" />
-            Sign out
-          </button>
+          />
+          <SquareButton
+            icon={faSignOut}
+            text="Sign out"
+            onClick={handleSignOut}
+          />
         </div>
       ) : (
         <>

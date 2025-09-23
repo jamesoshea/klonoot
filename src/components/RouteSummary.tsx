@@ -11,6 +11,7 @@ import { useLoadingContext } from "../contexts/LoadingContext";
 import { useFetchRoute } from "../queries/useFetchRoute";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
+import { SquareButton } from "./shared/SquareButton";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -103,22 +104,18 @@ export const RouteSummary = ({
             </summary>
             <ul className="menu dropdown-content bg-base-100 rounded-box z-12 w-52">
               <li>
-                <button
-                  className="btn btn-ghost text-neutral px-1 rounded-none"
+                <SquareButton
                   disabled={loading}
+                  text="Direct"
                   onClick={handleRouteBackToStart}
-                >
-                  Direct
-                </button>
+                />
               </li>
               <li>
-                <button
-                  className="btn btn-ghost text-neutral px-1 rounded-none"
+                <SquareButton
                   disabled={loading}
+                  text="Out and back"
                   onClick={handleRouteOutAndBack}
-                >
-                  Out and back
-                </button>
+                />
               </li>
             </ul>
           </details>

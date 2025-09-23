@@ -35,7 +35,6 @@ export const UserRouteList = ({
   const { mutate: deleteUserRoute } = useDeleteRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
-  const [changesMade, setChangesMade] = useState<boolean>(false);
   const [mode, setMode] = useState<MODE>("DEFAULT");
   const [newRouteName, setNewRouteName] = useState<string>("");
 
@@ -45,14 +44,12 @@ export const UserRouteList = ({
       points,
       selectedRouteId,
     });
-    setChangesMade(false);
   };
 
   const handleDeleteRoute = async () => {
     await deleteUserRoute({
       selectedRouteId,
     });
-    setChangesMade(false);
   };
 
   const handleUpdateRouteName = async () => {
@@ -62,10 +59,6 @@ export const UserRouteList = ({
     });
     setMode("DEFAULT");
   };
-
-  useEffect(() => {
-    setChangesMade(true);
-  }, [brouterProfile, points]);
 
   useEffect(() => {
     if (userRoutes.length) {
@@ -108,7 +101,7 @@ export const UserRouteList = ({
             </div>
             <div className="tooltip" data-tip="Save">
               <IconButton
-                disabled={!changesMade || loading}
+                disabled={loading}
                 icon={faSave}
                 size={ICON_BUTTON_SIZES.LARGE}
                 onClick={handleUpdateRoute}

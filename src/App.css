@@ -13,43 +13,6 @@
   background-color: lightgrey;
 }
 
-mapbox-search-box {
-  width: 100%;
-}
-
-mapbox-search-box * {
-  max-height: 32px !important;
-}
-
-mapbox-search-box [class$="--SearchBox"] {
-  border: 1px solid color-mix(in oklab, var(--color-base-content) 20%, #0000) !important;
-}
-
-mapbox-search-box [class$="--SearchBox"]:focus {
-  border: 1px solid black !important;
-}
-
-mapbox-search-box [class$="--SearchBox"] input:focus {
-  border: none !important;
-}
-
-mapbox-search-box [class$="--ActionIcon"]:hover {
-  background-color: var(--color-base-300);
-  border-radius: 1rem;
-  cursor: pointer;
-}
-
-mapbox-search-box [class$="--ActionIcon"]:hover svg {
-  color: var(--color-primary-content) !important;
-}
-
-mapbox-search-box [class$="--SearchIcon"] {
-  transform: scale(0.8);
-}
-mapbox-search-box [class$="--ClearBtn"] {
-  transform: scale(0.55);
-}
-
 .nav-menu {
   max-width: 266px;
 }

@@ -15,19 +15,19 @@ export const Avatar = ({
   const { session } = useSessionContext();
 
   return (
-    <div className="flex flex-row-reverse items-center justify-start gap-1 w-full">
+    <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
       {loading ? (
         <span className="loading loading-spinner loading-xl"></span>
       ) : (
         <FontAwesomeIcon
-          className={`cursor-pointer ${session || loading ? "" : "opacity-60"}`}
+          className={`cursor-pointer text-neutral ${session || loading ? "" : "opacity-60"}`}
           icon={faCircleUser}
           size="2xl"
           onClick={onClick}
         />
       )}
       {showEmail && (
-        <p className="text-xs opacity-60">
+        <p className="text-center text-xs opacity-60 flex-grow">
           {session ? `Signed in as ${session.user.email}` : "Not signed in"}
         </p>
       )}
