@@ -98,13 +98,13 @@ export const RouteSummary = ({
       <div>
         <div className="tooltip" data-tip="Route back to start">
           <details className="dropdown">
-            <summary className="btn btn-circle w-8 h-8 btn-ghost">
+            <summary className="btn btn-circle w-8 h-8 btn-ghost text-neutral">
               <FontAwesomeIcon icon={faLeftRight} size="lg" />
             </summary>
-            <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 shadow-sm">
+            <ul className="menu dropdown-content bg-base-100 rounded-box z-12 w-52">
               <li>
                 <button
-                  className="btn btn-ghost px-1 rounded-none"
+                  className="btn btn-ghost text-neutral px-1 rounded-none"
                   disabled={loading}
                   onClick={handleRouteBackToStart}
                 >
@@ -113,7 +113,7 @@ export const RouteSummary = ({
               </li>
               <li>
                 <button
-                  className="btn btn-ghost px-1 rounded-none"
+                  className="btn btn-ghost text-neutral px-1 rounded-none"
                   disabled={loading}
                   onClick={handleRouteOutAndBack}
                 >

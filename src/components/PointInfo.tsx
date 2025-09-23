@@ -58,13 +58,13 @@ export const PointInfo = ({
             value={pointName}
             onChange={(e) => setPointName(e.target.value)}
           />
-          <div className="tooltip absolute top-1.5 right-2 cursor-pointer z-1000">
+          <div className="tooltip absolute top-1.5 right-2 cursor-pointer z-10">
             <div className="tooltip-content p-3">
               Naming a point will ensure that it appears on the route, no matter
               how unsuitable the route might be.
             </div>
             <FontAwesomeIcon
-              className="cursor-pointer text-neutral z-100"
+              className="cursor-pointer text-neutral z-11"
               icon={faCircleQuestion}
               size="lg"
             />
