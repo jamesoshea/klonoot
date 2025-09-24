@@ -105,14 +105,11 @@ export const Elevation = ({
           const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
           drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
 
-          const elevationTextString = `${point.elevation}m`;
-          drawTextWithBackground(ctx, elevationTextString, leftPoint + 5, 16, flip);
-
-          const gradientTextString = `${point.gradient}%`;
-          drawTextWithBackground(ctx, gradientTextString, leftPoint + 5, 30, flip);
+          const topographyTextString = `${point.elevation}m, ${point.gradient}%`;
+          drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
 
           const surfaceTextString = `${point.wayTags.surface ? `${SURFACE_NAMES[point.wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[point.wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[point.wayTags.highway as HIGHWAY]) ?? ""}`;
-          drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 44, flip);
+          drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
         }
       });
     }

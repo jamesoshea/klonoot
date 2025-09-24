@@ -11,11 +11,7 @@ import { UserRouteList } from "./UserRouteList.tsx";
 import { COLOR__ACCENT } from "../consts.ts";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
-import {
-  BROUTER_PROFILES,
-  type BrouterProfile,
-  type Coordinate,
-} from "../types";
+import { BROUTER_PROFILES, type BrouterProfile, type Coordinate } from "../types";
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { PointInfo } from "./PointInfo.tsx";
@@ -37,9 +33,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const { data: userRoutes } = useGetUserRoutes();
 
-  const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(
-    BROUTER_PROFILES.TREKKING
-  );
+  const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
@@ -60,10 +54,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   };
 
   const handlePointDrag = useCallback(
-    (
-      e: { target: { _lngLat: { lng: number; lat: number } } },
-      index: number
-    ) => {
+    (e: { target: { _lngLat: { lng: number; lat: number } } }, index: number) => {
       const newArray = [...points];
       const newPoint: Coordinate = [
         e.target._lngLat.lng,
@@ -75,13 +66,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       setPoints(newArray);
       setSelectedPoint(newPoint);
     },
-    [points]
+    [points],
   );
 
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) =>
       setPoints(setNewPoint([e.lngLat.lng, e.lngLat.lat, "", false], points)),
-    [points]
+    [points],
   );
 
   const handleLineMouseMove = useCallback(
@@ -93,13 +84,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       const nearestPointOnLine = turf.nearestPointOnLine(
         turf.lineString(routeTrack?.features[0].geometry.coordinates),
         turf.point([e.lngLat.lng, e.lngLat.lat]),
-        { units: "meters" }
+        { units: "meters" },
       );
 
       const pointDistance = nearestPointOnLine.properties.location;
       setCurrentPointDistance(pointDistance);
     },
-    [routeTrack]
+    [routeTrack],
   );
 
   const handleLineMouseLeave = () => {
@@ -128,7 +119,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
-  const loggedIn = !!session
+  const loggedIn = !!session;
 
   // authenticated users: select route from list
   useEffect(() => {
@@ -136,8 +127,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       return;
     }
 
-    const route =
-      userRoutes.find((route) => route.id === selectedRouteId) ?? userRoutes[0];
+    const route = userRoutes.find((route) => route.id === selectedRouteId) ?? userRoutes[0];
 
     if (!route) {
       return;
@@ -167,7 +157,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       ],
       {
         padding: 64,
-      }
+      },
     );
   }, [map, selectedRouteId, loggedIn, userRoutes]);
 
@@ -186,7 +176,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
         marker.on("dragend", (e) => handlePointDrag(e, index));
         return marker;
-      })
+      }),
     );
   }, [map, points]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -282,9 +272,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   return (
     <>
       <div className="routing m-3">
-        {session && (
-          <UserRouteList brouterProfile={brouterProfile} points={points} />
-        )}
+        {session && <UserRouteList brouterProfile={brouterProfile} points={points} />}
         <div className="mt-2 p-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
@@ -292,9 +280,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             <select
               className="select pr-0 bg-base-100 w-full"
               value={brouterProfile}
-              onChange={(e) =>
-                setBrouterProfile(e.target.value as BrouterProfile)
-              }
+              onChange={(e) => setBrouterProfile(e.target.value as BrouterProfile)}
             >
               {Object.entries(BROUTER_PROFILES).map(([key, value]) => (
                 <option key={key} value={value}>
@@ -331,10 +317,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         )}
       </div>
       {routeTrack && (
-        <Elevation
-          currentPointDistance={currentPointDistance}
-          routeTrack={routeTrack}
-        />
+        <Elevation currentPointDistance={currentPointDistance} routeTrack={routeTrack} />
       )}
     </>
   );

@@ -42,8 +42,6 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
   const scaleXWithParams = (pointDistance: number) =>
     scale(pointDistance, 0, trackLength, 0, currentCanvasWidth);
 
-  console.log(routeTrack.features[0]?.properties?.["messages"][0]);
-
   const dots = routeTrack.features[0]?.properties?.["messages"].slice(1).reduce<{
     points: {
       distance: number;
