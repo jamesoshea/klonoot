@@ -127,9 +127,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
+  const loggedIn = !!session
+
   // authenticated users: select route from list
   useEffect(() => {
-    if (!session) {
+    if (!loggedIn) {
       return;
     }
 
@@ -166,7 +169,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         padding: 64,
       }
     );
-  }, [map, selectedRouteId, session, userRoutes]);
+  }, [map, selectedRouteId, loggedIn, userRoutes]);
 
   // set markers upon points change
   useEffect(() => {

@@ -1,7 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type Dispatch } from "react";
 import type { Coordinate } from "../types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { CloseButton } from "./shared/CloseButton";
