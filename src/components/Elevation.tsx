@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
-  faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -27,6 +26,7 @@ import {
   drawTextWithBackground,
   scale,
 } from "../utils/canvas";
+import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 
 export const Elevation = ({
   currentPointDistance,
@@ -231,11 +231,7 @@ export const Elevation = ({
                 <p className="text-s">No traffic</p>
               </div>
             </div>
-            <FontAwesomeIcon
-              className="cursor-pointer z-100 text-neutral"
-              icon={faCircleQuestion}
-              size="lg"
-            />
+            <InfoCircleIcon />
           </div>
           <div
             className="bg-base-200"

@@ -5,6 +5,7 @@ import { faCheck, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { CloseButton } from "./shared/CloseButton";
+import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 
 export const PointInfo = ({
   points,
@@ -64,11 +65,7 @@ export const PointInfo = ({
               Naming a point will ensure that it appears on the route, no matter
               how unsuitable the route might be.
             </div>
-            <FontAwesomeIcon
-              className="cursor-pointer text-neutral z-11"
-              icon={faCircleQuestion}
-              size="lg"
-            />
+            <InfoCircleIcon />
           </div>
         </div>
 

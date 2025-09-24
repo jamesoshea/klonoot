@@ -77,6 +77,15 @@ mapbox-search-box [class$="--SearchIcon"] {
   fill: var(--color-neutral);
   transform: scale(0.8);
 }
+
 mapbox-search-box [class$="--ClearBtn"] {
   transform: scale(0.55);
+}
+
+mapbox-search-listbox [class$="--Results"] {
+  border: 0.5px solid color-mix(in oklab, var(--color-base-content) 20%, #0000) !important;
+  border-radius: 0.25rem !important;
+  top: 100px !important;
+  min-width: initial !important;
+  max-width: 246px !important;
 }

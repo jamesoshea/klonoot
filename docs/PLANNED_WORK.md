@@ -22,17 +22,14 @@
 
 ### Smaller Projects
 
-##### Technical Improvements
+##### Known Bugs
 
-- Elevation profile glitch when routing "as the crow flies"
+- None currently
 
 ##### Technical Improvements
 
 - More unit tests (where?)
 - Test coverage
-- Create reusable components for repeated markup:
-  - SquareButton
-  - CircleInfoIcon
 - Lighthouse audit
 - Test app with those with less than 20/20 vision
   - Font size
@@ -40,10 +37,10 @@
 
 ##### Features
 
-- Explainer for brouter profiles
 - Remove search result border
-- Access retrictions on route
 - Incline stats when mousing over route track
+- Explainer for brouter profiles
+- Access retrictions on route
 - Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)
 - Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
 - GPX import
