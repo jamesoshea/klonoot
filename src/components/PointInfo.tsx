@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
+import { CloseButton } from "./shared/CloseButton";
 
 export const PointInfo = ({
   points,
@@ -90,12 +91,7 @@ export const PointInfo = ({
         />
         Route from this point directly (as the crow flies)
       </label>
-      <button
-        className="btn btn-xs btn-circle btn-ghost absolute right-1 top-1"
-        onClick={() => setSelectedPoint(null)}
-      >
-        ✕
-      </button>
+      <CloseButton onClick={() => setSelectedPoint(null)} />
     </div>
   );
 };

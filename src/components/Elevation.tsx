@@ -179,10 +179,10 @@ export const Elevation = ({
 
   return (
     <div className={`indicator elevation ${collapsed ? "collapsed" : ""}`}>
-      <div className="rounded-lg bg-base-100 flex items-start gap-2 p-2 w-full h-full">
-        <div className="flex flex-col items-center justify-between text-xs opacity-60 min-h-[112px]">
-          <span>{calculateMaxElevation(routeTrack)}m</span>
-          <span>{calculateMinElevation(routeTrack)}m</span>
+      <div className="rounded-lg bg-base-100 relative p-2 w-full h-full">
+        <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2">
+          <span className="bg-base-200 pl-1">{calculateMaxElevation(routeTrack)}m</span>
+          <span className="bg-base-200 pl-1">{calculateMinElevation(routeTrack)}m</span>
         </div>
         <div className="w-full">
           <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
@@ -240,7 +240,7 @@ export const Elevation = ({
           <div
             className="bg-base-200"
             ref={canvasContainerRef}
-            style={{ maxWidth: collapsed ? 220 : "initial" }}
+            style={{ maxWidth: collapsed ? 256 : "initial" }}
           >
             <canvas
               height={CANVAS_HEIGHT}

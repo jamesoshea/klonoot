@@ -13,6 +13,7 @@ import {
 import type { Coordinate } from "../types";
 import { getThemeFont } from "../utils/colors";
 import { setNewPoint } from "../utils/route";
+import { CloseButton } from "./shared/CloseButton";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -91,15 +92,10 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         />
       </div>
       {searchResult && (
-        <div className="left-0 top-0 fixed z-10 min-w-screen min-h-screen">
+        <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen">
           <div className="search-result card bg-base-100 rounded-lg flex flex-col items-center z-100">
             <div className="card-body p-3">
-              <button
-                className="btn btn-xs btn-circle btn-ghost absolute right-1 top-1"
-                onClick={handleClearSearchResult}
-              >
-                ✕
-              </button>
+              <CloseButton onClick={handleClearSearchResult} />
               <h2 className="card-title">
                 {searchResult?.properties?.name ?? ""}
               </h2>
