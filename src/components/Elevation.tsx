@@ -6,17 +6,20 @@ import {
   CANVAS_HEIGHT,
   COLOR__ACCENT,
   CYCLEWAY_COLORS,
+  CYCLEWAY_NAMES,
   HIGHWAY_COLORS,
+  HIGHWAY_NAMES,
   SURFACE_COLOR_GRAY,
   SURFACE_COLOR_LIGHT_GRAY,
   SURFACE_COLOR_ORANGE,
   SURFACE_COLOR_YELLOW,
   SURFACE_COLORS,
+  SURFACE_NAMES,
   TRAFFIC_COLOR_LOW,
   TRAFFIC_COLOR_NONE,
 } from "../consts";
 
-import type { BrouterResponse, CYCLEWAY, SURFACE } from "../types";
+import type { BrouterResponse, CYCLEWAY, HIGHWAY, SURFACE } from "../types";
 
 import {
   calculateMaxElevation,
@@ -108,7 +111,7 @@ export const Elevation = ({
           const gradientTextString = `${point.gradient}%`;
           drawTextWithBackground(ctx, gradientTextString, leftPoint + 5, 30, flip);
 
-          const surfaceTextString = `${point.wayTags.surface ? `${point.wayTags.surface}: ` : ""}${(point.wayTags.cycleway || point.wayTags.highway) ?? ""}`;
+          const surfaceTextString = `${point.wayTags.surface ? `${SURFACE_NAMES[point.wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[point.wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[point.wayTags.highway as HIGHWAY]) ?? ""}`;
           drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 44, flip);
         }
       });
