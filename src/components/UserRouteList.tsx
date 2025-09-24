@@ -1,10 +1,4 @@
-import {
-  faCheck,
-  faEdit,
-  faSave,
-  faTrash,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEdit, faSave, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
 import { useRouteContext } from "../contexts/RouteContext";
@@ -27,8 +21,7 @@ export const UserRouteList = ({
   points: Coordinate[];
 }) => {
   const { loading } = useLoadingContext();
-  const { selectedUserRoute, selectedRouteId, setSelectedRouteId } =
-    useRouteContext();
+  const { selectedUserRoute, selectedRouteId, setSelectedRouteId } = useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
   const { mutate: updateUserRoute } = useUpdateRoute();

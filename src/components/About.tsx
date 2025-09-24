@@ -1,6 +1,6 @@
 export const About = () => {
   return (
-    <div>
+    <div className="text-xs">
       <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title">Planned Improvements</div>
@@ -14,12 +14,12 @@ export const About = () => {
           <ul className="list">
             <li>- Incline stats when mousing over route track</li>
             <li>
-              - Optimistic UI updates for point drags (only querying for parts
-              of route from brouter to improve performance)
+              - Optimistic UI updates for point drags (only querying for parts of route from brouter
+              to improve performance)
             </li>
             <li>
-              - Off-Route POIs (for example, shops, water fountains or bail-out
-              public transport stops)
+              - Off-Route POIs (for example, shops, water fountains or bail-out public transport
+              stops)
             </li>
             <li>- GPX import</li>
             <li>- Bulk route export</li>

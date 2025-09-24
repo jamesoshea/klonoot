@@ -156,7 +156,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         [lng2, lat2],
       ],
       {
-        padding: 64,
+        padding: 256,
       },
     );
   }, [map, selectedRouteId, loggedIn, userRoutes]);
