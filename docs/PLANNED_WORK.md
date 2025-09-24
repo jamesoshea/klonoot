@@ -37,8 +37,6 @@
 
 ##### Features
 
-- Remove search result border
-- Incline stats when mousing over route track
 - Explainer for brouter profiles
 - Access retrictions on route
 - Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)

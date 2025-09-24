@@ -106,13 +106,13 @@ export const SURFACE_COLORS = {
 
 export const SURFACE_NAMES = {
   // PAVED
-  paved: SURFACE_COLOR_GRAY,
-  asphalt: SURFACE_COLOR_GRAY,
-  chipseal: SURFACE_COLOR_GRAY,
-  concrete: SURFACE_COLOR_GRAY,
-  "concrete:lanes": SURFACE_COLOR_LIGHT_GRAY,
-  "concrete:plates": SURFACE_COLOR_LIGHT_GRAY,
-  paving_stones: SURFACE_COLOR_GRAY,
+  paved: "Paved",
+  asphalt: "Asphalt",
+  chipseal: "Chipseal",
+  concrete: "Concrete",
+  "concrete:lanes": "Concrete",
+  "concrete:plates": "Concrete",
+  paving_stones: "Paveeing stones",
   "paving_stones:lanes": SURFACE_COLOR_LIGHT_GRAY,
   grass_paver: SURFACE_COLOR_LIGHT_GRAY,
   sett: SURFACE_COLOR_LIGHT_GRAY,
