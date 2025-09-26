@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
+  faCloudSunRain,
   faDownload,
   faLeftRight,
 } from "@fortawesome/free-solid-svg-icons";
@@ -18,11 +19,13 @@ export const RouteSummary = ({
   points,
   routeTrack,
   setPoints,
+  onToggleWeather,
 }: {
   brouterProfile: BROUTER_PROFILES;
   points: Coordinate[];
   routeTrack: BrouterResponse;
   setPoints: Dispatch<Coordinate[]>;
+  onToggleWeather: () => void;
 }) => {
   const { loading } = useLoadingContext();
 
@@ -53,7 +56,7 @@ export const RouteSummary = ({
 
   const handleRouteBackToStart = () => {
     const theFirstPointButMovedSlightly = [points[0][0], points[0][1]].map(
-      (coord) => coord + 0.0001
+      (coord) => coord + 0.0001,
     );
     setPoints([...points, theFirstPointButMovedSlightly as Coordinate]);
   };
@@ -62,12 +65,7 @@ export const RouteSummary = ({
     const reversedPoints = [...points]
       .reverse()
       .slice(1)
-      .map(([lng, lat, name, direct]) => [
-        lng + 0.0001,
-        lat + 0.0001,
-        name,
-        direct,
-      ]);
+      .map(([lng, lat, name, direct]) => [lng + 0.0001, lat + 0.0001, name, direct]);
     const newPoints = [...points, ...reversedPoints];
     setPoints(newPoints as Coordinate[]);
   };
@@ -76,12 +74,8 @@ export const RouteSummary = ({
     return;
   }
 
-  const trackLength = Number(
-    routeTrack?.features[0]?.properties?.["track-length"] ?? 0
-  );
-  const elevationGain = Number(
-    routeTrack?.features[0]?.properties?.["filtered ascend"] ?? 0
-  );
+  const trackLength = Number(routeTrack?.features[0]?.properties?.["track-length"] ?? 0);
+  const elevationGain = Number(routeTrack?.features[0]?.properties?.["filtered ascend"] ?? 0);
 
   return (
     <div className="flex items-center justify-end gap-2 min-w-full">
@@ -104,11 +98,7 @@ export const RouteSummary = ({
             </summary>
             <ul className="menu dropdown-content bg-base-100 rounded-box z-12 w-52">
               <li>
-                <SquareButton
-                  disabled={loading}
-                  text="Direct"
-                  onClick={handleRouteBackToStart}
-                />
+                <SquareButton disabled={loading} text="Direct" onClick={handleRouteBackToStart} />
               </li>
               <li>
                 <SquareButton
@@ -134,6 +124,14 @@ export const RouteSummary = ({
             icon={faDownload}
             size={ICON_BUTTON_SIZES.LARGE}
             onClick={handleGPXDownload}
+          />
+        </div>
+        <div className="tooltip" data-tip="Toggle weather">
+          <IconButton
+            disabled={loading}
+            icon={faCloudSunRain}
+            size={ICON_BUTTON_SIZES.LARGE}
+            onClick={onToggleWeather}
           />
         </div>
       </div>

@@ -43,3 +43,11 @@
   top: 16px;
   left: 278px;
 }
+
+.weather {
+  z-index: 1;
+  position: absolute;
+  bottom: 182px;
+  left: 12px;
+  width: calc(100vw - 24px);
+}
