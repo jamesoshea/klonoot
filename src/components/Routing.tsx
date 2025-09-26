@@ -19,6 +19,7 @@ import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
+import { getWeather } from "../utils/weather.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -268,6 +269,17 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setSelectedPoint(null);
     setPatches([]);
   }, [selectedRouteId]);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      if (!routeTrack) {
+        return;
+      }
+      getWeather(routeTrack);
+    };
+
+    fetchWeather();
+  }, [routeTrack]);
 
   return (
     <>

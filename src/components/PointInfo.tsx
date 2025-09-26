@@ -1,10 +1,11 @@
 import { useEffect, useState, type ChangeEvent, type Dispatch } from "react";
 import type { Coordinate } from "../types";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { CloseButton } from "./shared/CloseButton";
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const PointInfo = ({
   points,
@@ -17,14 +18,26 @@ export const PointInfo = ({
   selectedPoint: Coordinate;
   setSelectedPoint: Dispatch<Coordinate | null>;
 }) => {
+  const [copyCoordinatesText, setCopyCoordinatesText] = useState<string>("Copy coordinates");
   const [pointName, setPointName] = useState<string>(selectedPoint[2] ?? "");
 
   const index = points.findIndex(
-    (routePoint) =>
-      routePoint[0] === selectedPoint[0] && routePoint[1] === selectedPoint[1]
+    (routePoint) => routePoint[0] === selectedPoint[0] && routePoint[1] === selectedPoint[1],
   );
 
   const nameChanged = (selectedPoint[2] ?? "") !== pointName;
+
+  const handleCopyCoordinates = async ([lng, lat]: [number, number]) => {
+    try {
+      await navigator.clipboard.writeText(`${lat.toFixed(5)},${lng.toFixed(5)}`);
+      setCopyCoordinatesText("Copied");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      setCopyCoordinatesText("Failed to copy");
+    } finally {
+      setTimeout(() => setCopyCoordinatesText("Copy coordinates"), 1000);
+    }
+  };
 
   const handleUpdatePointName = () => {
     const newPoints = [...points];
@@ -45,9 +58,17 @@ export const PointInfo = ({
   return (
     <div className="px-3 py-2 mt-2 rounded-lg bg-base-100 relative">
       <div className="flex mb-2 items-center justify-between gap-2">
-        <p className="text-xs opacity-60">
-          Point {index + 1} ({selectedPoint[0].toFixed(3)},{" "}
-          {selectedPoint[1].toFixed(3)}){" "}
+        <p className="text-sm">
+          Point {index + 1}{" "}
+          <div className="tooltip" data-tip={copyCoordinatesText}>
+            <span
+              className="cursor-pointer text-sm opacity-60 ml-1"
+              onClick={() => handleCopyCoordinates([selectedPoint[0], selectedPoint[1]])}
+            >
+              {selectedPoint[1].toFixed(3)} {selectedPoint[0].toFixed(3)}
+              <FontAwesomeIcon className="ml-0.5" icon={faCopy} size="sm" />
+            </span>
+          </div>
         </p>
       </div>
       <div className="flex items-center justify-between gap-2">
@@ -61,8 +82,8 @@ export const PointInfo = ({
           />
           <div className="tooltip absolute top-1.5 right-2 cursor-pointer z-10">
             <div className="tooltip-content p-3">
-              Naming a point will ensure that it appears on the route, no matter
-              how unsuitable the route might be.
+              Naming a point will ensure that it appears on the route, no matter how unsuitable the
+              route might be.
             </div>
             <InfoCircleIcon />
           </div>
