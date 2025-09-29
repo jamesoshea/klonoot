@@ -1,5 +1,13 @@
-import { CANVAS_HEIGHT, COLOR__ACCENT, COLOR__BASE_200_80 } from "../consts";
-import type { BrouterResponse } from "../types";
+import {
+  CANVAS_HEIGHT,
+  COLOR__ACCENT,
+  COLOR__BASE_200_80,
+  CYCLEWAY_NAMES,
+  HIGHWAY_NAMES,
+  SURFACE_COLORS,
+  SURFACE_NAMES,
+} from "../consts";
+import type { BrouterResponse, CYCLEWAY, HIGHWAY, SURFACE } from "../types";
 import { getTrackLength } from "./route";
 
 const filterElevationNoise = (message: string[]) => {
@@ -107,6 +115,50 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
   );
 
   return dots;
+};
+
+export const drawElevationChart = ({
+  ctx,
+  currentCanvasWidth,
+  currentPointDistance,
+  routeTrack,
+}) => {
+  const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
+  const points = routeMarks.points.slice(1);
+  const trackLength = getTrackLength(routeTrack);
+
+  points.forEach((point, index) => {
+    ctx.beginPath();
+    ctx.moveTo(routeMarks.points[index].left, CANVAS_HEIGHT - routeMarks.points[index].top);
+    ctx.strokeStyle = SURFACE_COLORS[point.wayTags.surface as SURFACE];
+    ctx.lineTo(routeMarks.points[index + 1].left, CANVAS_HEIGHT - routeMarks.points[index + 1].top);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  });
+
+  points.forEach((point, index) => {
+    if (
+      currentPointDistance > point.distance &&
+      currentPointDistance < points[index + 1].distance
+    ) {
+      ctx.fillStyle = COLOR__ACCENT;
+      const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
+
+      ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
+
+      const flip = index > points.length * 0.9;
+
+      const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
+      drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
+
+      const topographyTextString = `${point.elevation}m, ${point.gradient}%`;
+      drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
+
+      const surfaceTextString = `${point.wayTags.surface ? `${SURFACE_NAMES[point.wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[point.wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[point.wayTags.highway as HIGHWAY]) ?? ""}`;
+      drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
+    }
+  });
 };
 
 export const drawTextWithBackground = (

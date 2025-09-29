@@ -4,15 +4,13 @@ import { getTrackLength } from "../utils/route";
 import { scale } from "../utils/canvas";
 import {
   faCloud,
-  faCompass,
   faDroplet,
   faTemperatureThreeQuarters,
   faUmbrella,
   faWind,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "./shared/IconButton";
-import { ICON_BUTTON_SIZES } from "../consts";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type WeatherDatum = keyof Omit<WeatherData["values"], "windDirection">;

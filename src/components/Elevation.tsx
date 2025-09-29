@@ -4,29 +4,23 @@ import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons
 
 import {
   CANVAS_HEIGHT,
-  COLOR__ACCENT,
   CYCLEWAY_COLORS,
-  CYCLEWAY_NAMES,
   HIGHWAY_COLORS,
-  HIGHWAY_NAMES,
   SURFACE_COLOR_GRAY,
   SURFACE_COLOR_LIGHT_GRAY,
   SURFACE_COLOR_ORANGE,
   SURFACE_COLOR_YELLOW,
-  SURFACE_COLORS,
-  SURFACE_NAMES,
   TRAFFIC_COLOR_LOW,
   TRAFFIC_COLOR_NONE,
 } from "../consts";
 
-import type { BrouterResponse, CYCLEWAY, HIGHWAY, SURFACE } from "../types";
+import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY } from "../types";
 
 import {
   calculateMaxElevation,
   calculateMinElevation,
   createRouteMarks,
-  drawTextWithBackground,
-  scale,
+  drawElevationChart,
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
@@ -34,9 +28,11 @@ import { getTrackLength } from "../utils/route";
 
 export const Elevation = ({
   currentPointDistance,
+  mode,
   routeTrack,
 }: {
   currentPointDistance: number;
+  mode: ChartMode;
   routeTrack: BrouterResponse;
 }) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
@@ -48,7 +44,7 @@ export const Elevation = ({
 
   const trackLength = getTrackLength(routeTrack);
 
-  const drawElevationMap = useCallback(() => {
+  const drawDataChart = useCallback(() => {
     const canvas = elevationCanvasRef.current;
     if (canvas?.getContext) {
       const ctx = canvas.getContext("2d");
@@ -73,48 +69,15 @@ export const Elevation = ({
       canvas.style.width = `${currentCanvasWidth}px`;
       canvas.style.height = `${CANVAS_HEIGHT}px`;
 
-      const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
-
       ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
-      const points = routeMarks.points.slice(1);
 
-      points.forEach((point, index) => {
-        ctx.beginPath();
-        ctx.moveTo(routeMarks.points[index].left, CANVAS_HEIGHT - routeMarks.points[index].top);
-        ctx.strokeStyle = SURFACE_COLORS[point.wayTags.surface as SURFACE];
-        ctx.lineTo(
-          routeMarks.points[index + 1].left,
-          CANVAS_HEIGHT - routeMarks.points[index + 1].top,
-        );
-        ctx.lineWidth = 2;
-        ctx.lineCap = "round";
-        ctx.stroke();
-      });
-
-      points.forEach((point, index) => {
-        if (
-          currentPointDistance > point.distance &&
-          currentPointDistance < points[index + 1].distance
-        ) {
-          ctx.fillStyle = COLOR__ACCENT;
-          const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
-
-          ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
-
-          const flip = index > points.length * 0.9;
-
-          const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
-          drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
-
-          const topographyTextString = `${point.elevation}m, ${point.gradient}%`;
-          drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
-
-          const surfaceTextString = `${point.wayTags.surface ? `${SURFACE_NAMES[point.wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[point.wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[point.wayTags.highway as HIGHWAY]) ?? ""}`;
-          drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
-        }
-      });
+      switch (mode) {
+        case "elevation":
+          drawElevationChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
+          return;
+      }
     }
-  }, [canvasWidth, currentPointDistance, routeTrack, trackLength]);
+  }, [canvasWidth, currentPointDistance, mode, routeTrack]);
 
   const drawTrafficMap = useCallback(() => {
     const canvas = trafficCanvasRef.current;
@@ -161,16 +124,16 @@ export const Elevation = ({
   }, [canvasWidth, routeTrack]);
 
   useEffect(() => {
-    window.addEventListener("resize", drawElevationMap);
+    window.addEventListener("resize", drawDataChart);
     window.addEventListener("resize", drawTrafficMap);
 
     return () => {
-      window.removeEventListener("resize", drawElevationMap);
+      window.removeEventListener("resize", drawDataChart);
       window.addEventListener("resize", drawTrafficMap);
     };
-  }, [drawElevationMap, drawTrafficMap]);
+  }, [drawDataChart, drawTrafficMap]);
 
-  useEffect(drawElevationMap, [collapsed, drawElevationMap]);
+  useEffect(drawDataChart, [collapsed, drawDataChart]);
   useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);
 
   return (

@@ -66,3 +66,15 @@ export type WeatherData = {
     cloudCover: string;
   };
 };
+
+export const CHART_MODES = [
+  "temp",
+  "windSpeed",
+  "precipMm",
+  "precipPercentage",
+  "cloudCover",
+  "elevation",
+] as const;
+
+type ChartModeTuple = typeof CHART_MODES;
+export type ChartMode = ChartModeTuple[number];

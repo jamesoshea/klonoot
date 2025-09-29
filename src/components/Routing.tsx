@@ -11,7 +11,13 @@ import { UserRouteList } from "./UserRouteList.tsx";
 import { COLOR__ACCENT } from "../consts.ts";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
-import { BROUTER_PROFILES, type BrouterProfile, type Coordinate, type WeatherData } from "../types";
+import {
+  BROUTER_PROFILES,
+  type BrouterProfile,
+  type ChartMode,
+  type Coordinate,
+  type WeatherData,
+} from "../types";
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { PointInfo } from "./PointInfo.tsx";
@@ -36,6 +42,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { data: userRoutes } = useGetUserRoutes();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
+  const [chartMode, setChartMode] = useState<ChartMode>("elevation");
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
@@ -317,10 +324,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               <Divider />
               <RouteSummary
                 brouterProfile={brouterProfile}
+                chartMode={chartMode}
                 points={points}
                 routeTrack={routeTrack}
                 setPoints={setPoints}
-                onToggleWeather={() => setShowWeather(!showWeather)}
+                onToggleMode={(mode: ChartMode) => setChartMode(mode)}
               />
             </>
           )}
@@ -339,7 +347,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         <Weather routeTrack={routeTrack} weatherData={weatherData} />
       )}
       {routeTrack && (
-        <Elevation currentPointDistance={currentPointDistance} routeTrack={routeTrack} />
+        <Elevation
+          currentPointDistance={currentPointDistance}
+          mode={chartMode}
+          routeTrack={routeTrack}
+        />
       )}
     </>
   );

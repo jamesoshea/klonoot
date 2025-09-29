@@ -1,13 +1,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
-  faCloudSunRain,
+  faCloud,
   faDownload,
+  faDroplet,
   faLeftRight,
+  faMountain,
+  faTemperatureThreeQuarters,
+  faUmbrella,
+  faWind,
+  type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Dispatch } from "react";
 
-import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
+import {
+  CHART_MODES,
+  type BROUTER_PROFILES,
+  type BrouterResponse,
+  type ChartMode,
+  type Coordinate,
+} from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
 import { useFetchRoute } from "../queries/useFetchRoute";
 import { IconButton } from "./shared/IconButton";
@@ -15,18 +27,29 @@ import { ICON_BUTTON_SIZES } from "../consts";
 import { SquareButton } from "./shared/SquareButton";
 import { getTrackLength } from "../utils/route";
 
+const CHART_MODE_ICON_MAP: Record<ChartMode, IconDefinition> = {
+  cloudCover: faCloud,
+  elevation: faMountain,
+  precipMm: faDroplet,
+  precipPercentage: faUmbrella,
+  temp: faTemperatureThreeQuarters,
+  windSpeed: faWind,
+};
+
 export const RouteSummary = ({
   brouterProfile,
+  chartMode,
   points,
   routeTrack,
   setPoints,
-  onToggleWeather,
+  onToggleMode,
 }: {
   brouterProfile: BROUTER_PROFILES;
+  chartMode: ChartMode;
   points: Coordinate[];
   routeTrack: BrouterResponse;
   setPoints: Dispatch<Coordinate[]>;
-  onToggleWeather: () => void;
+  onToggleMode: (mode: ChartMode) => void;
 }) => {
   const { loading } = useLoadingContext();
 
@@ -69,6 +92,11 @@ export const RouteSummary = ({
       .map(([lng, lat, name, direct]) => [lng + 0.0001, lat + 0.0001, name, direct]);
     const newPoints = [...points, ...reversedPoints];
     setPoints(newPoints as Coordinate[]);
+  };
+
+  const handleToggleMode = () => {
+    const currentModeIndex = CHART_MODES.findIndex((mode) => mode === chartMode);
+    onToggleMode(CHART_MODES[(currentModeIndex + 1) % 6]);
   };
 
   if (!points.length) {
@@ -127,12 +155,12 @@ export const RouteSummary = ({
             onClick={handleGPXDownload}
           />
         </div>
-        <div className="tooltip" data-tip="Toggle weather">
+        <div className="tooltip" data-tip="Toggle mode">
           <IconButton
             disabled={loading}
-            icon={faCloudSunRain}
+            icon={CHART_MODE_ICON_MAP[chartMode]}
             size={ICON_BUTTON_SIZES.LARGE}
-            onClick={onToggleWeather}
+            onClick={handleToggleMode}
           />
         </div>
       </div>
