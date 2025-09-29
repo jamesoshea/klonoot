@@ -13,6 +13,7 @@ import { useFetchRoute } from "../queries/useFetchRoute";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { SquareButton } from "./shared/SquareButton";
+import { getTrackLength } from "../utils/route";
 
 export const RouteSummary = ({
   brouterProfile,
@@ -74,7 +75,7 @@ export const RouteSummary = ({
     return;
   }
 
-  const trackLength = Number(routeTrack?.features[0]?.properties?.["track-length"] ?? 0);
+  const trackLength = getTrackLength(routeTrack);
   const elevationGain = Number(routeTrack?.features[0]?.properties?.["filtered ascend"] ?? 0);
 
   return (

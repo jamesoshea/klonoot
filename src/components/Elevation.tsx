@@ -30,6 +30,7 @@ import {
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
+import { getTrackLength } from "../utils/route";
 
 export const Elevation = ({
   currentPointDistance,
@@ -45,7 +46,7 @@ export const Elevation = ({
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const trackLength = Number(routeTrack?.features[0]?.properties?.["track-length"] ?? 0);
+  const trackLength = getTrackLength(routeTrack);
 
   const drawElevationMap = useCallback(() => {
     const canvas = elevationCanvasRef.current;

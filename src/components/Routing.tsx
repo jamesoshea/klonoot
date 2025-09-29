@@ -11,7 +11,7 @@ import { UserRouteList } from "./UserRouteList.tsx";
 import { COLOR__ACCENT } from "../consts.ts";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
-import { BROUTER_PROFILES, type BrouterProfile, type Coordinate } from "../types";
+import { BROUTER_PROFILES, type BrouterProfile, type Coordinate, type WeatherData } from "../types";
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { PointInfo } from "./PointInfo.tsx";
@@ -43,7 +43,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
   const [showWeather, setShowWeather] = useState<boolean>(false);
-  const [weatherData, setWeatherData] = useState<object | null>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const { data: routeTrack } = useFetchRoute({
     enabled: points.length > 1,
@@ -279,6 +279,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         return;
       }
       const weather = await getWeather(routeTrack);
+
       setWeatherData(weather);
     };
 
@@ -334,7 +335,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         )}
       </div>
 
-      {weatherData && showWeather && <Weather />}
+      {weatherData && showWeather && routeTrack && (
+        <Weather routeTrack={routeTrack} weatherData={weatherData} />
+      )}
       {routeTrack && (
         <Elevation currentPointDistance={currentPointDistance} routeTrack={routeTrack} />
       )}

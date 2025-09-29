@@ -2,27 +2,8 @@ import * as turf from "@turf/turf";
 import axios, { type AxiosResponse } from "axios";
 import dayjs from "dayjs";
 
-import type { BrouterResponse } from "../types";
+import type { BrouterResponse, OpenMeteoHourlyData, WeatherData } from "../types";
 import { getTrackLength } from "./route";
-
-type OpenMeteoHourlyResponse = AxiosResponse<{
-  hourly: {
-    temperature_2m: [number];
-    wind_speed_10m: [number];
-    wind_direction_10m: [number];
-    precipitation: [number];
-    precipitation_probability: [number];
-    cloud_cover: [number];
-  };
-  hourly_units: {
-    temperature_2m: string;
-    wind_speed_10m: string;
-    wind_direction_10m: string;
-    precipitation: string;
-    precipitation_probability: string;
-    cloud_cover: string;
-  };
-}>;
 
 export const constructWeatherCallURL = (
   location: [lng: number, lat: number],
@@ -38,7 +19,7 @@ export const callOpenMeteo = (routeTrack: BrouterResponse) => {
   const START_TIME = dayjs(); // TODO: make dynamic
   const trackLength = getTrackLength(routeTrack);
 
-  const numberOfCalls = Math.floor(trackLength / PACE);
+  const numberOfCalls = Math.ceil(trackLength / PACE);
 
   const calls = Array(numberOfCalls)
     .fill(null)
@@ -62,19 +43,31 @@ export const callOpenMeteo = (routeTrack: BrouterResponse) => {
   return Promise.all(calls);
 };
 
-export const formatWeatherResponse = (weatherResponseArray: OpenMeteoHourlyResponse[]) => {
+export const formatWeatherResponse = (
+  weatherResponseArray: AxiosResponse<OpenMeteoHourlyData>[],
+): WeatherData[] => {
   return weatherResponseArray.map((resp) => {
     const {
       data: { hourly, hourly_units },
     } = resp;
 
     return {
-      temp: `${hourly.temperature_2m[0]}${hourly_units.temperature_2m}`,
-      windSpeed: `${hourly.wind_speed_10m[0]}${hourly_units.wind_speed_10m}`,
-      windDirection: `${hourly.wind_direction_10m[0]}${hourly_units.wind_direction_10m}`,
-      precipMm: `${hourly.precipitation[0]}${hourly_units.precipitation}`,
-      precipPercentage: `${hourly.precipitation_probability[0]}${hourly_units.precipitation_probability}`,
-      cloudCover: `${hourly.cloud_cover[0]}${hourly_units.cloud_cover}`,
+      values: {
+        temp: hourly.temperature_2m[0],
+        windSpeed: hourly.wind_speed_10m[0],
+        windDirection: hourly.wind_direction_10m[0],
+        precipMm: hourly.precipitation[0],
+        precipPercentage: hourly.precipitation_probability[0],
+        cloudCover: hourly.cloud_cover[0],
+      },
+      formatted: {
+        temp: `${hourly.temperature_2m[0]}${hourly_units.temperature_2m}`,
+        windSpeed: `${hourly.wind_speed_10m[0]}${hourly_units.wind_speed_10m}`,
+        windDirection: `${hourly.wind_direction_10m[0]}${hourly_units.wind_direction_10m}`,
+        precipMm: `${hourly.precipitation[0]}${hourly_units.precipitation}`,
+        precipPercentage: `${hourly.precipitation_probability[0]}${hourly_units.precipitation_probability}`,
+        cloudCover: `${hourly.cloud_cover[0]}${hourly_units.cloud_cover}`,
+      },
     };
   });
 };

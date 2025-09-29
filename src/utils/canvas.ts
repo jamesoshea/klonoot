@@ -1,5 +1,6 @@
 import { CANVAS_HEIGHT, COLOR__ACCENT, COLOR__BASE_200_80 } from "../consts";
 import type { BrouterResponse } from "../types";
+import { getTrackLength } from "./route";
 
 const filterElevationNoise = (message: string[]) => {
   return Number(message[2]) !== -8192;
@@ -28,7 +29,7 @@ export const calculateMinElevation = (routeTrack: BrouterResponse): number =>
     .reduce((acc: number, cur) => (Number(cur[2]) < acc ? Number(cur[2]) : acc), Infinity);
 
 export const createRouteMarks = (currentCanvasWidth: number, routeTrack: BrouterResponse) => {
-  const trackLength = Number(routeTrack?.features[0]?.properties?.["track-length"] ?? 0);
+  const trackLength = getTrackLength(routeTrack);
 
   const scaleYWithParams = (pointElevation: number) =>
     scale(
