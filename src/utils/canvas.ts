@@ -8,7 +8,7 @@ import {
   SURFACE_COLORS,
   SURFACE_NAMES,
 } from "../consts";
-import type { BrouterResponse, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
+import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
 import { getTrackLength } from "./route";
 
 const filterElevationNoise = (message: string[]) => {
@@ -167,23 +167,25 @@ export const drawElevationChart = ({
   });
 };
 
-export const drawTemperatureChart = ({
+export const drawWeatherChart = ({
   ctx,
   currentCanvasWidth,
   currentPointDistance,
+  mode,
   routeTrack,
   weatherData,
 }: {
   ctx: CanvasRenderingContext2D;
   currentCanvasWidth: number;
   currentPointDistance: number;
+  mode: ChartMode;
   routeTrack: BrouterResponse;
   weatherData: WeatherData[];
 }) => {
   const trackLength = getTrackLength(routeTrack);
 
-  const minValue = Math.min(...weatherData.map((datum) => datum.values.temp));
-  const maxValue = Math.max(...weatherData.map((datum) => datum.values.temp));
+  const minValue = Math.min(...weatherData.map((datum) => datum.values[mode]));
+  const maxValue = Math.max(...weatherData.map((datum) => datum.values[mode]));
 
   const CANVAS_HEIGHT_WITH_PADDING = CANVAS_HEIGHT * 0.9;
 
@@ -191,7 +193,7 @@ export const drawTemperatureChart = ({
   ctx.moveTo(
     0,
     CANVAS_HEIGHT -
-      scale(weatherData[0].values.temp, minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+      scale(weatherData[0].values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
       5,
   );
 
@@ -199,13 +201,13 @@ export const drawTemperatureChart = ({
     ctx.lineTo(
       scale(index * 20000, 0, trackLength, 0, currentCanvasWidth),
       CANVAS_HEIGHT -
-        scale(datum.values.temp, minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+        scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
         5,
     );
     ctx.lineTo(
       scale((index + 1) * 20000, 0, trackLength, 0, currentCanvasWidth),
       CANVAS_HEIGHT -
-        scale(datum.values.temp, minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+        scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
         5,
     );
     ctx.strokeStyle = COLOR__PRIMARY;
@@ -225,7 +227,7 @@ export const drawTemperatureChart = ({
     const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
     drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
 
-    const topographyTextString = weatherData[point].formatted.temp;
+    const topographyTextString = weatherData[point].formatted[mode];
     drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
   }
 };

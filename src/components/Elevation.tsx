@@ -21,7 +21,7 @@ import {
   calculateMinElevation,
   createRouteMarks,
   drawElevationChart,
-  drawTemperatureChart,
+  drawWeatherChart,
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
@@ -98,11 +98,12 @@ export const Elevation = ({
         case "elevation":
           drawElevationChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
           return;
-        case "temp":
-          drawTemperatureChart({
+        default:
+          drawWeatherChart({
             ctx,
             currentCanvasWidth,
             currentPointDistance,
+            mode,
             routeTrack,
             weatherData,
           });
