@@ -178,7 +178,7 @@ export const drawWeatherChart = ({
   ctx: CanvasRenderingContext2D;
   currentCanvasWidth: number;
   currentPointDistance: number;
-  mode: ChartMode;
+  mode: Exclude<ChartMode, "elevation">;
   routeTrack: BrouterResponse;
   weatherData: WeatherData[];
 }) => {
