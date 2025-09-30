@@ -14,13 +14,14 @@ import {
   TRAFFIC_COLOR_NONE,
 } from "../consts";
 
-import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY } from "../types";
+import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, WeatherData } from "../types";
 
 import {
   calculateMaxElevation,
   calculateMinElevation,
   createRouteMarks,
   drawElevationChart,
+  drawTemperatureChart,
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
@@ -30,10 +31,12 @@ export const Elevation = ({
   currentPointDistance,
   mode,
   routeTrack,
+  weatherData,
 }: {
   currentPointDistance: number;
   mode: ChartMode;
   routeTrack: BrouterResponse;
+  weatherData: WeatherData[];
 }) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
@@ -75,9 +78,18 @@ export const Elevation = ({
         case "elevation":
           drawElevationChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
           return;
+        case "temp":
+          drawTemperatureChart({
+            ctx,
+            currentCanvasWidth,
+            currentPointDistance,
+            routeTrack,
+            weatherData,
+          });
+          return;
       }
     }
-  }, [canvasWidth, currentPointDistance, mode, routeTrack]);
+  }, [canvasWidth, currentPointDistance, mode, routeTrack, weatherData]);
 
   const drawTrafficMap = useCallback(() => {
     const canvas = trafficCanvasRef.current;

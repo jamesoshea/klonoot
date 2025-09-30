@@ -26,7 +26,6 @@ import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { getWeather } from "../utils/weather.ts";
-import { Weather } from "./Weather.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -49,7 +48,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [patches, setPatches] = useState<Coordinate[][]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
-  const [showWeather, setShowWeather] = useState<boolean>(false);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const { data: routeTrack } = useFetchRoute({
@@ -342,15 +340,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           />
         )}
       </div>
-
-      {weatherData && showWeather && routeTrack && (
-        <Weather routeTrack={routeTrack} weatherData={weatherData} />
-      )}
       {routeTrack && (
         <Elevation
           currentPointDistance={currentPointDistance}
           mode={chartMode}
           routeTrack={routeTrack}
+          weatherData={weatherData}
         />
       )}
     </>

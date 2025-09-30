@@ -2,6 +2,7 @@ import {
   CANVAS_HEIGHT,
   COLOR__ACCENT,
   COLOR__BASE_200_80,
+  COLOR__PRIMARY,
   CYCLEWAY_NAMES,
   HIGHWAY_NAMES,
   SURFACE_COLORS,
@@ -159,6 +160,57 @@ export const drawElevationChart = ({
       drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
     }
   });
+};
+
+export const drawTemperatureChart = ({
+  ctx,
+  currentCanvasWidth,
+  currentPointDistance,
+  routeTrack,
+  weatherData,
+}) => {
+  const trackLength = getTrackLength(routeTrack);
+
+  const minValue = Math.min(...weatherData.map((datum) => datum.values.temp));
+  const maxValue = Math.max(...weatherData.map((datum) => datum.values.temp));
+
+  const CANVAS_HEIGHT_WITH_PADDING = CANVAS_HEIGHT * 0.9;
+
+  ctx.beginPath();
+  ctx.moveTo(
+    0,
+    CANVAS_HEIGHT -
+      scale(weatherData[0].values.temp, minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+      5,
+  );
+
+  weatherData.forEach((datum, index) => {
+    ctx.lineTo(
+      scale((index + 1) * 20000, 0, trackLength, 0, currentCanvasWidth),
+      CANVAS_HEIGHT -
+        scale(datum.values.temp, minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+        5,
+    );
+    ctx.strokeStyle = COLOR__PRIMARY;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  });
+
+  if (currentPointDistance > 0) {
+    ctx.fillStyle = COLOR__ACCENT;
+    const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
+
+    ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
+
+    const flip = false;
+    const point = Math.floor(currentPointDistance / 20000);
+
+    const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
+    drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
+
+    const topographyTextString = weatherData[point].formatted.temp;
+    drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
+  }
 };
 
 export const drawTextWithBackground = (
