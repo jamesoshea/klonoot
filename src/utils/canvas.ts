@@ -8,7 +8,7 @@ import {
   SURFACE_COLORS,
   SURFACE_NAMES,
 } from "../consts";
-import type { BrouterResponse, CYCLEWAY, HIGHWAY, SURFACE } from "../types";
+import type { BrouterResponse, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
 import { getTrackLength } from "./route";
 
 const filterElevationNoise = (message: string[]) => {
@@ -123,6 +123,11 @@ export const drawElevationChart = ({
   currentCanvasWidth,
   currentPointDistance,
   routeTrack,
+}: {
+  ctx: CanvasRenderingContext2D;
+  currentCanvasWidth: number;
+  currentPointDistance: number;
+  routeTrack: BrouterResponse;
 }) => {
   const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
   const points = routeMarks.points.slice(1);
@@ -168,6 +173,12 @@ export const drawTemperatureChart = ({
   currentPointDistance,
   routeTrack,
   weatherData,
+}: {
+  ctx: CanvasRenderingContext2D;
+  currentCanvasWidth: number;
+  currentPointDistance: number;
+  routeTrack: BrouterResponse;
+  weatherData: WeatherData[];
 }) => {
   const trackLength = getTrackLength(routeTrack);
 
@@ -184,7 +195,13 @@ export const drawTemperatureChart = ({
       5,
   );
 
-  weatherData.forEach((datum, index) => {
+  weatherData.forEach((datum: WeatherData, index: number) => {
+    ctx.lineTo(
+      scale(index * 20000, 0, trackLength, 0, currentCanvasWidth),
+      CANVAS_HEIGHT -
+        scale(datum.values.temp, minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+        5,
+    );
     ctx.lineTo(
       scale((index + 1) * 20000, 0, trackLength, 0, currentCanvasWidth),
       CANVAS_HEIGHT -
