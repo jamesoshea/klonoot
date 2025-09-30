@@ -27,6 +27,26 @@ import {
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 import { getTrackLength } from "../utils/route";
 
+const getMinValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
+  if (mode === "elevation") {
+    return `${calculateMinElevation(routeTrack)}m`;
+  }
+
+  const minValue = Math.min(...weatherData.map((datum) => datum.values[mode]));
+  const indexOfMinValue = weatherData.findIndex((datum) => datum.values[mode] === minValue);
+  return weatherData[indexOfMinValue].formatted[mode];
+};
+
+const getMaxValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
+  if (mode === "elevation") {
+    return `${calculateMaxElevation(routeTrack)}m`;
+  }
+
+  const maxValue = Math.max(...weatherData.map((datum) => datum.values[mode]));
+  const indexOfMaxValue = weatherData.findIndex((datum) => datum.values[mode] === maxValue);
+  return weatherData[indexOfMaxValue].formatted[mode];
+};
+
 export const Elevation = ({
   currentPointDistance,
   mode,
@@ -152,8 +172,8 @@ export const Elevation = ({
     <div className={`indicator elevation ${collapsed ? "collapsed" : ""}`}>
       <div className="rounded-lg bg-base-100 relative p-2 w-full h-full">
         <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2">
-          <span className="bg-base-200 pl-1">{calculateMaxElevation(routeTrack)}m</span>
-          <span className="bg-base-200 pl-1">{calculateMinElevation(routeTrack)}m</span>
+          <span className="bg-base-200 pl-1">{getMaxValue(mode, routeTrack, weatherData)}</span>
+          <span className="bg-base-200 pl-1">{getMinValue(mode, routeTrack, weatherData)}</span>
         </div>
         <div className="w-full">
           <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
