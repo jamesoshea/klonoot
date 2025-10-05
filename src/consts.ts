@@ -192,3 +192,5 @@ export enum ICON_BUTTON_SIZES {
   MEDIUM,
   LARGE,
 }
+
+export const DEFAULT_PACE = 20000; // metres per hour, used to query and display weather data

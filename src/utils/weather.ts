@@ -5,6 +5,9 @@ import dayjs from "dayjs";
 import type { BrouterResponse, OpenMeteoHourlyData, WeatherData } from "../types";
 import { getTrackLength } from "./route";
 
+export const getSubstring = (ISODateString: string) =>
+  ISODateString.substring(0, ISODateString.indexOf("T") + 6);
+
 export const constructWeatherCallURL = (
   location: [lng: number, lat: number],
   startTime: dayjs.Dayjs,
@@ -14,17 +17,15 @@ export const constructWeatherCallURL = (
   return `https://api.open-meteo.com/v1/forecast?latitude=${location[1]}&longitude=${location[0]}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,wind_direction_10m,precipitation,cloud_cover&start_hour=${formattedStartTime}&end_hour=${formattedStartTime}`;
 };
 
-export const callOpenMeteo = (routeTrack: BrouterResponse) => {
-  const PACE = 20000; // meters / hour TODO: make dynamic
-  const START_TIME = dayjs(); // TODO: make dynamic
+export const callOpenMeteo = (routeTrack: BrouterResponse, pace: number, startTime: string) => {
   const trackLength = getTrackLength(routeTrack);
 
-  const numberOfCalls = Math.ceil(trackLength / PACE);
+  const numberOfCalls = Math.ceil(trackLength / pace);
 
   const calls = Array(numberOfCalls)
     .fill(null)
     .map((_, index) => {
-      const distance = (PACE / 1000) * index; // must be in kilometers
+      const distance = (pace / 1000) * index; // must be in kilometers
 
       const line = turf.lineString(routeTrack?.features[0].geometry.coordinates);
       const relevantPointOnLine = turf.along(line, distance, { units: "kilometres" });
@@ -33,7 +34,7 @@ export const callOpenMeteo = (routeTrack: BrouterResponse) => {
         relevantPointOnLine.geometry.coordinates[1], // lat
       ];
 
-      const timestamp = dayjs(START_TIME)
+      const timestamp = dayjs(startTime)
         .startOf("hour")
         .add(index + 1, "hour");
 
@@ -72,8 +73,8 @@ export const formatWeatherResponse = (
   });
 };
 
-export const getWeather = async (routeTrack: BrouterResponse) => {
-  const response = await callOpenMeteo(routeTrack);
+export const getWeather = async (routeTrack: BrouterResponse, pace: number, startTime: string) => {
+  const response = await callOpenMeteo(routeTrack, pace, startTime);
   const formattedResponse = formatWeatherResponse(response);
 
   return formattedResponse;

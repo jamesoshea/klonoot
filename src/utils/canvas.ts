@@ -4,6 +4,7 @@ import {
   COLOR__BASE_200_80,
   COLOR__PRIMARY,
   CYCLEWAY_NAMES,
+  DEFAULT_PACE,
   HIGHWAY_NAMES,
   SURFACE_COLORS,
   SURFACE_NAMES,
@@ -172,6 +173,7 @@ export const drawWeatherChart = ({
   currentCanvasWidth,
   currentPointDistance,
   mode,
+  pace,
   routeTrack,
   weatherData,
 }: {
@@ -179,6 +181,7 @@ export const drawWeatherChart = ({
   currentCanvasWidth: number;
   currentPointDistance: number;
   mode: Exclude<ChartMode, "elevation">;
+  pace: number;
   routeTrack: BrouterResponse;
   weatherData: WeatherData[];
 }) => {
@@ -199,13 +202,13 @@ export const drawWeatherChart = ({
 
   weatherData.forEach((datum: WeatherData, index: number) => {
     ctx.lineTo(
-      scale(index * 20000, 0, trackLength, 0, currentCanvasWidth),
+      scale(index * pace, 0, trackLength, 0, currentCanvasWidth),
       CANVAS_HEIGHT -
         scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
         5,
     );
     ctx.lineTo(
-      scale((index + 1) * 20000, 0, trackLength, 0, currentCanvasWidth),
+      scale((index + 1) * pace, 0, trackLength, 0, currentCanvasWidth),
       CANVAS_HEIGHT -
         scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
         5,
@@ -222,7 +225,7 @@ export const drawWeatherChart = ({
     ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
 
     const flip = false;
-    const point = Math.floor(currentPointDistance / 20000);
+    const point = Math.floor(currentPointDistance / DEFAULT_PACE);
 
     const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
     drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);

@@ -21,7 +21,7 @@
   z-index: 1;
   position: absolute;
   bottom: 36px;
-  left: 12px;
+  left: 9px;
   width: calc(100vw - 24px);
 }
 
@@ -48,6 +48,6 @@
   z-index: 1;
   position: absolute;
   bottom: 182px;
-  left: 12px;
-  width: calc(100vw - 24px);
+  left: 9px;
+  width: 266px;
 }

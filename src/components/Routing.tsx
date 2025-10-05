@@ -26,6 +26,8 @@ import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { getWeather } from "../utils/weather.ts";
+import { WeatherControls } from "./WeatherControls.tsx";
+import { useWeatherContext } from "../contexts/WeatherContext.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -37,6 +39,7 @@ const profileNameMap = {
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { selectedRouteId } = useRouteContext();
   const { session, supabase } = useSessionContext();
+  const { pace, startTime } = useWeatherContext();
 
   const { data: userRoutes } = useGetUserRoutes();
 
@@ -283,13 +286,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       if (!routeTrack) {
         return;
       }
-      const weather = await getWeather(routeTrack);
+      const weather = await getWeather(routeTrack, pace, startTime);
 
       setWeatherData(weather);
     };
 
     fetchWeather();
-  }, [routeTrack]);
+  }, [routeTrack, pace, startTime]);
 
   return (
     <>
@@ -340,6 +343,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           />
         )}
       </div>
+      {weatherData && chartMode !== "elevation" && <WeatherControls />}
       {routeTrack && (
         <Elevation
           currentPointDistance={currentPointDistance}

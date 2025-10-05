@@ -11,6 +11,7 @@ import { RouteContextProvider } from "./contexts/RouteContextProvider";
 import { SessionContextProvider } from "./contexts/SessionContextProvider";
 import { queryClient } from "./queries/queryClient";
 import { Nav } from "./components/Nav";
+import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -45,9 +46,11 @@ function App() {
       <SessionContextProvider>
         <RouteContextProvider>
           <LoadingContextProvider>
-            {map && mapLoaded && <Routing map={map} />}
-            <div id="map-container" ref={mapContainerRef} />
-            <Nav />
+            <WeatherContextProvider>
+              {map && mapLoaded && <Routing map={map} />}
+              <div id="map-container" ref={mapContainerRef} />
+              <Nav />
+            </WeatherContextProvider>
           </LoadingContextProvider>
         </RouteContextProvider>
       </SessionContextProvider>

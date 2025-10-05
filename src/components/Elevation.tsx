@@ -26,6 +26,7 @@ import {
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 import { getTrackLength } from "../utils/route";
+import { useWeatherContext } from "../contexts/WeatherContext";
 
 const getMinValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
   if (mode === "elevation") {
@@ -64,6 +65,8 @@ export const Elevation = ({
 
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const { pace } = useWeatherContext();
 
   const trackLength = getTrackLength(routeTrack);
 
@@ -104,13 +107,14 @@ export const Elevation = ({
             currentCanvasWidth,
             currentPointDistance,
             mode,
+            pace,
             routeTrack,
             weatherData,
           });
           return;
       }
     }
-  }, [canvasWidth, currentPointDistance, mode, routeTrack, weatherData]);
+  }, [canvasWidth, currentPointDistance, mode, pace, routeTrack, weatherData]);
 
   const drawTrafficMap = useCallback(() => {
     const canvas = trafficCanvasRef.current;
