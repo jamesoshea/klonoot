@@ -201,18 +201,15 @@ export const drawWeatherChart = ({
   );
 
   weatherData.forEach((datum: WeatherData, index: number) => {
-    ctx.lineTo(
-      scale(index * pace, 0, trackLength, 0, currentCanvasWidth),
-      CANVAS_HEIGHT -
-        scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
-        5,
-    );
-    ctx.lineTo(
-      scale((index + 1) * pace, 0, trackLength, 0, currentCanvasWidth),
-      CANVAS_HEIGHT -
-        scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
-        5,
-    );
+    const yValue =
+      minValue === maxValue
+        ? CANVAS_HEIGHT_WITH_PADDING / 2
+        : CANVAS_HEIGHT -
+          scale(datum.values[mode], minValue, maxValue, 0, CANVAS_HEIGHT_WITH_PADDING) -
+          5;
+
+    ctx.lineTo(scale(index * pace, 0, trackLength, 0, currentCanvasWidth), yValue);
+    ctx.lineTo(scale((index + 1) * pace, 0, trackLength, 0, currentCanvasWidth), yValue);
     ctx.strokeStyle = COLOR__PRIMARY;
     ctx.lineCap = "round";
     ctx.stroke();

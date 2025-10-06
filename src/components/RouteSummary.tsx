@@ -36,6 +36,15 @@ const CHART_MODE_ICON_MAP: Record<ChartMode, IconDefinition> = {
   windSpeed: faWind,
 };
 
+const CHART_MODE_TOOLTIP_MAP: Record<ChartMode, string> = {
+  cloudCover: "Cloud cover",
+  elevation: "Elevation",
+  precipMm: "Precipitation (mm)",
+  precipPercentage: "Precipitation probability",
+  temp: "Temperature",
+  windSpeed: "Wind speed",
+};
+
 export const RouteSummary = ({
   brouterProfile,
   chartMode,
@@ -155,7 +164,7 @@ export const RouteSummary = ({
             onClick={handleGPXDownload}
           />
         </div>
-        <div className="tooltip" data-tip="Toggle mode">
+        <div className="tooltip" data-tip={CHART_MODE_TOOLTIP_MAP[chartMode]}>
           <IconButton
             disabled={loading}
             icon={CHART_MODE_ICON_MAP[chartMode]}
