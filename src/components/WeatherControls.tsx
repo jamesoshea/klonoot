@@ -9,7 +9,7 @@ export const WeatherControls = () => {
     <div className="weather bg-base-100 rounded-lg px-2 pb-2">
       <fieldset className="fieldset">
         <legend className="fieldset-legend">Start time</legend>
-        <select value={startTime} onChange={(e) => setStartTime(e.target.value)}>
+        <select className="select" value={startTime} onChange={(e) => setStartTime(e.target.value)}>
           {Array(46)
             .fill(null)
             .map((_, index) => (
