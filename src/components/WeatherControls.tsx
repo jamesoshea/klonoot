@@ -7,7 +7,7 @@ export const WeatherControls = () => {
   const { pace, setPace, startTime, setStartTime } = useWeatherContext();
 
   return (
-    <div className="weather bg-base-100 rounded-lg p-2">
+    <div className="relative bg-base-100 rounded-lg p-2 mt-2">
       <div className="tooltip absolute top-1 right-1 cursor-pointer z-100 tooltip-top">
         <div className="tooltip-content">
           These values are needed for a (somewhat) accurate weather forecast for your ride.

@@ -296,10 +296,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [routeTrack, pace, startTime]);
 
   const handleSetChartMode = (mode: ChartMode) => {
-    if (mode !== "elevation") {
-      setSelectedPoint(null);
-    }
-
     setChartMode(mode);
   };
 
@@ -343,7 +339,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             </>
           )}
         </div>
-        {routeTrack && selectedPoint && (
+        {routeTrack && selectedPoint && chartMode === "elevation" && (
           <PointInfo
             points={points}
             selectedPoint={selectedPoint}
@@ -351,8 +347,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             setSelectedPoint={setSelectedPoint}
           />
         )}
+        {weatherData && chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {weatherData && chartMode !== "elevation" && <WeatherControls />}
       {routeTrack && (
         <Elevation
           currentPointDistance={currentPointDistance}

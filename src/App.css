@@ -44,11 +44,3 @@
   top: 16px;
   left: 278px;
 }
-
-.weather {
-  z-index: 1;
-  position: absolute;
-  bottom: 182px;
-  left: 9px;
-  width: 266px;
-}

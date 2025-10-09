@@ -56,7 +56,7 @@ export const PointInfo = ({
   }, [selectedPoint]);
 
   return (
-    <div className="px-3 py-2 mt-2 rounded-lg bg-base-100 relative">
+    <div className="p-2 pb-1 mt-2 rounded-lg bg-base-100 relative">
       <div className="flex mb-2 items-center justify-between gap-2">
         <p className="text-sm">
           Point {index + 1}{" "}
@@ -83,7 +83,7 @@ export const PointInfo = ({
           <div className="tooltip absolute top-1.5 right-2 cursor-pointer z-10">
             <div className="tooltip-content p-3">
               Naming a point will ensure that it appears on the route, no matter how unsuitable the
-              route might be.
+              surface might be.
             </div>
             <InfoCircleIcon />
           </div>
