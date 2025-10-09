@@ -181,36 +181,41 @@ export const Elevation = ({
           <span className="bg-base-200 pl-1">{getMinValue(mode, routeTrack, weatherData)}</span>
         </div>
         <div className="w-full">
-          <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
-            <div className="tooltip-content p-3">
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_GRAY }} />
-                <p className="text-s">Paved (Good)</p>
-              </div>
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_LIGHT_GRAY }} />
-                <p className="text-s">Paved (Poor)</p>
-              </div>
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_YELLOW }} />
-                <p className="text-s">Unpaved (Good)</p>
-              </div>
-              <div className="flex gap-3 justify-between items-center w-full mb-4">
-                <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_ORANGE }} />
-                <p className="text-s">Unpaved (Poor)</p>
-              </div>
+          {mode === "elevation" && (
+            <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
+              <div className="tooltip-content p-3">
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_GRAY }} />
+                  <p className="text-s">Paved (Good)</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div
+                    className="min-h-3 min-w-3"
+                    style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
+                  />
+                  <p className="text-s">Paved (Poor)</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_YELLOW }} />
+                  <p className="text-s">Unpaved (Good)</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full mb-4">
+                  <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_ORANGE }} />
+                  <p className="text-s">Unpaved (Poor)</p>
+                </div>
 
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_LOW }} />
-                <p className="text-s">Low traffic</p>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_LOW }} />
+                  <p className="text-s">Low traffic</p>
+                </div>
+                <div className="flex gap-3 justify-between items-center w-full">
+                  <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_NONE }} />
+                  <p className="text-s">No traffic</p>
+                </div>
               </div>
-              <div className="flex gap-3 justify-between items-center w-full">
-                <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_NONE }} />
-                <p className="text-s">No traffic</p>
-              </div>
+              <InfoCircleIcon />
             </div>
-            <InfoCircleIcon />
-          </div>
+          )}
           <div
             className="bg-base-200"
             ref={canvasContainerRef}

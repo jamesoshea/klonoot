@@ -63,6 +63,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const handlePointClick = (e: MouseEvent, index: number) => {
     e.stopPropagation();
     setSelectedPoint(points[index]);
+    setChartMode("elevation");
   };
 
   const handlePointDrag = useCallback(
@@ -294,11 +295,19 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     fetchWeather();
   }, [routeTrack, pace, startTime]);
 
+  const handleSetChartMode = (mode: ChartMode) => {
+    if (mode !== "elevation") {
+      setSelectedPoint(null);
+    }
+
+    setChartMode(mode);
+  };
+
   return (
     <>
       <div className="routing m-3">
         {session && <UserRouteList brouterProfile={brouterProfile} points={points} />}
-        <div className="mt-2 p-3 rounded-lg bg-base-100 flex flex-col items-center">
+        <div className="mt-2 p-2 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
             <p className="pb-1 text-xs opacity-60">Brouter profile</p>
@@ -329,7 +338,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
                 points={points}
                 routeTrack={routeTrack}
                 setPoints={setPoints}
-                onToggleMode={(mode: ChartMode) => setChartMode(mode)}
+                onToggleMode={handleSetChartMode}
               />
             </>
           )}

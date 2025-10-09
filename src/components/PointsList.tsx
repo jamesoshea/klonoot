@@ -28,7 +28,7 @@ export const PointsList = ({
       newArray.splice(index, 1);
       setPoints(newArray);
     },
-    [points, setPoints]
+    [points, setPoints],
   );
 
   const handleMovePointDown = (index: number) => {
