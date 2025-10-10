@@ -1,7 +1,7 @@
 export const About = () => {
   return (
     <div className="text-xs">
-      <div className="collapse collapse-arrow bg-base-100">
+      {/* <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title">Planned Improvements</div>
         <div className="collapse-content">
@@ -25,17 +25,26 @@ export const About = () => {
             <li>- Bulk route export</li>
           </ul>
         </div>
-      </div>
+      </div> */}
       <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
-        <div className="collapse-title">FAQ</div>
-        <div className="collapse-content text-sm">Coming soon</div>
+        <div className="collapse-title">What is this?</div>
+        <div className="collapse-content text-sm">
+          Thanks for asking :) This is an attempt to focus and improve the features found on a
+          certain large platform for bicycle route planning. Since that platform was sold, I became
+          interested in developng something with a similiarly intuitive UI, but based upon as much
+          open-source software as possible. I also wanted to make the tool itself open-source.
+          <br />
+          <br />
+          Please feel free to send me feedback / requests / offers to contribute on github (link
+          below). I will also set up an email soon.
+        </div>
       </div>
       <div className="collapse collapse-arrow bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
         <div className="collapse-title">Source code</div>
         <div className="collapse-content text-sm">
-          The code for this UI is available at{" "}
+          The code for this tool is available at{" "}
           <a
             className="text-secondary"
             href="https://github.com/jamesoshea/klonoot"
