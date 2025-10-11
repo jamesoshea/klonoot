@@ -27,6 +27,7 @@ import { ICON_BUTTON_SIZES } from "../consts";
 import { SquareButton } from "./shared/SquareButton";
 import { getTrackLength } from "../utils/route";
 import { RouteInfo } from "./RouteInfo";
+import { useRouteContext } from "../contexts/RouteContext";
 
 const CHART_MODE_ICON_MAP: Record<ChartMode, IconDefinition> = {
   cloudCover: faCloud,
@@ -64,6 +65,7 @@ export const RouteSummary = ({
   onToggleMode: (mode: ChartMode) => void;
 }) => {
   const { loading } = useLoadingContext();
+  const { selectedUserRoute } = useRouteContext();
 
   const { refetch } = useFetchRoute({
     brouterProfile,
@@ -74,11 +76,16 @@ export const RouteSummary = ({
 
   const handleGPXDownload = async () => {
     const { data: route } = await refetch();
-    const blob = new Blob([route as unknown as string], { type: "text/plain" }); // TODO: remove this once the hook is correctly typed
+
+    if (!route) {
+      return;
+    }
+
+    const blob = new Blob([route], { type: "text/plain" });
     const fileURL = URL.createObjectURL(blob);
     const downloadLink = document.createElement("a");
     downloadLink.href = fileURL;
-    downloadLink.download = "example.gpx";
+    downloadLink.download = `${selectedUserRoute?.name ?? "klonoot_route"}.gpx`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     URL.revokeObjectURL(fileURL);
