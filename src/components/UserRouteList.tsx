@@ -1,4 +1,11 @@
-import { faCheck, faEdit, faSave, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faEdit,
+  faInfoCircle,
+  faSave,
+  faTrash,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
 import { useRouteContext } from "../contexts/RouteContext";
@@ -11,14 +18,21 @@ import { useLoadingContext } from "../contexts/LoadingContext";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
 
-type MODE = "DEFAULT" | "RENAME";
+enum MODES {
+  DEFAULT = "DEFAULT",
+  RENAME = "RENAME",
+}
+
+type Mode = (typeof MODES)[keyof typeof MODES];
 
 export const UserRouteList = ({
   brouterProfile,
   points,
+  onToggleShowRouteInfo,
 }: {
   brouterProfile: BROUTER_PROFILES;
   points: Coordinate[];
+  onToggleShowRouteInfo: () => void;
 }) => {
   const { loading } = useLoadingContext();
   const { selectedUserRoute, selectedRouteId, setSelectedRouteId } = useRouteContext();
@@ -28,7 +42,7 @@ export const UserRouteList = ({
   const { mutate: deleteUserRoute } = useDeleteRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
-  const [mode, setMode] = useState<MODE>("DEFAULT");
+  const [mode, setMode] = useState<Mode>(MODES.DEFAULT);
   const [newRouteName, setNewRouteName] = useState<string>("");
 
   const handleUpdateRoute = async () => {
@@ -50,7 +64,7 @@ export const UserRouteList = ({
       routeId: selectedUserRoute.id,
       newName: newRouteName,
     });
-    setMode("DEFAULT");
+    setMode(MODES.DEFAULT);
   };
 
   useEffect(() => {
@@ -91,11 +105,19 @@ export const UserRouteList = ({
         <div className="flex justify-end">
           {mode === "DEFAULT" && (
             <>
+              <div className="tooltip" data-tip="Route info">
+                <IconButton
+                  disabled={loading}
+                  icon={faInfoCircle}
+                  size={ICON_BUTTON_SIZES.LARGE}
+                  onClick={onToggleShowRouteInfo}
+                />
+              </div>
               <div className="tooltip" data-tip="Rename">
                 <IconButton
                   icon={faEdit}
                   size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={() => setMode("RENAME")}
+                  onClick={() => setMode(MODES.RENAME)}
                 />
               </div>
               <div className="tooltip" data-tip="Save">
@@ -129,7 +151,7 @@ export const UserRouteList = ({
                 <IconButton
                   icon={faXmark}
                   size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={() => setMode("DEFAULT")}
+                  onClick={() => setMode(MODES.DEFAULT)}
                 />
               </div>
             </>

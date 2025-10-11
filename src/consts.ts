@@ -137,8 +137,7 @@ export const SURFACE_COLORS = {
   salt: SURFACE_COLOR_ORANGE,
 };
 
-export const SURFACE_NAMES = {
-  // PAVED
+export const PAVED_SURFACE_NAMES = {
   paved: "Paved",
   asphalt: "Asphalt",
   chipseal: "Chipseal",
@@ -155,8 +154,9 @@ export const SURFACE_NAMES = {
   metal: "Metal",
   metal_grid: "Metal",
   wood: "Wood",
+};
 
-  // UNPAVED
+export const UNPAVED_SURFACE_NAMES = {
   unpaved: "Unpaved",
   compacted: "Gravel",
   fine_gravel: "Gravel",
@@ -174,6 +174,11 @@ export const SURFACE_NAMES = {
   snow: "Snow",
   ice: "Ice",
   salt: "Salt",
+};
+
+export const SURFACE_NAMES = {
+  ...PAVED_SURFACE_NAMES,
+  ...UNPAVED_SURFACE_NAMES,
 };
 
 export enum MUTATION_KEYS {

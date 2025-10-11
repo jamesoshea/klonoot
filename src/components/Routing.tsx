@@ -51,6 +51,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [patches, setPatches] = useState<Coordinate[][]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
+  const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const { data: routeTrack } = useFetchRoute({
@@ -64,6 +65,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     e.stopPropagation();
     setSelectedPoint(points[index]);
     setChartMode("elevation");
+    setShowRouteInfo(false);
   };
 
   const handlePointDrag = useCallback(
@@ -295,6 +297,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     fetchWeather();
   }, [routeTrack, pace, startTime]);
 
+  useEffect(() => {
+    if (showRouteInfo) {
+      setSelectedPoint(null);
+      setChartMode("elevation");
+    }
+  }, [showRouteInfo]);
+
   const handleSetChartMode = (mode: ChartMode) => {
     setChartMode(mode);
   };
@@ -302,7 +311,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   return (
     <>
       <div className="routing m-3">
-        {session && <UserRouteList brouterProfile={brouterProfile} points={points} />}
+        {session && (
+          <UserRouteList
+            brouterProfile={brouterProfile}
+            points={points}
+            onToggleShowRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
+          />
+        )}
         <div className="mt-2 p-2 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
           <div className="w-full">
@@ -334,6 +349,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
                 points={points}
                 routeTrack={routeTrack}
                 setPoints={setPoints}
+                showRouteInfo={showRouteInfo}
                 onToggleMode={handleSetChartMode}
               />
             </>

@@ -61,8 +61,8 @@ export const PointsList = ({
         </div>
       </li>
       {points.map(([lat, lon, name], index) => (
-        <li className="list-row items-center p-1" key={index}>
-          <div>{index + 1}</div>
+        <li className="list-row items-center p-1 gap-2" key={index}>
+          <div className="opacity-60">{index + 1}</div>
           <div>{name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>
           <div>
             {index !== 0 && (
