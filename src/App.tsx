@@ -16,8 +16,8 @@ import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
 
-const INITIAL_CENTER: LngLatLike = [13.404954, 52.520008];
-const INITIAL_ZOOM = 10.12;
+const INITIAL_CENTER: LngLatLike = [7.6513551, 45.9887897];
+const INITIAL_ZOOM = 4;
 
 function App() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
