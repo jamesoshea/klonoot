@@ -14,7 +14,7 @@ export const WeatherControls = () => {
         </div>
         <InfoCircleIcon />
       </div>
-      <span className="text-xs opacity-60">Start time</span>
+      <span className="text-xs opacity-60 pb-1 pl-0.5">Start time</span>
       <select className="select" value={startTime} onChange={(e) => setStartTime(e.target.value)}>
         {Array(46)
           .fill(null)
@@ -24,7 +24,7 @@ export const WeatherControls = () => {
             </option>
           ))}
       </select>
-      <span className="text-xs opacity-60">Average pace (km/h)</span>
+      <span className="text-xs opacity-60 pb-1 pl-0.5">Average pace (km/h)</span>
       <input
         className="input"
         max="50"

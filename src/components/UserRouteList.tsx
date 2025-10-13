@@ -43,7 +43,7 @@ export const UserRouteList = ({
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
   const [mode, setMode] = useState<Mode>(MODES.DEFAULT);
-  const [newRouteName, setNewRouteName] = useState<string>("");
+  const [newRouteName, setNewRouteName] = useState<string>(selectedUserRoute.name);
 
   const handleUpdateRoute = async () => {
     await updateUserRoute({
@@ -73,9 +73,13 @@ export const UserRouteList = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    setNewRouteName(selectedUserRoute.name ?? "");
+  }, [selectedUserRoute]);
+
   return (
     <div className="p-2 rounded-lg bg-base-100">
-      <div className="text-xs opacity-60 pb-1">
+      <div className="text-xs opacity-60 pb-1 pl-0.5">
         {mode === "DEFAULT" ? "Select route" : "Rename route"}
       </div>
       <div className="flex justify-between items-center gap-2">
@@ -98,7 +102,7 @@ export const UserRouteList = ({
           <input
             type="text"
             className="input"
-            value={selectedUserRoute?.name}
+            value={newRouteName}
             onChange={(e) => setNewRouteName(e.target.value)}
           />
         )}

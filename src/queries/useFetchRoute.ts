@@ -7,18 +7,14 @@ import type { BROUTER_PROFILES, BrouterResponse, Coordinate } from "../types";
 async function fetchRoute(
   format: "gpx",
   points: Coordinate[],
-  brouterProfile: BROUTER_PROFILES
+  brouterProfile: BROUTER_PROFILES,
 ): Promise<string | null>;
 async function fetchRoute(
   format: "geojson",
   points: Coordinate[],
-  brouterProfile: BROUTER_PROFILES
+  brouterProfile: BROUTER_PROFILES,
 ): Promise<BrouterResponse | null>;
-async function fetchRoute(
-  format: string,
-  points: Coordinate[],
-  brouterProfile: BROUTER_PROFILES
-) {
+async function fetchRoute(format: string, points: Coordinate[], brouterProfile: BROUTER_PROFILES) {
   const formattedLngLats = points
     .map((point) => [point[0], point[1], point[2]]) // lng, lat, name
     .map((point) => point.join(","))
@@ -32,13 +28,11 @@ async function fetchRoute(
     return acc;
   }, []);
 
-  const formattedDirectPoints = directPoints.length
-    ? `&straight=${directPoints.join(",")}`
-    : "";
+  const formattedDirectPoints = directPoints.length ? `&straight=${directPoints.join(",")}` : "";
 
   const formattedQueryString = `lonlats=${formattedLngLats}&profile=${brouterProfile}&alternativeidx=0&format=${format}${formattedDirectPoints}`;
 
-  const baseUrl = import.meta.env.PROD ? "/api" : "http://localhost:17777";
+  const baseUrl = "https://klonoot.org/api";
 
   const resp = await axios.get(`${baseUrl}/brouter?${formattedQueryString}`);
 
@@ -58,12 +52,7 @@ export const useFetchRoute = ({
 }) => {
   return useQuery({
     enabled,
-    queryKey: [
-      QUERY_KEYS.FETCH_ROUTE,
-      JSON.stringify(points),
-      format,
-      brouterProfile,
-    ],
+    queryKey: [QUERY_KEYS.FETCH_ROUTE, JSON.stringify(points), format, brouterProfile],
     // @ts-expect-error TODO: fix this
     queryFn: async () => await fetchRoute(format, points, brouterProfile),
     staleTime: 1000 * 60 * 60 * 24, // 1 day,
