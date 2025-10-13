@@ -43,7 +43,7 @@ export const UserRouteList = ({
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
   const [mode, setMode] = useState<Mode>(MODES.DEFAULT);
-  const [newRouteName, setNewRouteName] = useState<string>(selectedUserRoute.name);
+  const [newRouteName, setNewRouteName] = useState<string>(selectedUserRoute?.name ?? "");
 
   const handleUpdateRoute = async () => {
     await updateUserRoute({
@@ -74,7 +74,7 @@ export const UserRouteList = ({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setNewRouteName(selectedUserRoute.name ?? "");
+    setNewRouteName(selectedUserRoute?.name ?? "");
   }, [selectedUserRoute]);
 
   return (
