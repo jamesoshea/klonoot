@@ -28,6 +28,7 @@ import { Divider } from "./shared/Divider.tsx";
 import { getWeather } from "../utils/weather.ts";
 import { WeatherControls } from "./WeatherControls.tsx";
 import { useWeatherContext } from "../contexts/WeatherContext.ts";
+import { SearchResult } from "./shared/SearchResult.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -51,6 +52,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [patches, setPatches] = useState<Coordinate[][]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
+  const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
   const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
@@ -60,6 +62,21 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     points: debouncedPoints,
     format: "geojson",
   });
+
+  const handleAddPOIToPoints = (poi: GeoJSON.Feature<GeoJSON.Point>) => {
+    setPoints(
+      setNewPoint(
+        [
+          poi.geometry.coordinates[0],
+          poi.geometry.coordinates[1],
+          (poi?.properties?.name || poi?.properties?.category_en || poi?.properties?.type) ?? "",
+          false,
+        ],
+        points,
+      ),
+    );
+    setSelectedPOI(null);
+  };
 
   const handlePointClick = (e: MouseEvent, index: number) => {
     e.stopPropagation();
@@ -98,7 +115,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
       const feature = features[0];
 
-      console.log(feature);
+      if (feature) {
+        feature.geometry = { coordinates: [e.lngLat.lng, e.lngLat.lat], type: "Point" };
+      }
+
+      setSelectedPOI((feature as GeoJSON.Feature<GeoJSON.Point>) ?? null);
     },
     [map],
   );
@@ -392,6 +413,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           mode={chartMode}
           routeTrack={routeTrack}
           weatherData={weatherData}
+        />
+      )}
+      {selectedPOI && (
+        <SearchResult
+          searchResult={selectedPOI}
+          onAddSearchResultToPoints={() => handleAddPOIToPoints(selectedPOI)}
+          onClearSearchResult={() => setSelectedPOI(null)}
         />
       )}
     </>

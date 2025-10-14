@@ -26,7 +26,7 @@ type SearchResult = {
 
 export const Search = ({ map, points, setPoints }: SearchProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResult, setSearchResult] = useState<GeoJSONFeature | null>(null);
+  const [searchResult, setSearchResult] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
 
   const addSearchResultToPoints = () => {
     const newArray = [...points];

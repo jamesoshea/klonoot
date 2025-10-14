@@ -60,10 +60,12 @@ export const UserRouteList = ({
   };
 
   const handleUpdateRouteName = async () => {
-    await updateRouteName({
-      routeId: selectedUserRoute.id,
-      newName: newRouteName,
-    });
+    if (selectedRouteId) {
+      await updateRouteName({
+        routeId: selectedUserRoute.id,
+        newName: newRouteName,
+      });
+    }
     setMode(MODES.DEFAULT);
   };
 

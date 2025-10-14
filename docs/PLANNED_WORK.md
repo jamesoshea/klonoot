@@ -43,4 +43,3 @@
 - Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
 - GPX import
 - Bulk route export
-- Weather en-route
