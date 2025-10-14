@@ -2,8 +2,6 @@ import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { type GeoJSONFeature } from "mapbox-gl";
 import { useState, type Dispatch } from "react";
 
-// import fistUrl from "../assets/palestine-flag-fist.webp";
-
 import {
   COLOR__BASE_100,
   COLOR__BASE_200,
@@ -13,7 +11,7 @@ import {
 import type { Coordinate } from "../types";
 import { getThemeFont } from "../utils/colors";
 import { setNewPoint } from "../utils/route";
-import { CloseButton } from "./shared/CloseButton";
+import { SearchResult } from "./shared/SearchResult";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -92,25 +90,11 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         />
       </div>
       {searchResult && (
-        <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen">
-          <div className="search-result card bg-base-100 rounded-lg flex flex-col items-center z-100">
-            <div className="card-body p-3">
-              <CloseButton onClick={handleClearSearchResult} />
-              <h2 className="card-title">
-                {searchResult?.properties?.name ?? ""}
-              </h2>
-              <div>{searchResult?.properties?.place_formatted ?? ""}</div>
-              <div className="card-actions justify-end mt-2">
-                <button
-                  className="btn btn-block"
-                  onClick={addSearchResultToPoints}
-                >
-                  Add to route
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SearchResult
+          searchResult={searchResult}
+          onAddSearchResultToPoints={addSearchResultToPoints}
+          onClearSearchResult={handleClearSearchResult}
+        />
       )}
     </div>
   );

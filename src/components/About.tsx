@@ -1,35 +1,10 @@
 export const About = () => {
   return (
-    <div className="text-xs">
-      {/* <div className="collapse collapse-arrow bg-base-100">
+    <div>
+      <div className="collapse bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
-        <div className="collapse-title">Planned Improvements</div>
-        <div className="collapse-content">
-          <h3>Technical Improvements</h3>
-          <ul className="list">
-            <li>- More automated testing</li>
-            <li>- Test coverage</li>
-          </ul>
-          <h3 className="mt-2">Features</h3>
-          <ul className="list">
-            <li>- Incline stats when mousing over route track</li>
-            <li>
-              - Optimistic UI updates for point drags (only querying for parts of route from brouter
-              to improve performance)
-            </li>
-            <li>
-              - Off-Route POIs (for example, shops, water fountains or bail-out public transport
-              stops)
-            </li>
-            <li>- GPX import</li>
-            <li>- Bulk route export</li>
-          </ul>
-        </div>
-      </div> */}
-      <div className="collapse collapse-arrow bg-base-100">
-        <input type="checkbox" name="my-accordion-2" />
-        <div className="collapse-title">What is this?</div>
-        <div className="collapse-content text-sm">
+        <div className="collapse-title text-sm">What is this?</div>
+        <div className="collapse-content text-xs">
           Thanks for asking :) This is an attempt to focus and improve the features found on a
           certain large platform for bicycle route planning. Since that platform was sold, I became
           interested in developng something with a similiarly intuitive UI, but based upon as much
@@ -40,10 +15,10 @@ export const About = () => {
           below). I will also set up an email soon.
         </div>
       </div>
-      <div className="collapse collapse-arrow bg-base-100">
+      <div className="collapse bg-base-100">
         <input type="checkbox" name="my-accordion-2" />
-        <div className="collapse-title">Source code</div>
-        <div className="collapse-content text-sm">
+        <div className="collapse-title text-sm">Source code</div>
+        <div className="collapse-content text-xs">
           The code for this tool is available at{" "}
           <a
             className="text-secondary"

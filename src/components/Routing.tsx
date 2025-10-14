@@ -84,6 +84,25 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     [points],
   );
 
+  const handleContextMenuOpen = useCallback(
+    (e: mapboxgl.MapMouseEvent) => {
+      const width = 20;
+      const height = 20;
+      const features = map.queryRenderedFeatures(
+        [
+          [e.point.x - width / 2, e.point.y - height / 2],
+          [e.point.x + width / 2, e.point.y + height / 2],
+        ],
+        { target: { layerId: "poi-label" } },
+      );
+
+      const feature = features[0];
+
+      console.log(feature);
+    },
+    [map],
+  );
+
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) =>
       setPoints(setNewPoint([e.lngLat.lng, e.lngLat.lat, "", false], points)),
@@ -207,15 +226,17 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   // add event listeners for map interactions
   useEffect(() => {
     map.on("click", handleNewPointSet);
+    map.on("contextmenu", handleContextMenuOpen);
     map.on("mousemove", "route", handleLineMouseMove);
     map.on("mouseleave", "route", handleLineMouseLeave);
 
     return () => {
       map.off("click", handleNewPointSet);
+      map.off("contextmenu", handleContextMenuOpen);
       map.off("mousemove", "route", handleLineMouseMove);
       map.off("mouseleave", "route", handleLineMouseLeave);
     };
-  }, [map, handleLineMouseMove, handleNewPointSet]);
+  }, [map, handleContextMenuOpen, handleLineMouseMove, handleNewPointSet]);
 
   // debounce point changes
   useEffect(() => {
