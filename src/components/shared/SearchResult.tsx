@@ -32,11 +32,14 @@ export const SearchResult = ({
 
   return (
     <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen">
-      <div className="search-result card bg-base-100 rounded-lg flex flex-col items-center z-100">
-        <div className="card-body p-2 pt-3">
+      <div className="search-result card bg-base-100 rounded-lg z-100 w-[175px]">
+        <div className="card-body p-2 mt-4">
           <CloseButton onClick={onClearSearchResult} />
-          <h2 className="card-title mr-6">{displayName}</h2>
-          <div>{searchResult?.properties?.place_formatted ?? ""}</div>
+          <h2 className="card-title">{displayName}</h2>
+          <div>
+            {(searchResult?.properties?.place_formatted || searchResult?.properties?.category_en) ??
+              ""}
+          </div>
           <div className="card-actions justify-end mt-2">
             <button className="btn btn-block" onClick={onAddSearchResultToPoints}>
               Add to route

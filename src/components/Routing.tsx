@@ -136,10 +136,14 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         return;
       }
 
+      const line = turf.cleanCoords(turf.lineString(routeTrack?.features[0].geometry.coordinates));
+
       const nearestPointOnLine = turf.nearestPointOnLine(
-        turf.lineString(routeTrack?.features[0].geometry.coordinates),
+        line,
         turf.point([e.lngLat.lng, e.lngLat.lat]),
-        { units: "meters" },
+        {
+          units: "meters",
+        },
       );
 
       const pointDistance = nearestPointOnLine.properties.location;
@@ -380,6 +384,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             numberOfPatches={patches.length}
             points={points}
             setPoints={setPoints}
+            setSelectedPoint={setSelectedPoint}
             onUndo={handleUndo}
           />
           {routeTrack && (

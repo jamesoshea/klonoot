@@ -15,11 +15,13 @@ export const PointsList = ({
   numberOfPatches,
   points,
   setPoints,
+  setSelectedPoint,
   onUndo,
 }: {
   numberOfPatches: number;
   points: Coordinate[];
   setPoints: Dispatch<Coordinate[]>;
+  setSelectedPoint: Dispatch<Coordinate | null>;
   onUndo: () => void;
 }) => {
   const handlePointDelete = useCallback(
@@ -27,8 +29,9 @@ export const PointsList = ({
       const newArray = [...points];
       newArray.splice(index, 1);
       setPoints(newArray);
+      setSelectedPoint(null);
     },
-    [points, setPoints],
+    [points, setPoints, setSelectedPoint],
   );
 
   const handleMovePointDown = (index: number) => {
