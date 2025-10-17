@@ -80,90 +80,107 @@ export const UserRouteList = ({
   }, [selectedUserRoute]);
 
   return (
-    <div className="p-2 rounded-lg bg-base-100">
-      <div className="text-xs opacity-60 pb-1 pl-0.5">
-        {mode === "DEFAULT" ? "Select route" : "Rename route"}
-      </div>
-      <div className="flex justify-between items-center gap-2">
-        {mode === "DEFAULT" && (
-          <div>
-            <select
-              className="select"
-              value={selectedUserRoute?.id}
-              onChange={(e) => setSelectedRouteId(e.target.value)}
-            >
-              {userRoutes.map((userRoute: UserRoute) => (
-                <option key={userRoute.id} value={userRoute.id}>
-                  {userRoute.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {mode === "RENAME" && (
-          <input
-            type="text"
-            className="input"
-            value={newRouteName}
-            onChange={(e) => setNewRouteName(e.target.value)}
-          />
-        )}
-        <div className="flex justify-end">
+    <>
+      <div className="p-2 rounded-lg bg-base-100">
+        <div className="text-xs opacity-60 pb-1 pl-0.5">
+          {mode === "DEFAULT" ? "Select route" : "Rename route"}
+        </div>
+        <div className="flex justify-between items-center gap-2">
           {mode === "DEFAULT" && (
-            <>
-              <div className="tooltip" data-tip="Route info">
-                <IconButton
-                  disabled={loading}
-                  icon={faInfoCircle}
-                  size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={onToggleShowRouteInfo}
-                />
-              </div>
-              <div className="tooltip" data-tip="Rename">
-                <IconButton
-                  icon={faEdit}
-                  size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={() => setMode(MODES.RENAME)}
-                />
-              </div>
-              <div className="tooltip" data-tip="Save">
-                <IconButton
-                  disabled={loading}
-                  icon={faSave}
-                  size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={handleUpdateRoute}
-                />
-              </div>
-              <div className="tooltip" data-tip="Delete">
-                <IconButton
-                  disabled={loading}
-                  icon={faTrash}
-                  size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={handleDeleteRoute}
-                />
-              </div>
-            </>
+            <div>
+              <select
+                className="select"
+                value={selectedUserRoute?.id}
+                onChange={(e) => setSelectedRouteId(e.target.value)}
+              >
+                {userRoutes.map((userRoute: UserRoute) => (
+                  <option key={userRoute.id} value={userRoute.id}>
+                    {userRoute.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
           {mode === "RENAME" && (
-            <>
-              <div className="tooltip" data-tip="Confirm">
-                <IconButton
-                  icon={faCheck}
-                  size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={handleUpdateRouteName}
-                />
-              </div>
-              <div className="tooltip" data-tip="Discard">
-                <IconButton
-                  icon={faXmark}
-                  size={ICON_BUTTON_SIZES.LARGE}
-                  onClick={() => setMode(MODES.DEFAULT)}
-                />
-              </div>
-            </>
+            <input
+              type="text"
+              className="input"
+              value={newRouteName}
+              onChange={(e) => setNewRouteName(e.target.value)}
+            />
           )}
+          <div className="flex justify-end">
+            {mode === "DEFAULT" && (
+              <>
+                <div className="tooltip" data-tip="Route info">
+                  <IconButton
+                    disabled={loading}
+                    icon={faInfoCircle}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    onClick={onToggleShowRouteInfo}
+                  />
+                </div>
+                <div className="tooltip" data-tip="Rename">
+                  <IconButton
+                    icon={faEdit}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    onClick={() => setMode(MODES.RENAME)}
+                  />
+                </div>
+                <div className="tooltip" data-tip="Save">
+                  <IconButton
+                    disabled={loading}
+                    icon={faSave}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    onClick={handleUpdateRoute}
+                  />
+                </div>
+                <div className="tooltip" data-tip="Delete">
+                  <IconButton
+                    disabled={loading}
+                    icon={faTrash}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    // @ts-expect-error yeah I know
+                    onClick={() => document.getElementById("delete_modal")?.showModal()}
+                  />
+                </div>
+              </>
+            )}
+            {mode === "RENAME" && (
+              <>
+                <div className="tooltip" data-tip="Confirm">
+                  <IconButton
+                    icon={faCheck}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    onClick={handleUpdateRouteName}
+                  />
+                </div>
+                <div className="tooltip" data-tip="Discard">
+                  <IconButton
+                    icon={faXmark}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    onClick={() => setMode(MODES.DEFAULT)}
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      <dialog id="delete_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Are you sure?</h3>
+          <p className="py-4">Deleting a route cannot be undone</p>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn text-white bg-red-500" onClick={handleDeleteRoute}>
+                Delete {selectedUserRoute?.name}
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+    </>
   );
 };
