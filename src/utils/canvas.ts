@@ -11,6 +11,7 @@ import {
 } from "../consts";
 import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
 import { getTrackLength } from "./route";
+import { bearingToCardinalDirection } from "./weather";
 
 const filterElevationNoise = (message: string[]) => {
   return Number(message[2]) !== -8192;
@@ -227,8 +228,11 @@ export const drawWeatherChart = ({
     const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
     drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
 
-    const topographyTextString = weatherData[point].formatted[mode];
-    drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
+    const weatherTextString =
+      mode === "windSpeed"
+        ? `${weatherData[point].formatted[mode]} (${bearingToCardinalDirection(weatherData[point].values.windDirection)})`
+        : weatherData[point].formatted[mode];
+    drawTextWithBackground(ctx, weatherTextString, leftPoint + 5, 16, flip);
   }
 };
 

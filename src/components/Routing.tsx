@@ -63,10 +63,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     points: debouncedPoints,
     format: "geojson",
   });
-  const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse);
-  const { data: userRoutes } = useGetUserRoutes();
 
-  console.log(drinkingWater);
+  const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
+  const { data: userRoutes } = useGetUserRoutes();
 
   const handleAddPOIToPoints = (poi: GeoJSON.Feature<GeoJSON.Point>) => {
     setPoints(

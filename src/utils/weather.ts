@@ -79,3 +79,14 @@ export const getWeather = async (routeTrack: BrouterResponse, pace: number, star
 
   return formattedResponse;
 };
+
+export const bearingToCardinalDirection = (degree: number) => {
+  if (degree > 11.25 && degree < 56.25) return "NE";
+  else if (degree > 56.25 && degree < 78.75) return "E";
+  else if (degree > 78.75 && degree < 168.75) return "SE";
+  else if (degree > 168.75 && degree < 191.25) return "S";
+  else if (degree > 191.25 && degree < 258.75) return "SW";
+  else if (degree > 258.75 && degree < 281.25) return "W";
+  else if (degree > 281.25 && degree < 348.75) return "NW";
+  else return "N";
+};

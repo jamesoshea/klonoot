@@ -6,7 +6,7 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
   const { data: userRoutes } = useGetUserRoutes();
 
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
-  const [showPOIs, setShowPOIs] = useState<boolean>(true);
+  const [showPOIs, setShowPOIs] = useState<boolean>(false);
 
   const selectedUserRoute = userRoutes.find((userRoute) => userRoute.id === selectedRouteId);
 

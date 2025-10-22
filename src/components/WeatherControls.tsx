@@ -19,7 +19,10 @@ export const WeatherControls = () => {
         {Array(46)
           .fill(null)
           .map((_, index) => (
-            <option value={getSubstring(dayjs().startOf("hour").add(index, "hours").toISOString())}>
+            <option
+              key={index}
+              value={getSubstring(dayjs().startOf("hour").add(index, "hours").toISOString())}
+            >
               {dayjs().startOf("hour").add(index, "hours").format("ddd HH:mm")}
             </option>
           ))}

@@ -5,13 +5,16 @@ import axios from "axios";
 import { QUERY_KEYS } from "../consts";
 import type { BrouterResponse } from "../types";
 
-export const useGetDrinkingWater = (routeTrack: BrouterResponse) => {
+export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: boolean) => {
+  const bbox = routeTrack ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5)) : undefined;
+
   return useQuery({
-    enabled: !!routeTrack,
-    queryKey: [QUERY_KEYS.GET_DRINKING_WATER],
+    enabled: !!bbox && showPOIs,
+    queryKey: [QUERY_KEYS.GET_DRINKING_WATER, bbox],
     queryFn: async () => {
-      const bbox = turf.bbox(turf.transformScale(routeTrack.features[0], 1.5));
-      // const expandedBbox = turf.transformScale(bbox, 1.5);
+      if (!bbox) {
+        return undefined;
+      }
 
       const query = routeTrack
         ? `https://overpass-api.de/api/interpreter?data=
