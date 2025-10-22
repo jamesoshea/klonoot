@@ -5,3 +5,30 @@ https://wiki.openstreetmap.org/wiki/Key:tracktype
 https://wiki.openstreetmap.org/wiki/Key:surface
 
 https://open-meteo.com/
+
+
+https://overpass-api.de/api/interpreter?data=
+    [out:json]
+    [timeout:30]
+    [bbox:49.09150348986855,6.65403215281313,49.41611776145924,7.2661380176307375];
+    (
+        nwr
+            ["amenity"="drinking_water"]
+            ["man_made"!="reservoir_covered"]
+            ["access"!="permissive"]
+            ["access"!="private"];
+        nwr
+            ["disused:amenity"="drinking_water"]
+            ["man_made"!="reservoir_covered"]
+            ["access"!="permissive"]
+            ["access"!="private"];
+        nwr
+            ["drinking_water"="yes"]
+            ["man_made"!="reservoir_covered"]
+            ["access"!="permissive"]
+            ["access"!="private"];
+    );
+    out body;
+    out meta;
+    >;
+    out skel qt;

@@ -189,6 +189,7 @@ export enum MUTATION_KEYS {
 
 export enum QUERY_KEYS {
   GET_USER_ROUTES,
+  GET_DRINKING_WATER,
   FETCH_ROUTE,
 }
 

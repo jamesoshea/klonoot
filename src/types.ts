@@ -78,3 +78,10 @@ export const CHART_MODES = [
 
 type ChartModeTuple = typeof CHART_MODES;
 export type ChartMode = ChartModeTuple[number];
+
+export type OverpassFeature = {
+  id: number;
+  lat: number;
+  lon: number;
+  tags: Record<string, string>;
+};
