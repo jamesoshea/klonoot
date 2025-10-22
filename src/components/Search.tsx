@@ -48,7 +48,7 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   };
 
   const handleRetrieveSearchResult = (res: SearchResult) => {
-    setSearchResult(res.features[0]);
+    setSearchResult(res.features[0] as GeoJSON.Feature<GeoJSON.Point>);
   };
 
   return (

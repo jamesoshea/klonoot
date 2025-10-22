@@ -41,7 +41,7 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
-  const { selectedRouteId } = useRouteContext();
+  const { selectedRouteId, showPOIs } = useRouteContext();
   const { session, supabase } = useSessionContext();
   const { pace, startTime } = useWeatherContext();
 
@@ -248,24 +248,26 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     });
 
     const waterMarkers =
-      drinkingWater?.elements
-        .filter((waterFeature: OverpassFeature) => waterFeature.lon && waterFeature.lat)
-        .map((waterFeature: OverpassFeature) => {
-          const element = document.createElement("div");
-          element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[3px]`;
-          element.innerHTML =
-            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="16" width="16"><path fill="#FFF" d="M320 576C214 576 128 490 128 384C128 292.8 258.2 109.9 294.6 60.5C300.5 52.5 309.8 48 319.8 48L320.2 48C330.2 48 339.5 52.5 345.4 60.5C381.8 109.9 512 292.8 512 384C512 490 426 576 320 576zM240 376C240 362.7 229.3 352 216 352C202.7 352 192 362.7 192 376C192 451.1 252.9 512 328 512C341.3 512 352 501.3 352 488C352 474.7 341.3 464 328 464C279.4 464 240 424.6 240 376z"/></svg>';
-          element.onclick = handlePOICLick;
+      drinkingWater && showPOIs
+        ? drinkingWater.elements
+            .filter((waterFeature: OverpassFeature) => waterFeature.lon && waterFeature.lat)
+            .map((waterFeature: OverpassFeature) => {
+              const element = document.createElement("div");
+              element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[3px]`;
+              element.innerHTML =
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="16" width="16"><path fill="#FFF" d="M320 576C214 576 128 490 128 384C128 292.8 258.2 109.9 294.6 60.5C300.5 52.5 309.8 48 319.8 48L320.2 48C330.2 48 339.5 52.5 345.4 60.5C381.8 109.9 512 292.8 512 384C512 490 426 576 320 576zM240 376C240 362.7 229.3 352 216 352C202.7 352 192 362.7 192 376C192 451.1 252.9 512 328 512C341.3 512 352 501.3 352 488C352 474.7 341.3 464 328 464C279.4 464 240 424.6 240 376z"/></svg>';
+              element.onclick = handlePOICLick;
 
-          const marker = new mapboxgl.Marker({ draggable: true, element })
-            .setLngLat([waterFeature.lon, waterFeature.lat])
-            .addTo(map);
+              const marker = new mapboxgl.Marker({ draggable: true, element })
+                .setLngLat([waterFeature.lon, waterFeature.lat])
+                .addTo(map);
 
-          return marker;
-        }) ?? [];
+              return marker;
+            })
+        : [];
 
     setMarkersInState([...pointMarkers, ...waterMarkers]);
-  }, [drinkingWater, map, points]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [drinkingWater, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (JSON.stringify(patches.slice(-1)[0]) === JSON.stringify(points)) {

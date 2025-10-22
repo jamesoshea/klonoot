@@ -6,10 +6,9 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
   const { data: userRoutes } = useGetUserRoutes();
 
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [showPOIs, setShowPOIs] = useState<boolean>(true);
 
-  const selectedUserRoute = userRoutes.find(
-    (userRoute) => userRoute.id === selectedRouteId
-  );
+  const selectedUserRoute = userRoutes.find((userRoute) => userRoute.id === selectedRouteId);
 
   return (
     <RouteContext.Provider
@@ -17,6 +16,8 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
         selectedRouteId,
         setSelectedRouteId,
         selectedUserRoute,
+        showPOIs,
+        setShowPOIs,
       }}
     >
       {children}
