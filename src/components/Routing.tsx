@@ -8,7 +8,6 @@ import { RouteSummary } from "./RouteSummary.tsx";
 import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
 
-import { COLOR__ACCENT } from "../consts.ts";
 import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
 
 import {
@@ -20,12 +19,13 @@ import {
   type OverpassFeature,
   type WeatherData,
 } from "../types";
+
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
-import { addTerrain } from "../utils/map.ts";
+import { addTerrain, drawRoute } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { getWeather } from "../utils/weather.ts";
 import { WeatherControls } from "./WeatherControls.tsx";
@@ -178,7 +178,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   // on component mount: add elevation tiles to map
   useEffect(() => {
     // add the digital elevation model tiles
-
     map.once("idle", () => addTerrain(map));
 
     return () => {
@@ -307,32 +306,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   // draw route on map
   useEffect(() => {
-    if (map.getLayer("route")) map.removeLayer("route");
-    if (map.getSource("route")) map.removeSource("route");
-
-    if (!routeTrack) {
-      return;
-    }
-
-    map.addSource("route", {
-      type: "geojson",
-      data: routeTrack,
-    });
-
-    map.addLayer({
-      id: "route",
-      type: "line",
-      source: "route",
-      layout: {
-        "line-join": "round",
-        "line-cap": "round",
-      },
-      paint: {
-        "line-color": COLOR__ACCENT,
-        "line-width": 8,
-        "line-opacity": 0.7,
-      },
-    });
+    drawRoute(map, routeTrack as BrouterResponse);
   }, [map, routeTrack]);
 
   // listen for auth changes and add side-effects
