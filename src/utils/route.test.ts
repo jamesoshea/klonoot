@@ -1,7 +1,8 @@
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, it, test, vi } from "vitest";
 
-import { setNewPoint } from "./route";
-import type { Coordinate } from "../types";
+import { fetchRoute, setNewPoint } from "./route";
+import { BROUTER_PROFILES, type Coordinate } from "../types";
+import axios from "axios";
 
 describe("setNewPoint", () => {
   test("should add point to middle", () => {
@@ -21,9 +22,7 @@ describe("setNewPoint", () => {
     ];
     const point = [13.487468910213238, 52.5342696157567];
 
-    expect(
-      setNewPoint(point as Coordinate, mockPoints as Coordinate[])
-    ).toEqual(result);
+    expect(setNewPoint(point as Coordinate, mockPoints as Coordinate[])).toEqual(result);
   });
 
   test("should add point to end", () => {
@@ -41,8 +40,55 @@ describe("setNewPoint", () => {
     ];
     const point = [13.496206624193093, 52.498639209578556];
 
-    expect(
-      setNewPoint(point as Coordinate, mockPoints as Coordinate[])
-    ).toEqual(result);
+    expect(setNewPoint(point as Coordinate, mockPoints as Coordinate[])).toEqual(result);
+  });
+});
+
+describe("fetchRoute", () => {
+  beforeEach(vi.clearAllMocks);
+
+  it("should call brouter for a GPX when passed the GPX format", async () => {
+    vi.mock("axios", () => {
+      return {
+        default: {
+          get: vi.fn().mockResolvedValue({ data: {} }),
+        },
+      };
+    });
+
+    await fetchRoute(
+      "gpx",
+      [[0, 0, "test point name", false]],
+      BROUTER_PROFILES.GRAVEL,
+      "test_route",
+    );
+
+    expect(axios.get).toHaveBeenCalledWith(
+      "https://klonoot.org/api/brouter?lonlats=0,0,test point name&profile=gravel&alternativeidx=0&format=gpx&trackname=test_route",
+    );
+  });
+
+  it("should format direct points", async () => {
+    vi.mock("axios", () => {
+      return {
+        default: {
+          get: vi.fn().mockResolvedValue({ data: {} }),
+        },
+      };
+    });
+
+    await fetchRoute(
+      "geojson",
+      [
+        [0, 0, "test point name", false],
+        [0, 0, "direct", true],
+      ],
+      BROUTER_PROFILES.GRAVEL,
+      "test_route",
+    );
+
+    expect(axios.get).toHaveBeenCalledWith(
+      "https://klonoot.org/api/brouter?lonlats=0,0,test point name|0,0,direct&profile=gravel&alternativeidx=0&format=geojson&straight=1&trackname=test_route",
+    );
   });
 });
