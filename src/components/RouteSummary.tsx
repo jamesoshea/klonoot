@@ -21,13 +21,13 @@ import {
   type Coordinate,
 } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
-import { useFetchRoute } from "../queries/useFetchRoute";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { SquareButton } from "./shared/SquareButton";
-import { getTrackLength } from "../utils/route";
+import { downloadRoute, getTrackLength } from "../utils/route";
 import { RouteInfo } from "./RouteInfo";
 import { useRouteContext } from "../contexts/RouteContext";
+import { convertToSafeFileName } from "../utils/strings";
 
 const CHART_MODE_ICON_MAP: Record<ChartMode, IconDefinition> = {
   cloudCover: faCloud,
@@ -67,15 +67,10 @@ export const RouteSummary = ({
   const { loading } = useLoadingContext();
   const { selectedUserRoute } = useRouteContext();
 
-  const { refetch } = useFetchRoute({
-    brouterProfile,
-    enabled: false, // we only want to make the request when the user asks for a GPX. Brouter calls can be slow
-    points,
-    format: "gpx",
-  });
-
   const handleGPXDownload = async () => {
-    const { data: route } = await refetch();
+    const safeFilename = convertToSafeFileName(selectedUserRoute?.name ?? "klonoot_route");
+
+    const route = await downloadRoute(points, brouterProfile, safeFilename);
 
     if (!route) {
       return;
@@ -85,7 +80,7 @@ export const RouteSummary = ({
     const fileURL = URL.createObjectURL(blob);
     const downloadLink = document.createElement("a");
     downloadLink.href = fileURL;
-    downloadLink.download = `${selectedUserRoute?.name ?? "klonoot_route"}.gpx`;
+    downloadLink.download = `${safeFilename}.gpx`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     URL.revokeObjectURL(fileURL);

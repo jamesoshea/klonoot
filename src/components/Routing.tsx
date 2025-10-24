@@ -61,7 +61,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     enabled: points.length > 1,
     brouterProfile,
     points: debouncedPoints,
-    format: "geojson",
   });
 
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
