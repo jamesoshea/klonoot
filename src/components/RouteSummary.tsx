@@ -64,10 +64,11 @@ export const RouteSummary = ({
   setPoints: Dispatch<Coordinate[]>;
   onToggleMode: (mode: ChartMode) => void;
 }) => {
-  const { loading } = useLoadingContext();
+  const { loading, setLoading } = useLoadingContext();
   const { selectedUserRoute } = useRouteContext();
 
   const handleGPXDownload = async () => {
+    setLoading(true);
     const safeFilename = convertToSafeFileName(selectedUserRoute?.name ?? "klonoot_route");
 
     const route = await downloadRoute(points, brouterProfile, safeFilename);
@@ -84,6 +85,7 @@ export const RouteSummary = ({
     document.body.appendChild(downloadLink);
     downloadLink.click();
     URL.revokeObjectURL(fileURL);
+    setLoading(false);
   };
 
   const handleReverseRoute = () => {
