@@ -12,7 +12,8 @@ export const useGetUserRoutes = () => {
       const { data } = await supabase
         .from("routes")
         .select("*")
-        .eq("userId", session?.user.id);
+        .eq("userId", session?.user.id)
+        .order("createdAt", { ascending: false });
 
       return data;
     },

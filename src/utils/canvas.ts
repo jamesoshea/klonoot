@@ -145,7 +145,7 @@ export const drawElevationChart = ({
     ctx.stroke();
   });
 
-  points.forEach((point, index) => {
+  points.forEach((point, index, array) => {
     if (
       currentPointDistance > point.distance &&
       currentPointDistance < points[index + 1].distance
@@ -163,7 +163,7 @@ export const drawElevationChart = ({
       const topographyTextString = `${point.elevation}m, ${point.gradient}%`;
       drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
 
-      const surfaceTextString = `${point.wayTags.surface ? `${SURFACE_NAMES[point.wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[point.wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[point.wayTags.highway as HIGHWAY]) ?? ""}`;
+      const surfaceTextString = `${array[index + 1].wayTags.surface ? `${SURFACE_NAMES[array[index + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[array[index + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[array[index + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
       drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
     }
   });
