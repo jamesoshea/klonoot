@@ -87,19 +87,17 @@ export const UserRouteList = ({
         </div>
         <div className="flex justify-between items-center gap-2">
           {mode === "DEFAULT" && (
-            <div>
-              <select
-                className="select"
-                value={selectedUserRoute?.id}
-                onChange={(e) => setSelectedRouteId(e.target.value)}
-              >
-                {userRoutes.map((userRoute: UserRoute) => (
-                  <option key={userRoute.id} value={userRoute.id}>
-                    {userRoute.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              className="select"
+              value={selectedUserRoute?.id}
+              onChange={(e) => setSelectedRouteId(e.target.value)}
+            >
+              {userRoutes.map((userRoute: UserRoute) => (
+                <option key={userRoute.id} value={userRoute.id}>
+                  {userRoute.name}
+                </option>
+              ))}
+            </select>
           )}
           {mode === "RENAME" && (
             <input

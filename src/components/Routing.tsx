@@ -350,7 +350,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         )}
         <div className="mt-2 p-2 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} points={points} setPoints={setPoints} />
-          <div className="w-full">
+          <div className="w-full mt-2">
             <p className="pb-1 pl-0.5 text-xs opacity-60">Brouter profile</p>
             <select
               className="select pr-0 bg-base-100 w-full"
