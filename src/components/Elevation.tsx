@@ -27,6 +27,7 @@ import {
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 import { getTrackLength } from "../utils/route";
 import { useWeatherContext } from "../contexts/WeatherContext";
+import { getWeather } from "../utils/weather";
 
 const getMinValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
   if (mode === "elevation") {
@@ -52,21 +53,20 @@ export const Elevation = ({
   currentPointDistance,
   mode,
   routeTrack,
-  weatherData,
 }: {
   currentPointDistance: number;
   mode: ChartMode;
   routeTrack: BrouterResponse;
-  weatherData: WeatherData[];
 }) => {
+  const { pace, startTime } = useWeatherContext();
+
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const { pace } = useWeatherContext();
 
   const trackLength = getTrackLength(routeTrack);
 
@@ -172,6 +172,19 @@ export const Elevation = ({
 
   useEffect(drawDataChart, [collapsed, drawDataChart]);
   useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      if (!routeTrack) {
+        return;
+      }
+      const weather = await getWeather(routeTrack, pace, startTime);
+
+      setWeatherData(weather);
+    };
+
+    fetchWeather();
+  }, [routeTrack, pace, startTime]);
 
   return (
     <div className={`indicator elevation ${collapsed ? "collapsed" : ""}`}>

@@ -17,7 +17,6 @@ import {
   type ChartMode,
   type Coordinate,
   type OverpassFeature,
-  type WeatherData,
 } from "../types";
 
 import { useRouteContext } from "../contexts/RouteContext.ts";
@@ -27,7 +26,6 @@ import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain, drawRoute } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
-import { getWeather } from "../utils/weather.ts";
 import { WeatherControls } from "./WeatherControls.tsx";
 import { useWeatherContext } from "../contexts/WeatherContext.ts";
 import { SearchResult } from "./shared/SearchResult.tsx";
@@ -55,7 +53,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
   const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
   const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
-  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const { data: routeTrack } = useFetchRoute({
     enabled: points.length > 1,
@@ -333,19 +330,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [selectedRouteId]);
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      if (!routeTrack) {
-        return;
-      }
-      const weather = await getWeather(routeTrack, pace, startTime);
-
-      setWeatherData(weather);
-    };
-
-    fetchWeather();
-  }, [routeTrack, pace, startTime]);
-
-  useEffect(() => {
     if (showRouteInfo) {
       setSelectedPoint(null);
       setChartMode("elevation");
@@ -412,14 +396,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             setSelectedPoint={setSelectedPoint}
           />
         )}
-        {weatherData && chartMode !== "elevation" && <WeatherControls />}
+        {chartMode !== "elevation" && <WeatherControls />}
       </div>
       {routeTrack && (
         <Elevation
           currentPointDistance={currentPointDistance}
           mode={chartMode}
           routeTrack={routeTrack}
-          weatherData={weatherData}
         />
       )}
       {selectedPOI && (
