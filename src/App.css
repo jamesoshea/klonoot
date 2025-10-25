@@ -44,3 +44,7 @@
   top: 16px;
   left: 278px;
 }
+
+.point-list {
+  mask-image: linear-gradient(to bottom, white 92%, transparent 100%);
+}

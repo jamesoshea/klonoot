@@ -49,11 +49,9 @@ export const PointsList = ({
   };
 
   return (
-    <ul className="list min-w-full max-h-[200px] overflow-y-auto overflow-x-hidden mt-1">
-      <li className="list-row items-center p-0 px-1 min-w-full">
+    <>
+      <div className="flex justify-between items-center mt-1 p-0 px-1 min-w-full">
         <div className="text-xs opacity-60">Anchor points</div>
-        <div />
-        {/* TODO: fix this. why is it not showing? */}
         <div className="tooltip z-100" data-tip="Undo">
           <IconButton
             disabled={numberOfPatches < 2}
@@ -62,36 +60,38 @@ export const PointsList = ({
             onClick={onUndo}
           />
         </div>
-      </li>
-      {points.map(([lat, lon, name], index) => (
-        <li className="list-row items-center p-1 gap-2" key={index}>
-          <div className="opacity-60">{index + 1}</div>
-          <div>{name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>
-          <div>
-            {index !== 0 && (
+      </div>
+      <ul className="list min-w-full max-h-[208px] overflow-y-auto overflow-x-hidden px-2 mx-[-16px] point-list pb-2">
+        {points.map(([lat, lon, name], index) => (
+          <li className="list-row items-center p-1 gap-2" key={index}>
+            <div className="opacity-60">{index + 1}</div>
+            <div>{name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>
+            <div>
+              {index !== 0 && (
+                <IconButton
+                  icon={faCircleChevronUp}
+                  size={ICON_BUTTON_SIZES.SMALL}
+                  onClick={() => handleMovePointUp(index)}
+                />
+              )}
+              {index < points.length - 1 ? (
+                <IconButton
+                  icon={faCircleChevronDown}
+                  size={ICON_BUTTON_SIZES.SMALL}
+                  onClick={() => handleMovePointDown(index)}
+                />
+              ) : (
+                <button className={`min-w-${ICON_BUTTON_SIZES.SMALL}`} />
+              )}
               <IconButton
-                icon={faCircleChevronUp}
+                icon={faTrash}
                 size={ICON_BUTTON_SIZES.SMALL}
-                onClick={() => handleMovePointUp(index)}
+                onClick={() => handlePointDelete(index)}
               />
-            )}
-            {index < points.length - 1 ? (
-              <IconButton
-                icon={faCircleChevronDown}
-                size={ICON_BUTTON_SIZES.SMALL}
-                onClick={() => handleMovePointDown(index)}
-              />
-            ) : (
-              <button className={`min-w-${ICON_BUTTON_SIZES.SMALL}`} />
-            )}
-            <IconButton
-              icon={faTrash}
-              size={ICON_BUTTON_SIZES.SMALL}
-              onClick={() => handlePointDelete(index)}
-            />
-          </div>
-        </li>
-      ))}
-    </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
