@@ -2,7 +2,7 @@ import mapboxgl, { MapMouseEvent, Marker } from "mapbox-gl";
 import { useCallback, useEffect, useState } from "react";
 import * as turf from "@turf/turf";
 
-import { Elevation } from "./Elevation.tsx";
+import { MainChart } from "./MainChart.tsx";
 import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
 import { Search } from "./Search";
@@ -27,7 +27,6 @@ import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain, drawRoute } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { WeatherControls } from "./WeatherControls.tsx";
-import { useWeatherContext } from "../contexts/WeatherContext.ts";
 import { SearchResult } from "./shared/SearchResult.tsx";
 import { useGetDrinkingWater } from "../queries/useGetDrinkingWater.ts";
 
@@ -41,7 +40,6 @@ const profileNameMap = {
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { selectedRouteId, showPOIs } = useRouteContext();
   const { session, supabase } = useSessionContext();
-  const { pace, startTime } = useWeatherContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
   const [chartMode, setChartMode] = useState<ChartMode>("elevation");
@@ -399,7 +397,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
       {routeTrack && (
-        <Elevation
+        <MainChart
           currentPointDistance={currentPointDistance}
           mode={chartMode}
           routeTrack={routeTrack}

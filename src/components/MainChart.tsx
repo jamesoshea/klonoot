@@ -49,7 +49,7 @@ const getMaxValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: 
   return weatherData[indexOfMaxValue].formatted[mode];
 };
 
-export const Elevation = ({
+export const MainChart = ({
   currentPointDistance,
   mode,
   routeTrack,
