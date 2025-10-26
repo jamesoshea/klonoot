@@ -3,18 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ICON_BUTTON_SIZES } from "../../consts";
 
 type IconButtonProps = {
+  dataTestId?: string;
   disabled?: boolean;
   icon: IconProp;
   size: ICON_BUTTON_SIZES;
   onClick: () => void;
 };
 
-export const IconButton = ({
-  disabled,
-  icon,
-  size,
-  onClick,
-}: IconButtonProps) => {
+export const IconButton = ({ dataTestId, disabled, icon, size, onClick }: IconButtonProps) => {
   const buttonSizeMap = {
     [ICON_BUTTON_SIZES.SMALL]: "16px",
     [ICON_BUTTON_SIZES.MEDIUM]: "20px",
@@ -30,6 +26,7 @@ export const IconButton = ({
   return (
     <button
       className="btn btn-circle btn-ghost text-neutral"
+      data-testid={dataTestId}
       disabled={disabled}
       style={{
         height: buttonSizeMap[size],
