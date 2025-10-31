@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# brouter stuff
+segments4/
