@@ -2,9 +2,9 @@
 
 ## Background
 
-This is an attempt to copy the core functionality and user experience of Komoot, after its sale to private equity.
+This is a webapp inspired the core functionality and user experience of a popuar route-planning app, after its sale to private equity.
 
-This would serve purely as a route planning tool. There are already many fantastic open-source navigation apps for cycling. I really loved Komoot's interface for planning trips, and would like to offer something similar for free/donations.
+It serves purely as a route planning tool, rather than as a navigation app, or social platform. There are already many fantastic open-source navigation apps for cycling. I really loved (for example) Komoot's interface for planning trips, and would like to offer something similar for free/donations.
 
 It relies on [brouter](https://github.com/abrensch/brouter) for its routing, and leans heavily on Mapbox for the map and search implementation. This may change, as I would prefer open-source dependencies where possible.
 
