@@ -186,6 +186,10 @@ export const drawWeatherChart = ({
   routeTrack: BrouterResponse;
   weatherData: WeatherData[];
 }) => {
+  if (!weatherData?.length) {
+    return;
+  }
+
   const trackLength = getTrackLength(routeTrack);
 
   const minValue = Math.min(...weatherData.map((datum) => datum.values[mode]));

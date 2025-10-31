@@ -36,6 +36,11 @@ const getMinValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: 
 
   const minValue = Math.min(...weatherData.map((datum) => datum.values[mode]));
   const indexOfMinValue = weatherData.findIndex((datum) => datum.values[mode] === minValue);
+
+  if (!weatherData[indexOfMinValue]) {
+    return 0;
+  }
+
   return weatherData[indexOfMinValue].formatted[mode];
 };
 
@@ -46,6 +51,11 @@ const getMaxValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: 
 
   const maxValue = Math.max(...weatherData.map((datum) => datum.values[mode]));
   const indexOfMaxValue = weatherData.findIndex((datum) => datum.values[mode] === maxValue);
+
+  if (!weatherData[indexOfMaxValue]) {
+    return 0;
+  }
+
   return weatherData[indexOfMaxValue].formatted[mode];
 };
 
