@@ -11,7 +11,7 @@ services:
       - ./src:/client/src
   api:
     restart: unless-stopped
-    image: jimoshea89/brouter:latest
+    image: joeakeem/brouter:v1.7.8
     ports:
       - 17777:17777
     volumes:
