@@ -54,7 +54,6 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
   return (
     <div className="mb-2 w-full">
       <div className="flex items-center justify-between w-full">
-        {/* @ts-expect-error @types/react version mismatch */}
         <SearchBox
           accessToken={MAPBOX_ACCESS_TOKEN}
           map={map}

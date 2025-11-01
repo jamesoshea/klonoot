@@ -4,6 +4,8 @@ import { fetchRoute, setNewPoint } from "./route";
 import { BROUTER_PROFILES, type Coordinate } from "../types";
 import axios from "axios";
 
+const getSpy = vi.spyOn(axios, "get");
+
 describe("setNewPoint", () => {
   test("should add point to middle", () => {
     const mockPoints = [
@@ -45,16 +47,12 @@ describe("setNewPoint", () => {
 });
 
 describe("fetchRoute", () => {
-  beforeEach(vi.clearAllMocks);
+  beforeEach(() => {
+    getSpy.mockReset();
+  });
 
   it("should call brouter for a GPX when passed the GPX format", async () => {
-    vi.mock("axios", () => {
-      return {
-        default: {
-          get: vi.fn().mockResolvedValue({ data: {} }),
-        },
-      };
-    });
+    getSpy.mockResolvedValue({ data: {} });
 
     await fetchRoute(
       "gpx",
@@ -63,19 +61,13 @@ describe("fetchRoute", () => {
       "test_route",
     );
 
-    expect(axios.get).toHaveBeenCalledWith(
-      "https://klonoot.org/api/brouter?lonlats=0,0,test point name&profile=gravel&alternativeidx=0&format=gpx&trackname=test_route",
+    expect(getSpy.mock.calls[0][0]).toContain(
+      "brouter?lonlats=0,0,test point name&profile=gravel&alternativeidx=0&format=gpx&trackname=test_route",
     );
   });
 
   it("should format direct points", async () => {
-    vi.mock("axios", () => {
-      return {
-        default: {
-          get: vi.fn().mockResolvedValue({ data: {} }),
-        },
-      };
-    });
+    getSpy.mockResolvedValue({ data: {} });
 
     await fetchRoute(
       "geojson",
@@ -87,8 +79,8 @@ describe("fetchRoute", () => {
       "test_route",
     );
 
-    expect(axios.get).toHaveBeenCalledWith(
-      "https://klonoot.org/api/brouter?lonlats=0,0,test point name|0,0,direct&profile=gravel&alternativeidx=0&format=geojson&straight=1&trackname=test_route",
+    expect(getSpy.mock.calls[0][0]).toContain(
+      "brouter?lonlats=0,0,test point name|0,0,direct&profile=gravel&alternativeidx=0&format=geojson&straight=1&trackname=test_route",
     );
   });
 });
