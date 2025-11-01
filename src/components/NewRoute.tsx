@@ -14,7 +14,7 @@ export const NewRoute = () => {
   };
 
   return (
-    <div className="nav-menu bg-base-100 flex flex-col rounded-lg p-2 absolute top-31 right-3 z-3">
+    <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
         <FontAwesomeIcon
           className="cursor-pointer text-neutral"

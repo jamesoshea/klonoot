@@ -9,7 +9,7 @@ export const Settings = () => {
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
 
   return routeTrack ? (
-    <div className="nav-menu bg-base-100 flex flex-col rounded-lg p-2 absolute top-17 right-3 z-4">
+    <div className="bg-base-100 flex flex-col rounded-lg p-2 z-4">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
         <FontAwesomeIcon
           className="cursor-pointer text-neutral"

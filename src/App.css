@@ -13,10 +13,6 @@
   background-color: lightgrey;
 }
 
-.nav-menu {
-  max-width: 266px;
-}
-
 .elevation {
   z-index: 1;
   position: absolute;

@@ -51,9 +51,11 @@ function App() {
             <WeatherContextProvider>
               {map && mapLoaded && <Routing map={map} />}
               <div id="map-container" ref={mapContainerRef} />
-              <Nav />
-              <Settings />
-              <NewRoute />
+              <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
+                <Nav />
+                <Settings />
+                <NewRoute />
+              </div>
             </WeatherContextProvider>
           </LoadingContextProvider>
         </RouteContextProvider>
