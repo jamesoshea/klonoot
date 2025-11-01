@@ -38,18 +38,18 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
-  const { setCurrentPointDistance, selectedRouteId, setRouteTrack, showPOIs } = useRouteContext();
+  const {
+    currentPointDistance,
+    setCurrentPointDistance,
+    selectedRouteId,
+    setRouteTrack,
+    showPOIs,
+  } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
-  const [chartMode, setChartMode] = useState<ChartMode>("elevation");
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
-  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
-  const [patches, setPatches] = useState<Coordinate[][]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
-  const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
-  const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
-  const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
 
   const { data: routeTrack } = useFetchRoute({
     enabled: points.length > 1,
@@ -59,6 +59,14 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: userRoutes } = useGetUserRoutes();
+
+  const [chartMode, setChartMode] = useState<ChartMode>("elevation");
+  const [currentPointMarker, setCurrentPointMarker] = useState<Marker | null>(null);
+  const [markersInState, setMarkersInState] = useState<Marker[]>([]);
+  const [patches, setPatches] = useState<Coordinate[][]>([]);
+  const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
+  const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
+  const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
 
   const handleAddPOIToPoints = (poi: GeoJSON.Feature<GeoJSON.Point>) => {
     setPoints(
@@ -158,10 +166,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     e.stopPropagation();
   };
 
-  const handleSetChartMode = (mode: ChartMode) => {
-    setChartMode(mode);
-  };
-
   const handleUndo = () => {
     if (!patches.length) {
       return;
@@ -182,10 +186,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // authenticated users: select route from list
   // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
   const loggedIn = !!session;
-
-  // authenticated users: select route from list
   useEffect(() => {
     if (!loggedIn) {
       return;
@@ -264,6 +267,28 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setMarkersInState([...pointMarkers, ...waterMarkers]);
   }, [drinkingWater, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // add marker to currently-hovered point (map or elevation chart)
+  useEffect(() => {
+    currentPointMarker?.remove();
+
+    if (!routeTrack || currentPointDistance < 0) {
+      return;
+    }
+    const element = document.createElement("div");
+    element.className =
+      "rounded-[6px] min-w-[12px] min-h-[12px] text-center cursor-pointer border-1 bg-neutral-content text-neutral";
+
+    const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
+    const along = turf.along(line, currentPointDistance, { units: "metres" });
+
+    const marker = new mapboxgl.Marker({ draggable: true, element })
+      .setLngLat([along.geometry.coordinates[0], along.geometry.coordinates[1]])
+      .addTo(map);
+
+    setCurrentPointMarker(marker);
+  }, [map, routeTrack, currentPointDistance]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // apply patches
   useEffect(() => {
     if (JSON.stringify(patches.slice(-1)[0]) === JSON.stringify(points)) {
       // we got here by applying a patch. Don't apply it again
@@ -386,7 +411,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
                 routeTrack={routeTrack}
                 setPoints={setPoints}
                 showRouteInfo={showRouteInfo}
-                onToggleMode={handleSetChartMode}
+                onToggleMode={(mode: ChartMode) => setChartMode(mode)}
               />
             </>
           )}
