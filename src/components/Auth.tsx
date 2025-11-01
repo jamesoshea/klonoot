@@ -1,10 +1,8 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../contexts/SessionContext";
 import { queryClient } from "../queries/queryClient";
-import { faPlus, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faSignOut } from "@fortawesome/free-solid-svg-icons";
 
-import { useCreateRoute } from "../queries/useCreateRoute";
-import { BROUTER_PROFILES } from "../types";
 import { SquareButton } from "./shared/SquareButton";
 
 type MODE = "LOGIN" | "VERIFY";
@@ -17,8 +15,6 @@ export const Auth = () => {
   const [step, setStep] = useState<MODE>("LOGIN");
 
   const { supabase, session } = useContext(SessionContext);
-
-  const { mutateAsync: createUserRoute } = useCreateRoute();
 
   const handleEmailLogin = async () => {
     setLoading(true);
@@ -42,13 +38,6 @@ export const Auth = () => {
     setOtp("");
   };
 
-  const handleCreateRoute = () => {
-    createUserRoute({
-      brouterProfile: BROUTER_PROFILES.TREKKING,
-      points: [],
-    });
-  };
-
   const handleSignOut = async () => {
     setLoading(true);
     await supabase.auth.signOut();
@@ -58,19 +47,10 @@ export const Auth = () => {
   };
 
   return (
-    <div>
+    <div className="mt-1">
       {session ? (
         <div className="join join-vertical w-full">
-          <SquareButton
-            icon={faPlus}
-            text="Create new route"
-            onClick={handleCreateRoute}
-          />
-          <SquareButton
-            icon={faSignOut}
-            text="Sign out"
-            onClick={handleSignOut}
-          />
+          <SquareButton icon={faSignOut} text="Sign out" onClick={handleSignOut} />
         </div>
       ) : (
         <>
@@ -128,10 +108,7 @@ export const Auth = () => {
               </button>
             ) : step === "VERIFY" ? (
               <>
-                <button
-                  className="btn btn-outline"
-                  onClick={() => setStep("LOGIN")}
-                >
+                <button className="btn btn-outline" onClick={() => setStep("LOGIN")}>
                   Back
                 </button>
                 <button className="btn ml-2" onClick={handleEmailConfirm}>

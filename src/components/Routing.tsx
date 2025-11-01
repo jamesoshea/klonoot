@@ -38,7 +38,7 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
-  const { selectedRouteId, showPOIs } = useRouteContext();
+  const { selectedRouteId, setRouteTrack, showPOIs } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
@@ -157,6 +157,10 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const handlePOICLick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+  };
+
+  const handleSetChartMode = (mode: ChartMode) => {
+    setChartMode(mode);
   };
 
   const handleUndo = () => {
@@ -334,9 +338,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     }
   }, [showRouteInfo]);
 
-  const handleSetChartMode = (mode: ChartMode) => {
-    setChartMode(mode);
-  };
+  useEffect(() => {
+    if (routeTrack) {
+      setRouteTrack(routeTrack);
+    }
+  }, [routeTrack, setRouteTrack]);
 
   return (
     <>

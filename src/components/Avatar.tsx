@@ -4,20 +4,14 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useSessionContext } from "../contexts/SessionContext";
 import { useLoadingContext } from "../contexts/LoadingContext";
 
-export const Avatar = ({
-  showEmail,
-  onClick,
-}: {
-  showEmail: boolean;
-  onClick: () => void;
-}) => {
+export const Avatar = ({ showEmail, onClick }: { showEmail: boolean; onClick: () => void }) => {
   const { loading } = useLoadingContext();
   const { session } = useSessionContext();
 
   return (
-    <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
+    <div className="flex flex-row-reverse items-center justify-start gap-2 w-full min-w-10 ">
       {loading ? (
-        <span className="loading loading-spinner loading-xl"></span>
+        <span className="loading loading-spinner loading-xl text-neutral min-h-8 mr-1.5" />
       ) : (
         <FontAwesomeIcon
           className={`cursor-pointer text-neutral ${session || loading ? "" : "opacity-60"}`}

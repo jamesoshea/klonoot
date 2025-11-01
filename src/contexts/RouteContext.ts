@@ -1,7 +1,9 @@
 import { createContext, useContext, type Dispatch } from "react";
-import { BROUTER_PROFILES, type UserRoute } from "../types";
+import { BROUTER_PROFILES, type BrouterResponse, type UserRoute } from "../types";
 
 export type RouteContextType = {
+  routeTrack: BrouterResponse | null;
+  setRouteTrack: Dispatch<BrouterResponse | null>;
   showPOIs: boolean;
   setShowPOIs: Dispatch<boolean>;
   selectedRouteId: string | null;
@@ -10,6 +12,8 @@ export type RouteContextType = {
 };
 
 export const RouteContext = createContext<RouteContextType>({
+  routeTrack: null,
+  setRouteTrack: () => null,
   selectedRouteId: null,
   setSelectedRouteId: () => null,
   showPOIs: false,
