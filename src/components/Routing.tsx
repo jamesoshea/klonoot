@@ -38,12 +38,11 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
-  const { selectedRouteId, setRouteTrack, showPOIs } = useRouteContext();
+  const { setCurrentPointDistance, selectedRouteId, setRouteTrack, showPOIs } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
   const [chartMode, setChartMode] = useState<ChartMode>("elevation");
-  const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
   const [patches, setPatches] = useState<Coordinate[][]>([]);
@@ -147,12 +146,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       const pointDistance = nearestPointOnLine.properties.location;
       setCurrentPointDistance(pointDistance);
     },
-    [routeTrack],
+    [routeTrack, setCurrentPointDistance],
   );
 
-  const handleLineMouseLeave = () => {
+  const handleLineMouseLeave = useCallback(() => {
     setCurrentPointDistance(-1);
-  };
+  }, [setCurrentPointDistance]);
 
   const handlePOICLick = (e: MouseEvent) => {
     e.preventDefault();
@@ -224,7 +223,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         padding: 256,
       },
     );
-  }, [map, selectedRouteId, loggedIn, userRoutes]);
+  }, [map, selectedRouteId, loggedIn, setCurrentPointDistance, userRoutes]);
 
   // set markers upon points change
   useEffect(() => {
@@ -287,7 +286,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       map.off("mousemove", "route", handleLineMouseMove);
       map.off("mouseleave", "route", handleLineMouseLeave);
     };
-  }, [map, handleContextMenuOpen, handleLineMouseMove, handleNewPointSet]);
+  }, [map, handleContextMenuOpen, handleLineMouseMove, handleLineMouseLeave, handleNewPointSet]);
 
   // debounce point changes
   useEffect(() => {
@@ -402,13 +401,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         )}
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {routeTrack && (
-        <MainChart
-          currentPointDistance={currentPointDistance}
-          mode={chartMode}
-          routeTrack={routeTrack}
-        />
-      )}
+      {routeTrack && <MainChart mode={chartMode} routeTrack={routeTrack} />}
       {selectedPOI && (
         <SearchResult
           searchResult={selectedPOI}

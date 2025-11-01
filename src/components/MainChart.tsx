@@ -29,6 +29,7 @@ import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 import { getTrackLength } from "../utils/route";
 import { useWeatherContext } from "../contexts/WeatherContext";
 import { getWeather } from "../utils/weather";
+import { useRouteContext } from "../contexts/RouteContext";
 
 const getMinValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
   if (mode === "elevation") {
@@ -61,28 +62,24 @@ const getMaxValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: 
 };
 
 export const MainChart = ({
-  currentPointDistance: currentPointDistancefromProps,
   mode,
   routeTrack,
 }: {
-  currentPointDistance: number;
   mode: ChartMode;
   routeTrack: BrouterResponse;
 }) => {
+  const { currentPointDistance, setCurrentPointDistance } = useRouteContext();
   const { pace, startTime } = useWeatherContext();
 
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [currentPointDistanceFromCanvas, setCurrentPointDistanceFromCanvas] = useState<number>(0);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const trackLength = getTrackLength(routeTrack);
-  const currentPointDistance =
-    Math.max(0, currentPointDistancefromProps) || Math.max(0, currentPointDistanceFromCanvas) || 0;
 
   const drawDataChart = useCallback(() => {
     const canvas = elevationCanvasRef.current;
@@ -174,9 +171,9 @@ export const MainChart = ({
     }
   }, [canvasWidth, routeTrack]);
 
-  const handleResetCurrentPointDistance = () => {
-    setCurrentPointDistanceFromCanvas(-1);
-  };
+  const handleResetCurrentPointDistance = useCallback(() => {
+    setCurrentPointDistance(-1);
+  }, [setCurrentPointDistance]);
 
   const handleSetCurrentPointDistanceFromCanvas = useCallback(
     (e: MouseEvent) => {
@@ -187,9 +184,9 @@ export const MainChart = ({
         0,
         trackLength,
       );
-      setCurrentPointDistanceFromCanvas(mouseDistance);
+      setCurrentPointDistance(mouseDistance);
     },
-    [trackLength],
+    [setCurrentPointDistance, trackLength],
   );
 
   useEffect(() => {
@@ -212,7 +209,7 @@ export const MainChart = ({
       canvas.removeEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
       canvas.removeEventListener("mouseleave", handleResetCurrentPointDistance);
     };
-  }, [handleSetCurrentPointDistanceFromCanvas]);
+  }, [handleResetCurrentPointDistance, handleSetCurrentPointDistanceFromCanvas]);
 
   useEffect(drawDataChart, [collapsed, drawDataChart]);
   useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);

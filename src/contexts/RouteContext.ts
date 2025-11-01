@@ -2,6 +2,8 @@ import { createContext, useContext, type Dispatch } from "react";
 import { BROUTER_PROFILES, type BrouterResponse, type UserRoute } from "../types";
 
 export type RouteContextType = {
+  currentPointDistance: number;
+  setCurrentPointDistance: Dispatch<number>;
   routeTrack: BrouterResponse | null;
   setRouteTrack: Dispatch<BrouterResponse | null>;
   showPOIs: boolean;
@@ -12,6 +14,8 @@ export type RouteContextType = {
 };
 
 export const RouteContext = createContext<RouteContextType>({
+  currentPointDistance: -1,
+  setCurrentPointDistance: () => -1,
   routeTrack: null,
   setRouteTrack: () => null,
   selectedRouteId: null,
