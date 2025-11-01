@@ -16,12 +16,14 @@ export const NewRoute = () => {
   return (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
-        <FontAwesomeIcon
-          className="cursor-pointer text-neutral"
-          icon={faPlusCircle}
-          size="2xl"
-          onClick={handleCreateRoute}
-        />
+        <div className="tooltip tooltip-left" data-tip="Create new route">
+          <FontAwesomeIcon
+            className="cursor-pointer text-neutral"
+            icon={faPlusCircle}
+            size="2xl"
+            onClick={handleCreateRoute}
+          />
+        </div>
       </div>
     </div>
   );

@@ -10,4 +10,5 @@ if [[ $current_branch = "main" ]]; then
     npm run build
     scp -r dist/* root@${SERVER_ADDRESS}:/var/www/klonoot.org/html
 fi
+
 exit 0

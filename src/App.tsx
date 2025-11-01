@@ -12,7 +12,7 @@ import { SessionContextProvider } from "./contexts/SessionContextProvider";
 import { queryClient } from "./queries/queryClient";
 import { Nav } from "./components/Nav";
 import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
-import { Settings } from "./components/Settings";
+import { Layers } from "./components/Layers";
 import { NewRoute } from "./components/NewRoute";
 
 mapboxgl.accessToken =
@@ -53,7 +53,7 @@ function App() {
               <div id="map-container" ref={mapContainerRef} />
               <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
                 <Nav />
-                <Settings />
+                <Layers />
                 <NewRoute />
               </div>
             </WeatherContextProvider>
