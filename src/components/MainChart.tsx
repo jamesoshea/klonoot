@@ -22,6 +22,7 @@ import {
   createRouteMarks,
   drawElevationChart,
   drawWeatherChart,
+  scale,
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
@@ -60,7 +61,7 @@ const getMaxValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: 
 };
 
 export const MainChart = ({
-  currentPointDistance,
+  currentPointDistance: currentPointDistancefromProps,
   mode,
   routeTrack,
 }: {
@@ -73,12 +74,15 @@ export const MainChart = ({
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [currentPointDistanceFromCanvas, setCurrentPointDistanceFromCanvas] = useState<number>(0);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const trackLength = getTrackLength(routeTrack);
+  const currentPointDistance =
+    Math.max(0, currentPointDistancefromProps) || Math.max(0, currentPointDistanceFromCanvas) || 0;
 
   const drawDataChart = useCallback(() => {
     const canvas = elevationCanvasRef.current;
@@ -170,6 +174,24 @@ export const MainChart = ({
     }
   }, [canvasWidth, routeTrack]);
 
+  const handleResetCurrentPointDistance = () => {
+    setCurrentPointDistanceFromCanvas(-1);
+  };
+
+  const handleSetCurrentPointDistanceFromCanvas = useCallback(
+    (e: MouseEvent) => {
+      const mouseDistance = scale(
+        e.offsetX,
+        0,
+        parseInt((e.target as HTMLCanvasElement).style.width),
+        0,
+        trackLength,
+      );
+      setCurrentPointDistanceFromCanvas(mouseDistance);
+    },
+    [trackLength],
+  );
+
   useEffect(() => {
     window.addEventListener("resize", drawDataChart);
     window.addEventListener("resize", drawTrafficMap);
@@ -179,6 +201,18 @@ export const MainChart = ({
       window.addEventListener("resize", drawTrafficMap);
     };
   }, [drawDataChart, drawTrafficMap]);
+
+  useEffect(() => {
+    const canvas = elevationCanvasRef.current!;
+
+    canvas.addEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
+    canvas.addEventListener("mouseleave", handleResetCurrentPointDistance);
+
+    return () => {
+      canvas.removeEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
+      canvas.removeEventListener("mouseleave", handleResetCurrentPointDistance);
+    };
+  }, [handleSetCurrentPointDistanceFromCanvas]);
 
   useEffect(drawDataChart, [collapsed, drawDataChart]);
   useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);
