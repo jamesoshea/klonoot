@@ -1,5 +1,11 @@
 ## Roadmap
 
+### Missing Documentation
+
+- Update CoC
+- Local setup using docker-compose
+- Deployment / git hooks
+
 ### Larger Projects
 
 - Run brouter serverless/ as an AWS Lambda

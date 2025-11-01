@@ -4,7 +4,7 @@ import { fetchRoute, setNewPoint } from "./route";
 import { BROUTER_PROFILES, type Coordinate } from "../types";
 import axios from "axios";
 
-const getSpy = vi.spyOn(axios, "get");
+const axiosGetSpy = vi.spyOn(axios, "get");
 
 describe("setNewPoint", () => {
   test("should add point to middle", () => {
@@ -48,11 +48,11 @@ describe("setNewPoint", () => {
 
 describe("fetchRoute", () => {
   beforeEach(() => {
-    getSpy.mockReset();
+    axiosGetSpy.mockReset();
   });
 
   it("should call brouter for a GPX when passed the GPX format", async () => {
-    getSpy.mockResolvedValue({ data: {} });
+    axiosGetSpy.mockResolvedValue({ data: {} });
 
     await fetchRoute(
       "gpx",
@@ -61,13 +61,13 @@ describe("fetchRoute", () => {
       "test_route",
     );
 
-    expect(getSpy.mock.calls[0][0]).toContain(
+    expect(axiosGetSpy.mock.calls[0][0]).toContain(
       "brouter?lonlats=0,0,test point name&profile=gravel&alternativeidx=0&format=gpx&trackname=test_route",
     );
   });
 
   it("should format direct points", async () => {
-    getSpy.mockResolvedValue({ data: {} });
+    axiosGetSpy.mockResolvedValue({ data: {} });
 
     await fetchRoute(
       "geojson",
@@ -79,7 +79,7 @@ describe("fetchRoute", () => {
       "test_route",
     );
 
-    expect(getSpy.mock.calls[0][0]).toContain(
+    expect(axiosGetSpy.mock.calls[0][0]).toContain(
       "brouter?lonlats=0,0,test point name|0,0,direct&profile=gravel&alternativeidx=0&format=geojson&straight=1&trackname=test_route",
     );
   });
