@@ -43,7 +43,7 @@ export const MainChart = ({
 
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<boolean>(true);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);

@@ -24,12 +24,11 @@ import { useSessionContext } from "../contexts/SessionContext.ts";
 import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
-import { addTerrain, drawRoute } from "../utils/map.ts";
+import { addTerrain, drawRoute, drawCurrentPointMarker } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { WeatherControls } from "./WeatherControls.tsx";
 import { SearchResult } from "./shared/SearchResult.tsx";
 import { useGetDrinkingWater } from "../queries/useGetDrinkingWater.ts";
-import { drawCurrentPointMarker } from "../utils/canvas.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -111,12 +110,14 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     (e: mapboxgl.MapMouseEvent) => {
       const width = 20;
       const height = 20;
+
+      console.log(map.getStyle().layers);
       const features = map.queryRenderedFeatures(
         [
           [e.point.x - width / 2, e.point.y - height / 2],
           [e.point.x + width / 2, e.point.y + height / 2],
         ],
-        { target: { layerId: "poi-label" } },
+        { layers: ["poi-label", "transit-label", "airport-label", "natural-point-label"] },
       );
 
       const feature = features[0];

@@ -1,6 +1,3 @@
-import { Map, Marker } from "mapbox-gl";
-import * as turf from "@turf/turf";
-
 import {
   CANVAS_HEIGHT,
   COLOR__ACCENT,
@@ -12,10 +9,9 @@ import {
   SURFACE_COLORS,
   SURFACE_NAMES,
 } from "../consts";
-import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
 import { getTrackLength } from "./route";
+import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
 import { bearingToCardinalDirection } from "./weather";
-import type { Dispatch } from "react";
 
 const filterElevationNoise = (message: string[]) => {
   return Number(message[2]) !== -8192;
@@ -276,37 +272,4 @@ export const drawTextWithBackground = (
 
   /// restore original state
   ctx.restore();
-};
-
-export const drawCurrentPointMarker = ({
-  currentPointDistance,
-  currentPointMarker,
-  map,
-  routeTrack,
-  setCurrentPointMarker,
-}: {
-  currentPointDistance: number;
-  currentPointMarker: Marker | null;
-  map: Map;
-  routeTrack: BrouterResponse | null | undefined;
-  setCurrentPointMarker: Dispatch<Marker>;
-}) => {
-  currentPointMarker?.remove();
-
-  if (!routeTrack || currentPointDistance < 0) {
-    return;
-  }
-  const element = document.createElement("div");
-  element.className =
-    "rounded-[6px] min-w-[12px] min-h-[12px] text-center border-1 bg-neutral-content text-neutral z-1";
-
-  const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
-  const along = turf.along(line, currentPointDistance, { units: "metres" });
-
-  const marker = new Marker({ element })
-    .addClassName("cursor-default")
-    .setLngLat([along.geometry.coordinates[0], along.geometry.coordinates[1]])
-    .addTo(map);
-
-  setCurrentPointMarker(marker);
 };

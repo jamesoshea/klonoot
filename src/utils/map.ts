@@ -1,3 +1,7 @@
+import * as turf from "@turf/turf";
+import { Map, Marker } from "mapbox-gl";
+import type { Dispatch } from "react";
+
 import { COLOR__ACCENT } from "../consts";
 import type { BrouterResponse } from "../types";
 
@@ -40,4 +44,37 @@ export const drawRoute = (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
       "line-opacity": 0.7,
     },
   });
+};
+
+export const drawCurrentPointMarker = ({
+  currentPointDistance,
+  currentPointMarker,
+  map,
+  routeTrack,
+  setCurrentPointMarker,
+}: {
+  currentPointDistance: number;
+  currentPointMarker: Marker | null;
+  map: Map;
+  routeTrack: BrouterResponse | null | undefined;
+  setCurrentPointMarker: Dispatch<Marker>;
+}) => {
+  currentPointMarker?.remove();
+
+  if (!routeTrack || currentPointDistance < 0) {
+    return;
+  }
+  const element = document.createElement("div");
+  element.className =
+    "rounded-[5px] min-w-[10px] min-h-[10px] text-center border-1 bg-neutral text-neutral z-1";
+
+  const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
+  const along = turf.along(line, currentPointDistance, { units: "metres" });
+
+  const marker = new Marker({ element })
+    .addClassName("cursor-default")
+    .setLngLat([along.geometry.coordinates[0], along.geometry.coordinates[1]])
+    .addTo(map);
+
+  setCurrentPointMarker(marker);
 };
