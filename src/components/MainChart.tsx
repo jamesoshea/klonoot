@@ -28,38 +28,8 @@ import {
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
 import { getTrackLength } from "../utils/route";
 import { useWeatherContext } from "../contexts/WeatherContext";
-import { getWeather } from "../utils/weather";
+import { getMinMaxWeatherValue, getWeather } from "../utils/weather";
 import { useRouteContext } from "../contexts/RouteContext";
-
-const getMinValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
-  if (mode === "elevation") {
-    return `${calculateMinElevation(routeTrack)}m`;
-  }
-
-  const minValue = Math.min(...weatherData.map((datum) => datum.values[mode]));
-  const indexOfMinValue = weatherData.findIndex((datum) => datum.values[mode] === minValue);
-
-  if (!weatherData[indexOfMinValue]) {
-    return 0;
-  }
-
-  return weatherData[indexOfMinValue].formatted[mode];
-};
-
-const getMaxValue = (mode: ChartMode, routeTrack: BrouterResponse, weatherData: WeatherData[]) => {
-  if (mode === "elevation") {
-    return `${calculateMaxElevation(routeTrack)}m`;
-  }
-
-  const maxValue = Math.max(...weatherData.map((datum) => datum.values[mode]));
-  const indexOfMaxValue = weatherData.findIndex((datum) => datum.values[mode] === maxValue);
-
-  if (!weatherData[indexOfMaxValue]) {
-    return 0;
-  }
-
-  return weatherData[indexOfMaxValue].formatted[mode];
-};
 
 export const MainChart = ({
   mode,
@@ -231,8 +201,16 @@ export const MainChart = ({
     <div className={`indicator elevation z-3 ${collapsed ? "collapsed" : ""}`}>
       <div className="rounded-lg bg-base-100 relative p-2 w-full h-full">
         <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2 pointer-events-none">
-          <span className="bg-base-200 pl-1">{getMaxValue(mode, routeTrack, weatherData)}</span>
-          <span className="bg-base-200 pl-1">{getMinValue(mode, routeTrack, weatherData)}</span>
+          <span className="bg-base-200 pl-1">
+            {mode === "elevation"
+              ? `${calculateMaxElevation(routeTrack)}m`
+              : getMinMaxWeatherValue(mode, "max", weatherData)}
+          </span>
+          <span className="bg-base-200 pl-1">
+            {mode === "elevation"
+              ? `${calculateMinElevation(routeTrack)}m`
+              : getMinMaxWeatherValue(mode, "min", weatherData)}
+          </span>
         </div>
         <div className="w-full">
           {mode === "elevation" && (

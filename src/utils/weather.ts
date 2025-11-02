@@ -2,7 +2,7 @@ import * as turf from "@turf/turf";
 import axios, { type AxiosResponse } from "axios";
 import dayjs from "dayjs";
 
-import type { BrouterResponse, OpenMeteoHourlyData, WeatherData } from "../types";
+import type { BrouterResponse, ChartMode, OpenMeteoHourlyData, WeatherData } from "../types";
 import { getTrackLength } from "./route";
 
 export const getSubstring = (ISODateString: string) =>
@@ -89,4 +89,21 @@ export const bearingToCardinalDirection = (degree: number) => {
   else if (degree > 258.75 && degree < 281.25) return "W";
   else if (degree > 281.25 && degree < 348.75) return "NW";
   else return "N";
+};
+
+export const getMinMaxWeatherValue = (
+  mode: Exclude<ChartMode, "elevation">,
+  value: "min" | "max",
+  weatherData: WeatherData[],
+) => {
+  const relevantValue = Math[value](...weatherData.map((datum) => datum.values[mode]));
+  const indexOfRelevantValue = weatherData.findIndex(
+    (datum) => datum.values[mode] === relevantValue,
+  );
+
+  if (!weatherData[indexOfRelevantValue]) {
+    return 0;
+  }
+
+  return weatherData[indexOfRelevantValue].formatted[mode];
 };
