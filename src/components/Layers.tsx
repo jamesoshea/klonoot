@@ -29,7 +29,7 @@ export const Layers = () => {
               checked={showPOIs}
               onChange={(e) => setShowPOIs(e.target.checked)}
             />
-            Show drinking water
+            Drinking water
           </label>
         </div>
       )}
