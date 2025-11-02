@@ -162,7 +162,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setCurrentPointDistance(-1);
   }, [setCurrentPointDistance]);
 
-  const handlePOICLick = (e: MouseEvent) => {
+  const handlePOIClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
@@ -255,7 +255,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[3px]`;
               element.innerHTML =
                 '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="16" width="16"><path fill="#FFF" d="M320 576C214 576 128 490 128 384C128 292.8 258.2 109.9 294.6 60.5C300.5 52.5 309.8 48 319.8 48L320.2 48C330.2 48 339.5 52.5 345.4 60.5C381.8 109.9 512 292.8 512 384C512 490 426 576 320 576zM240 376C240 362.7 229.3 352 216 352C202.7 352 192 362.7 192 376C192 451.1 252.9 512 328 512C341.3 512 352 501.3 352 488C352 474.7 341.3 464 328 464C279.4 464 240 424.6 240 376z"/></svg>';
-              element.onclick = handlePOICLick;
+              element.onclick = handlePOIClick;
 
               const marker = new mapboxgl.Marker({ element })
                 .setLngLat([waterFeature.lon, waterFeature.lat])
@@ -266,7 +266,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         : [];
 
     setMarkersInState([...pointMarkers, ...waterMarkers]);
-  }, [drinkingWater, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [drinkingWater, handlePOIClick, handlePointClick, handlePointDrag, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // add marker to currently-hovered point (map or elevation chart)
   useEffect(
