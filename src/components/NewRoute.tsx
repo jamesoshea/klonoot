@@ -20,7 +20,7 @@ export const NewRoute = () => {
           <FontAwesomeIcon
             className="cursor-pointer text-neutral"
             icon={faPlusCircle}
-            size="2xl"
+            size="xl"
             onClick={handleCreateRoute}
           />
         </div>

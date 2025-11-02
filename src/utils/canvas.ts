@@ -298,7 +298,7 @@ export const drawCurrentPointMarker = ({
   }
   const element = document.createElement("div");
   element.className =
-    "rounded-[6px] min-w-[12px] min-h-[12px] text-center border-1 bg-neutral-content text-neutral z-9";
+    "rounded-[6px] min-w-[12px] min-h-[12px] text-center border-1 bg-neutral-content text-neutral z-1";
 
   const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
   const along = turf.along(line, currentPointDistance, { units: "metres" });

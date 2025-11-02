@@ -15,7 +15,7 @@ export const Layers = () => {
           <FontAwesomeIcon
             className="cursor-pointer text-neutral"
             icon={faLayerGroup}
-            size="2xl"
+            size="xl"
             onClick={() => setMenuIsOpen(!menuIsOpen)}
           />
         </div>

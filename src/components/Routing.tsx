@@ -235,7 +235,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
     const pointMarkers = points.map((point, index) => {
       const element = document.createElement("div");
-      element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 z-10 ${point[3] ? "bg-neutral-content text-neutral" : "bg-neutral text-neutral-content"}`;
+      element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 z-2 ${point[3] ? "bg-neutral-content text-neutral" : "bg-neutral text-neutral-content"}`;
       element.innerText = (index + 1).toString();
       element.onclick = (e) => handlePointClick(e, index);
       const marker = new mapboxgl.Marker({ draggable: true, element })
@@ -266,7 +266,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         : [];
 
     setMarkersInState([...pointMarkers, ...waterMarkers]);
-  }, [drinkingWater, handlePOIClick, handlePointClick, handlePointDrag, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [drinkingWater, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // add marker to currently-hovered point (map or elevation chart)
   useEffect(
@@ -363,7 +363,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   return (
     <>
-      <div className="routing m-3">
+      <div className="routing m-3 z-3">
         {session && (
           <UserRouteList
             brouterProfile={brouterProfile}

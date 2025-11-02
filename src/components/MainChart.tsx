@@ -228,7 +228,7 @@ export const MainChart = ({
   }, [routeTrack, pace, startTime]);
 
   return (
-    <div className={`indicator elevation ${collapsed ? "collapsed" : ""}`}>
+    <div className={`indicator elevation z-3 ${collapsed ? "collapsed" : ""}`}>
       <div className="rounded-lg bg-base-100 relative p-2 w-full h-full">
         <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2 pointer-events-none">
           <span className="bg-base-200 pl-1">{getMaxValue(mode, routeTrack, weatherData)}</span>

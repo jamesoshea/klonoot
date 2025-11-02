@@ -8,7 +8,7 @@ export const Nav = () => {
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
 
   return (
-    <div className="nav-menu bg-base-100 rounded-lg p-2 z-5">
+    <div className="bg-base-100 rounded-lg p-2 z-5">
       <Avatar showEmail={menuIsOpen} onClick={() => setMenuIsOpen(!menuIsOpen)} />
       {menuIsOpen && (
         <>

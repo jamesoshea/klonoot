@@ -9,14 +9,14 @@ export const Avatar = ({ showEmail, onClick }: { showEmail: boolean; onClick: ()
   const { session } = useSessionContext();
 
   return (
-    <div className="flex flex-row-reverse items-center justify-start gap-2 w-full min-w-10 ">
+    <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
       {loading ? (
-        <span className="loading loading-spinner loading-xl text-neutral min-h-8 mr-1.5" />
+        <span className="loading loading-spinner loading-lg text-neutral max-h-[19.2px] max-w-[19.2px]" />
       ) : (
         <FontAwesomeIcon
           className={`cursor-pointer text-neutral ${session || loading ? "" : "opacity-60"}`}
           icon={faCircleUser}
-          size="2xl"
+          size="xl"
           onClick={onClick}
         />
       )}
