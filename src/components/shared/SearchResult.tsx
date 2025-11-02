@@ -18,6 +18,7 @@ export const SearchResult = ({
     searchResult?.properties?.type ||
     "";
 
+  // add escape-key close event listener
   useEffect(() => {
     const escapeKeyListener = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

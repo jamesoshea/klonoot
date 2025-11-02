@@ -27,8 +27,8 @@ import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain, drawRoute, drawCurrentPointMarker } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { WeatherControls } from "./WeatherControls.tsx";
-import { SearchResult } from "./shared/SearchResult.tsx";
 import { useGetDrinkingWater } from "../queries/useGetDrinkingWater.ts";
+import { Feature } from "./shared/Feature.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -67,21 +67,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
   const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
   const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
-
-  const handleAddPOIToPoints = (poi: GeoJSON.Feature<GeoJSON.Point>) => {
-    setPoints(
-      setNewPoint(
-        [
-          poi.geometry.coordinates[0],
-          poi.geometry.coordinates[1],
-          (poi?.properties?.name || poi?.properties?.category_en || poi?.properties?.type) ?? "",
-          false,
-        ],
-        points,
-      ),
-    );
-    setSelectedPOI(null);
-  };
 
   const handlePointClick = (e: MouseEvent, index: number) => {
     e.stopPropagation();
@@ -422,10 +407,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       </div>
       {routeTrack && <MainChart mode={chartMode} routeTrack={routeTrack} />}
       {selectedPOI && (
-        <SearchResult
-          searchResult={selectedPOI}
-          onAddSearchResultToPoints={() => handleAddPOIToPoints(selectedPOI)}
-          onClearSearchResult={() => setSelectedPOI(null)}
+        <Feature
+          existingPoints={points}
+          GeoJSONFeature={selectedPOI}
+          setPoints={setPoints}
+          onClose={() => setSelectedPOI(null)}
         />
       )}
     </>
