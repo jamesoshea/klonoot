@@ -5,7 +5,10 @@ import axios from "axios";
 export const getTrackLength = (routeTrack: BrouterResponse) =>
   Number(routeTrack?.features[0]?.properties?.["track-length"] ?? 0);
 
-export const setNewPoint = (newPoint: Coordinate, points: Coordinate[]) => {
+export const getNewPointIndex = (
+  newLocation: [lng: number, lat: number],
+  points: Coordinate[],
+): number => {
   let newIndex = 0;
 
   if (points.length < 2) {
@@ -13,7 +16,7 @@ export const setNewPoint = (newPoint: Coordinate, points: Coordinate[]) => {
   } else {
     const line = turf.lineString(points.map((point) => [point[0], point[1]]));
 
-    const nearestPointOnLine = turf.nearestPointOnLine(line, [newPoint[0], newPoint[1]]);
+    const nearestPointOnLine = turf.nearestPointOnLine(line, [newLocation[0], newLocation[1]]);
 
     const distancesAlongLine = points.map((point) =>
       turf.nearestPointOnLine(line, [point[0], point[1]]),
@@ -29,6 +32,12 @@ export const setNewPoint = (newPoint: Coordinate, points: Coordinate[]) => {
       newIndex = points.length;
     }
   }
+
+  return newIndex;
+};
+
+export const setNewPoint = (newPoint: Coordinate, points: Coordinate[]) => {
+  const newIndex = getNewPointIndex([newPoint[0], newPoint[1]], points);
 
   const newPoints = [...points];
   newPoints.splice(newIndex, 0, newPoint as Coordinate);
