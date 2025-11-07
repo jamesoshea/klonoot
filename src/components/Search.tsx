@@ -8,10 +8,11 @@ import {
   COLOR__BASE_CONTENT,
   MAPBOX_ACCESS_TOKEN,
 } from "../consts";
-import type { Coordinate } from "../types";
 import { getThemeFont } from "../utils/colors";
-import { setNewPoint } from "../utils/route";
+import type { Coordinate } from "../types";
+
 import { SearchResult } from "./shared/SearchResult";
+import { Feature } from "./shared/Feature";
 
 type SearchProps = {
   map: mapboxgl.Map;
@@ -27,20 +28,6 @@ type SearchResult = {
 export const Search = ({ map, points, setPoints }: SearchProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
-
-  const addSearchResultToPoints = () => {
-    const newArray = [...points];
-
-    const newPoint: Coordinate = [
-      searchResult?.properties?.coordinates.longitude,
-      searchResult?.properties?.coordinates.latitude,
-      searchResult?.properties?.name ?? "",
-      false,
-    ];
-
-    setPoints(setNewPoint(newPoint, newArray));
-    handleClearSearchResult();
-  };
 
   const handleClearSearchResult = () => {
     setSearchResult(null);
@@ -82,10 +69,11 @@ export const Search = ({ map, points, setPoints }: SearchProps) => {
         />
       </div>
       {searchResult && (
-        <SearchResult
-          searchResult={searchResult}
-          onAddSearchResultToPoints={addSearchResultToPoints}
-          onClearSearchResult={handleClearSearchResult}
+        <Feature
+          existingPoints={points}
+          GeoJSONFeature={searchResult}
+          setPoints={setPoints}
+          onClose={handleClearSearchResult}
         />
       )}
     </div>
