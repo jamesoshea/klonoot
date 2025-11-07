@@ -354,6 +354,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           <UserRouteList
             brouterProfile={brouterProfile}
             points={points}
+            showRouteInfo={showRouteInfo}
             onToggleShowRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
           />
         )}

@@ -28,10 +28,12 @@ type Mode = (typeof MODES)[keyof typeof MODES];
 export const UserRouteList = ({
   brouterProfile,
   points,
+  showRouteInfo,
   onToggleShowRouteInfo,
 }: {
   brouterProfile: BROUTER_PROFILES;
   points: Coordinate[];
+  showRouteInfo: boolean;
   onToggleShowRouteInfo: () => void;
 }) => {
   const { loading } = useLoadingContext();
@@ -112,6 +114,7 @@ export const UserRouteList = ({
               <>
                 <div className="tooltip" data-tip="Route info">
                   <IconButton
+                    active={showRouteInfo}
                     disabled={loading}
                     icon={faInfoCircle}
                     size={ICON_BUTTON_SIZES.LARGE}

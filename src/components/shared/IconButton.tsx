@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ICON_BUTTON_SIZES } from "../../consts";
 
 type IconButtonProps = {
+  active?: boolean;
   color?: string;
   dataTestId?: string;
   disabled?: boolean;
@@ -12,6 +13,7 @@ type IconButtonProps = {
 };
 
 export const IconButton = ({
+  active,
   color,
   dataTestId,
   disabled,
@@ -33,7 +35,7 @@ export const IconButton = ({
 
   return (
     <button
-      className="btn btn-circle btn-ghost text-neutral"
+      className={`btn btn-circle btn-ghost ${active ? " bg-neutral text-neutral-content" : " text-neutral"}`}
       data-testid={dataTestId}
       disabled={disabled}
       style={{

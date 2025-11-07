@@ -3,7 +3,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type ChangeEvent,
   type ChangeEventHandler,
   type Dispatch,
 } from "react";
@@ -11,7 +10,7 @@ import { CloseButton } from "./CloseButton";
 import type { Coordinate } from "../../types";
 import { getNewPointIndex } from "../../utils/route";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCopy, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck, faCopy, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "./IconButton";
 import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../consts";
 import { InfoCircleIcon } from "./InfoCircleIcon";
@@ -39,25 +38,47 @@ const DisplayPoint = ({
   index,
   point,
   setPoints,
+  onClose,
 }: {
   existingPoints: Coordinate[];
   index: number;
   point: Coordinate;
   setPoints: Dispatch<Coordinate[]>;
+  onClose: () => void;
 }) => {
   const [pointName, setPointName] = useState<string>(point[2] ?? "");
 
   const nameChanged = (point[2] ?? "") !== pointName;
 
-  const handleUpdatePointName = () => {
+  const handleDeletePoint = useCallback(
+    (index: number) => {
+      const newArray = [...existingPoints];
+      newArray.splice(index, 1);
+      setPoints(newArray);
+      onClose();
+    },
+    [existingPoints, setPoints, onClose],
+  );
+
+  const handleMovePoint = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
     const newPoints = [...existingPoints];
-    existingPoints[index][2] = pointName;
+
+    const pointToMove = newPoints.splice(oldIndex, 1);
+    newPoints.splice(newIndex, 0, pointToMove[0]);
+
+    setPoints(newPoints);
+    onClose();
+  };
+
+  const handleUpdatePointIsDirect = (isDirect: boolean) => {
+    const newPoints = [...existingPoints];
+    existingPoints[index][3] = isDirect;
     setPoints(newPoints);
   };
 
-  const handleUpdatePointIsDirect = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUpdatePointName = () => {
     const newPoints = [...existingPoints];
-    existingPoints[index][3] = e.target.checked;
+    existingPoints[index][2] = pointName;
     setPoints(newPoints);
   };
 
@@ -74,11 +95,11 @@ const DisplayPoint = ({
           <input
             type="text"
             className="input w-full"
-            placeholder="Name this point"
+            placeholder={`Point ${index + 1}`}
             value={pointName}
             onChange={(e) => setPointName(e.target.value)}
           />
-          <div className="tooltip tooltip-right absolute top-1.5 right-2 cursor-pointer z-10">
+          <div className="tooltip tooltip-right absolute top-2.25 right-2 cursor-pointer z-10">
             <div className="tooltip-content p-3">
               Naming a point will ensure that it appears on the route, no matter how unsuitable the
               surface might be.
@@ -98,15 +119,39 @@ const DisplayPoint = ({
         )}
       </div>
       <CopyCoordinates coordinates={coordinates} />
-      <label className="label mt-4 text-xs">
-        <input
-          type="checkbox"
-          className="checkbox checkbox-sm"
-          checked={!!existingPoints[index]?.[3]}
-          onChange={handleUpdatePointIsDirect}
-        />
-        <span>Route from this point directly</span>
-      </label>
+      <div className="card-actions justify-between items-center mt-2">
+        <div className="flex gap-1">
+          <IconButton
+            color={COLOR__ERROR}
+            icon={faTrashAlt}
+            onClick={() => handleDeletePoint(index)}
+            size={ICON_BUTTON_SIZES.MEDIUM}
+          />
+          <div className="tooltip tooltip-right" data-tip="Route directly from this point">
+            <IconButton
+              active={point[3]}
+              icon={faArrowRight}
+              onClick={() => handleUpdatePointIsDirect(!point[3])}
+              size={ICON_BUTTON_SIZES.MEDIUM}
+            />
+          </div>
+        </div>
+        <div className="flex gap-2 items-center">
+          <span>Move to:</span>
+          <FancyButton
+            defaultIndex={index}
+            existingPoints={existingPoints}
+            onAddFeatureToMiddle={(newIndex) =>
+              handleMovePoint({
+                oldIndex: existingPoints.findIndex(
+                  (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
+                ),
+                newIndex,
+              })
+            }
+          />
+        </div>
+      </div>
     </>
   );
 };
@@ -229,26 +274,6 @@ export const Feature = ({
     }
   };
 
-  const handleDeletePoint = useCallback(
-    (index: number) => {
-      const newArray = [...existingPoints];
-      newArray.splice(index, 1);
-      setPoints(newArray);
-      onClose();
-    },
-    [existingPoints, setPoints, onClose],
-  );
-
-  const handleMovePoint = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-    const newPoints = [...existingPoints];
-
-    const pointToMove = newPoints.splice(oldIndex, 1);
-    newPoints.splice(newIndex, 0, pointToMove[0]);
-
-    setPoints(newPoints);
-    onClose();
-  };
-
   // add escape-key close event listener
   useEffect(() => {
     const escapeKeyListener = (e: KeyboardEvent) => {
@@ -261,12 +286,6 @@ export const Feature = ({
 
     return () => document.removeEventListener("keydown", escapeKeyListener);
   }, [onClose]);
-
-  const defaultIndex = point
-    ? existingPoints.findIndex(
-        (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
-      )
-    : 0;
 
   return (
     <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen">
@@ -282,6 +301,7 @@ export const Feature = ({
               )}
               point={point}
               setPoints={setPoints}
+              onClose={onClose}
             />
           )}
           {GeoJSONFeature && (
@@ -305,34 +325,6 @@ export const Feature = ({
                   <div className="tooltip" data-tip="Coming soon!">
                     <button className="btn btn-primary">POI</button>
                   </div>
-                </div>
-              </div>
-            </>
-          )}
-          {point && (
-            <>
-              <div className="card-actions justify-between items-center mt-2">
-                <IconButton
-                  color={COLOR__ERROR}
-                  icon={faTrashAlt}
-                  onClick={() => handleDeletePoint(defaultIndex)}
-                  size={ICON_BUTTON_SIZES.MEDIUM}
-                />
-                <div className="flex gap-2 items-center">
-                  <span>Move to:</span>
-                  <FancyButton
-                    defaultIndex={defaultIndex}
-                    existingPoints={existingPoints}
-                    onAddFeatureToMiddle={(newIndex) =>
-                      handleMovePoint({
-                        oldIndex: existingPoints.findIndex(
-                          (existingPoint) =>
-                            JSON.stringify(existingPoint) === JSON.stringify(point),
-                        ),
-                        newIndex,
-                      })
-                    }
-                  />
                 </div>
               </div>
             </>
