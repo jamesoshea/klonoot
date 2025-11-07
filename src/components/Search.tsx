@@ -11,7 +11,6 @@ import {
 import { getThemeFont } from "../utils/colors";
 import type { Coordinate } from "../types";
 
-import { SearchResult } from "./shared/SearchResult";
 import { Feature } from "./shared/Feature";
 
 type SearchProps = {
