@@ -1,9 +1,18 @@
-import { useEffect, useState, type ChangeEventHandler, type Dispatch } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEventHandler,
+  type Dispatch,
+} from "react";
 import { CloseButton } from "./CloseButton";
 import type { Coordinate } from "../../types";
 import { getNewPointIndex } from "../../utils/route";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { IconButton } from "./IconButton";
+import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../consts";
 
 const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point> }) => {
   const displayName =
@@ -14,7 +23,7 @@ const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<Ge
 
   return (
     <>
-      <h2 className="card-title justify-center">{displayName}</h2>
+      <h2 className="card-title">{displayName}</h2>
       <div>
         {(GeoJSONFeature?.properties?.place_formatted || GeoJSONFeature?.properties?.category_en) ??
           ""}
@@ -23,16 +32,18 @@ const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<Ge
   );
 };
 
-const DisplayPoint = ({ point }: { point: Coordinate }) => {
+const DisplayPoint = ({ index, point }: { index: number; point: Coordinate }) => {
   return (
     <>
-      <h2 className="card-title">{point[2] || `${point[1]}, ${point[0]}`}</h2>
+      <h2 className="card-title">{point[2] || `Point ${index + 1}`}</h2>
     </>
   );
 };
 
 const CopyCoordinates = ({ coordinates }: { coordinates: [lat: number, lon: number] }) => {
+  const spanRef = useRef<HTMLSpanElement>(null);
   const [copyCoordinatesText, setCopyCoordinatesText] = useState<string>("Copy coordinates");
+  const [showIcon, setShowIcon] = useState<boolean>(false);
 
   const handleCopyCoordinates = async ([lat, lng]: [number, number]) => {
     try {
@@ -46,43 +57,52 @@ const CopyCoordinates = ({ coordinates }: { coordinates: [lat: number, lon: numb
     }
   };
 
+  const handleHover = () => setShowIcon(true);
+  const handleUnhover = () => setShowIcon(false);
+
+  useEffect(() => {
+    const node = spanRef.current;
+
+    node?.addEventListener("mouseenter", handleHover);
+    node?.addEventListener("mouseleave", handleUnhover);
+
+    return () => {
+      node?.removeEventListener("mouseenter", handleHover);
+      node?.removeEventListener("mouseleave", handleUnhover);
+    };
+  }, []);
+
   return (
-    <div className="tooltip" data-tip={copyCoordinatesText}>
+    <span ref={spanRef} className="tooltip w-fit" data-tip={copyCoordinatesText}>
       <span
-        className="cursor-pointer text-sm opacity-60 ml-1"
+        className="cursor-pointer text-sm opacity-60 mt-2"
         onClick={() =>
           // lat/lng reversed, to copy/paste into goodle maps more easily
           handleCopyCoordinates([coordinates[1], coordinates[0]])
         }
       >
-        {coordinates[1].toFixed(3)} {coordinates[0].toFixed(3)}
-        <FontAwesomeIcon className="ml-0.5" icon={faCopy} size="sm" />
+        {coordinates[1].toFixed(3)}, {coordinates[0].toFixed(3)}
+        {showIcon && <FontAwesomeIcon className="ml-0.5" icon={faCopy} size="sm" />}
       </span>
-    </div>
+    </span>
   );
 };
 
 const FancyButton = ({
+  defaultIndex,
   existingPoints,
-  GeoJSONFeature,
   onAddFeatureToMiddle,
 }: {
+  defaultIndex: number;
   existingPoints: Coordinate[];
-  GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point>;
   onAddFeatureToMiddle: (index: number) => void;
 }) => {
-  const defaultNewIndex =
-    getNewPointIndex(
-      [GeoJSONFeature.geometry.coordinates[0], GeoJSONFeature.geometry.coordinates[1]],
-      existingPoints,
-    ) + 1; // not zero-indexed
-
-  const [newIndex, setNewIndex] = useState<number>(defaultNewIndex);
+  const [newIndex, setNewIndex] = useState<number>(defaultIndex);
 
   const handlePointIndexChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setNewIndex(parseInt(e.target.value));
+    setNewIndex(parseInt(e.target.value) - 1);
   };
 
   return (
@@ -91,9 +111,9 @@ const FancyButton = ({
       <input
         className="max-w-[34px]"
         type="number"
-        min={0}
+        min={1}
         max={existingPoints.length}
-        defaultValue={newIndex}
+        value={newIndex + 1}
         onChange={handlePointIndexChange}
         onClick={(e) => e.stopPropagation()}
       />
@@ -138,7 +158,25 @@ export const Feature = ({
     }
   };
 
-  const handleMovePoint = () => {};
+  const handleDeletePoint = useCallback(
+    (index: number) => {
+      const newArray = [...existingPoints];
+      newArray.splice(index, 1);
+      setPoints(newArray);
+      onClose();
+    },
+    [existingPoints, setPoints, onClose],
+  );
+
+  const handleMovePoint = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+    const newPoints = [...existingPoints];
+
+    const pointToMove = newPoints.splice(oldIndex, 1);
+    newPoints.splice(newIndex, 0, pointToMove[0]);
+
+    setPoints(newPoints);
+    onClose();
+  };
 
   // add escape-key close event listener
   useEffect(() => {
@@ -159,13 +197,26 @@ export const Feature = ({
       ? [point[0], point[1]]
       : [0, 0];
 
+  const defaultIndex = point
+    ? existingPoints.findIndex(
+        (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
+      )
+    : 0;
+
   return (
     <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen">
       <div className="search-result card bg-base-100 rounded-lg z-10 w-[220px]">
-        <div className="card-body gap-0 p-3 mt-2 text-center">
+        <div className="card-body gap-0 p-3 mt-2">
           <CloseButton onClick={onClose} />
           {GeoJSONFeature && <DisplayFeature GeoJSONFeature={GeoJSONFeature} />}
-          {point && <DisplayPoint point={point} />}
+          {point && (
+            <DisplayPoint
+              index={existingPoints.findIndex(
+                (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
+              )}
+              point={point}
+            />
+          )}
           <CopyCoordinates coordinates={coordinates} />
           {GeoJSONFeature && (
             <>
@@ -173,8 +224,16 @@ export const Feature = ({
                 <span>Add as:</span>
                 <div className="flex gap-1">
                   <FancyButton
+                    defaultIndex={
+                      getNewPointIndex(
+                        [
+                          GeoJSONFeature.geometry.coordinates[0],
+                          GeoJSONFeature.geometry.coordinates[1],
+                        ],
+                        existingPoints,
+                      ) + 1
+                    }
                     existingPoints={existingPoints}
-                    GeoJSONFeature={GeoJSONFeature}
                     onAddFeatureToMiddle={handleAddFeatureToMiddle}
                   />
                   <div className="tooltip" data-tip="Coming soon!">
@@ -185,11 +244,32 @@ export const Feature = ({
             </>
           )}
           {point && (
-            <div className="card-actions justify-between mt-2">
-              <button className="btn" onClick={handleMovePoint}>
-                Move to point <input type="number" min={0} max={existingPoints.length} />
-              </button>
-            </div>
+            <>
+              <div className="card-actions justify-between items-center mt-4">
+                <IconButton
+                  color={COLOR__ERROR}
+                  icon={faTrashAlt}
+                  onClick={() => handleDeletePoint(defaultIndex)}
+                  size={ICON_BUTTON_SIZES.MEDIUM}
+                />
+                <div className="flex gap-2 items-center">
+                  <span>Move to:</span>
+                  <FancyButton
+                    defaultIndex={defaultIndex}
+                    existingPoints={existingPoints}
+                    onAddFeatureToMiddle={(newIndex) =>
+                      handleMovePoint({
+                        oldIndex: existingPoints.findIndex(
+                          (existingPoint) =>
+                            JSON.stringify(existingPoint) === JSON.stringify(point),
+                        ),
+                        newIndex,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

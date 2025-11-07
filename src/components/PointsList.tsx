@@ -1,11 +1,6 @@
-import { useCallback, type Dispatch } from "react";
+import { type Dispatch } from "react";
 
-import {
-  faCircleChevronDown,
-  faCircleChevronUp,
-  faTrash,
-  faUndo,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleChevronDown, faCircleChevronUp, faUndo } from "@fortawesome/free-solid-svg-icons";
 
 import type { Coordinate } from "../types";
 import { ICON_BUTTON_SIZES } from "../consts";
@@ -24,16 +19,6 @@ export const PointsList = ({
   setSelectedPoint: Dispatch<Coordinate | null>;
   onUndo: () => void;
 }) => {
-  const handlePointDelete = useCallback(
-    (index: number) => {
-      const newArray = [...points];
-      newArray.splice(index, 1);
-      setPoints(newArray);
-      setSelectedPoint(null);
-    },
-    [points, setPoints, setSelectedPoint],
-  );
-
   const handleMovePointDown = (index: number) => {
     const newArray = [...points];
     const [point] = newArray.splice(index, 1);
@@ -62,35 +47,35 @@ export const PointsList = ({
         </div>
       </div>
       <ul className="list min-w-full max-h-[208px] overflow-y-auto overflow-x-hidden px-2 mx-[-16px] point-list pb-2">
-        {points.map(([lat, lon, name], index) => (
-          <li className="list-row items-center p-1 gap-2" key={index}>
-            <div className="opacity-60">{index + 1}</div>
-            <div>{name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>
-            <div>
-              {index !== 0 && (
-                <IconButton
-                  icon={faCircleChevronUp}
-                  size={ICON_BUTTON_SIZES.SMALL}
-                  onClick={() => handleMovePointUp(index)}
-                />
-              )}
-              {index < points.length - 1 ? (
-                <IconButton
-                  icon={faCircleChevronDown}
-                  size={ICON_BUTTON_SIZES.SMALL}
-                  onClick={() => handleMovePointDown(index)}
-                />
-              ) : (
-                <button className={`min-w-${ICON_BUTTON_SIZES.SMALL}`} />
-              )}
-              <IconButton
-                icon={faTrash}
-                size={ICON_BUTTON_SIZES.SMALL}
-                onClick={() => handlePointDelete(index)}
-              />
-            </div>
-          </li>
-        ))}
+        {points.map((point, index) => {
+          const [lat, lon, name] = point;
+          return (
+            <li className="list-row items-center p-1 gap-2" key={index}>
+              <div className="opacity-60">{index + 1}</div>
+              <div className="cursor-pointer" onClick={() => setSelectedPoint(point)}>
+                {name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}
+              </div>
+              <div>
+                {index !== 0 && (
+                  <IconButton
+                    icon={faCircleChevronUp}
+                    size={ICON_BUTTON_SIZES.MEDIUM}
+                    onClick={() => handleMovePointUp(index)}
+                  />
+                )}
+                {index < points.length - 1 ? (
+                  <IconButton
+                    icon={faCircleChevronDown}
+                    size={ICON_BUTTON_SIZES.MEDIUM}
+                    onClick={() => handleMovePointDown(index)}
+                  />
+                ) : (
+                  <button className={`min-w-${ICON_BUTTON_SIZES.MEDIUM}`} />
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </>
   );

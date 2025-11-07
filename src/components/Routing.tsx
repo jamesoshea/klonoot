@@ -21,7 +21,6 @@ import {
 
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
-import { PointInfo } from "./PointInfo.tsx";
 import { setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain, drawRoute, drawCurrentPointMarker } from "../utils/map.ts";
@@ -91,12 +90,17 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     [points],
   );
 
+  const handleNewPointSet = useCallback(
+    (e: mapboxgl.MapMouseEvent) =>
+      setPoints(setNewPoint([e.lngLat.lng, e.lngLat.lat, "", false], points)),
+    [points],
+  );
+
   const handleContextMenuOpen = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
       const width = 20;
       const height = 20;
 
-      console.log(map.getStyle().layers);
       const features = map.queryRenderedFeatures(
         [
           [e.point.x - width / 2, e.point.y - height / 2],
@@ -105,21 +109,19 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         { layers: ["poi-label", "transit-label", "airport-label", "natural-point-label"] },
       );
 
-      const feature = features[0];
+      if (features.length) {
+        const feature = features[0];
 
-      if (feature) {
-        feature.geometry = { coordinates: [e.lngLat.lng, e.lngLat.lat], type: "Point" };
+        if (feature) {
+          feature.geometry = { coordinates: [e.lngLat.lng, e.lngLat.lat], type: "Point" };
+        }
+
+        setSelectedPOI((feature as GeoJSON.Feature<GeoJSON.Point>) ?? null);
+      } else {
+        handleNewPointSet(e);
       }
-
-      setSelectedPOI((feature as GeoJSON.Feature<GeoJSON.Point>) ?? null);
     },
-    [map],
-  );
-
-  const handleNewPointSet = useCallback(
-    (e: mapboxgl.MapMouseEvent) =>
-      setPoints(setNewPoint([e.lngLat.lng, e.lngLat.lat, "", false], points)),
-    [points],
+    [handleNewPointSet, map],
   );
 
   const handleLineMouseMove = useCallback(
@@ -279,14 +281,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   // add event listeners for map interactions
   useEffect(() => {
-    map.on("click", handleNewPointSet);
-    map.on("contextmenu", handleContextMenuOpen);
+    map.on("click", handleContextMenuOpen);
     map.on("mousemove", "route", handleLineMouseMove);
     map.on("mouseleave", "route", handleLineMouseLeave);
 
     return () => {
-      map.off("click", handleNewPointSet);
-      map.off("contextmenu", handleContextMenuOpen);
+      map.off("click", handleContextMenuOpen);
       map.off("mousemove", "route", handleLineMouseMove);
       map.off("mouseleave", "route", handleLineMouseLeave);
     };
@@ -396,11 +396,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           )}
         </div>
         {routeTrack && selectedPoint && chartMode === "elevation" && (
-          <PointInfo
-            points={points}
-            selectedPoint={selectedPoint}
+          <Feature
+            existingPoints={points}
+            point={selectedPoint}
             setPoints={setPoints}
-            setSelectedPoint={setSelectedPoint}
+            onClose={() => setSelectedPoint(null)}
           />
         )}
         {chartMode !== "elevation" && <WeatherControls />}
