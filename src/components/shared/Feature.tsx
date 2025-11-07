@@ -3,6 +3,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type ChangeEvent,
   type ChangeEventHandler,
   type Dispatch,
 } from "react";
@@ -10,9 +11,10 @@ import { CloseButton } from "./CloseButton";
 import type { Coordinate } from "../../types";
 import { getNewPointIndex } from "../../utils/route";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCopy, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "./IconButton";
 import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../consts";
+import { InfoCircleIcon } from "./InfoCircleIcon";
 
 const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point> }) => {
   const displayName =
@@ -32,10 +34,79 @@ const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<Ge
   );
 };
 
-const DisplayPoint = ({ index, point }: { index: number; point: Coordinate }) => {
+const DisplayPoint = ({
+  existingPoints,
+  index,
+  point,
+  setPoints,
+}: {
+  existingPoints: Coordinate[];
+  index: number;
+  point: Coordinate;
+  setPoints: Dispatch<Coordinate[]>;
+}) => {
+  const [pointName, setPointName] = useState<string>(point[2] ?? "");
+
+  const nameChanged = (point[2] ?? "") !== pointName;
+
+  const handleUpdatePointName = () => {
+    const newPoints = [...existingPoints];
+    existingPoints[index][2] = pointName;
+    setPoints(newPoints);
+  };
+
+  const handleUpdatePointIsDirect = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPoints = [...existingPoints];
+    existingPoints[index][3] = e.target.checked;
+    setPoints(newPoints);
+  };
+
+  useEffect(() => {
+    setPointName(point[2] ?? "");
+  }, [point]);
+
+  const coordinates: [lat: number, lon: number] = [point[0], point[1]];
+
   return (
     <>
-      <h2 className="card-title">{point[2] || `Point ${index + 1}`}</h2>
+      <div className="flex items-center justify-between gap-2 mt-3">
+        <div className="w-full relative">
+          <input
+            type="text"
+            className="input w-full"
+            placeholder="Name this point"
+            value={pointName}
+            onChange={(e) => setPointName(e.target.value)}
+          />
+          <div className="tooltip tooltip-right absolute top-1.5 right-2 cursor-pointer z-10">
+            <div className="tooltip-content p-3">
+              Naming a point will ensure that it appears on the route, no matter how unsuitable the
+              surface might be.
+            </div>
+            <InfoCircleIcon />
+          </div>
+        </div>
+
+        {nameChanged && (
+          <div className="tooltip" data-tip="Confirm">
+            <IconButton
+              icon={faCheck}
+              size={ICON_BUTTON_SIZES.LARGE}
+              onClick={handleUpdatePointName}
+            />
+          </div>
+        )}
+      </div>
+      <CopyCoordinates coordinates={coordinates} />
+      <label className="label mt-4 text-xs">
+        <input
+          type="checkbox"
+          className="checkbox checkbox-sm"
+          checked={!!existingPoints[index]?.[3]}
+          onChange={handleUpdatePointIsDirect}
+        />
+        <span>Route from this point directly</span>
+      </label>
     </>
   );
 };
@@ -73,9 +144,9 @@ const CopyCoordinates = ({ coordinates }: { coordinates: [lat: number, lon: numb
   }, []);
 
   return (
-    <span ref={spanRef} className="tooltip w-fit" data-tip={copyCoordinatesText}>
+    <span ref={spanRef} className="tooltip w-fit mt-2 pl-2" data-tip={copyCoordinatesText}>
       <span
-        className="cursor-pointer text-sm opacity-60 mt-2"
+        className="cursor-pointer text-sm opacity-60"
         onClick={() =>
           // lat/lng reversed, to copy/paste into goodle maps more easily
           handleCopyCoordinates([coordinates[1], coordinates[0]])
@@ -191,12 +262,6 @@ export const Feature = ({
     return () => document.removeEventListener("keydown", escapeKeyListener);
   }, [onClose]);
 
-  const coordinates: [lat: number, lon: number] = GeoJSONFeature
-    ? [GeoJSONFeature.geometry.coordinates[0], GeoJSONFeature.geometry.coordinates[1]]
-    : point
-      ? [point[0], point[1]]
-      : [0, 0];
-
   const defaultIndex = point
     ? existingPoints.findIndex(
         (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
@@ -211,13 +276,14 @@ export const Feature = ({
           {GeoJSONFeature && <DisplayFeature GeoJSONFeature={GeoJSONFeature} />}
           {point && (
             <DisplayPoint
+              existingPoints={existingPoints}
               index={existingPoints.findIndex(
                 (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
               )}
               point={point}
+              setPoints={setPoints}
             />
           )}
-          <CopyCoordinates coordinates={coordinates} />
           {GeoJSONFeature && (
             <>
               <div className="card-actions justify-end items-center mt-4">
@@ -245,7 +311,7 @@ export const Feature = ({
           )}
           {point && (
             <>
-              <div className="card-actions justify-between items-center mt-4">
+              <div className="card-actions justify-between items-center mt-2">
                 <IconButton
                   color={COLOR__ERROR}
                   icon={faTrashAlt}
