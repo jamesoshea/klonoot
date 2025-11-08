@@ -1,23 +1,27 @@
 # Klonoot
 
-## Background
+## Motivation
 
-This is a webapp inspired the core functionality and user experience of a popuar route-planning app, after its sale to private equity.
+Almost all of the code I have ever written has been for businesses. Thinking about this made me sad, and made me want to create something purely for people. In that spirit, I will try to make using, forking self-hosting, and contributing to this project as easy as possible. It will also never be a business.
 
-It serves purely as a route planning tool, rather than as a navigation app, or social platform. There are already many fantastic open-source navigation apps for cycling. I really loved (for example) Komoot's interface for planning trips, and would like to offer something similar for free/donations.
+Klonoot is a webapp inspired the core route-planning functionality of a popular outdoorsy platform. It relies on [brouter](https://github.com/abrensch/brouter) for its routing, and leans heavily on Mapbox for the map and search implementation. Authentication and persistence are managed using Supabase. This will change, as I would prefer open-source dependencies and easily self-hostable infrastructure wherever possible.
 
-It relies on [brouter](https://github.com/abrensch/brouter) for its routing, and leans heavily on Mapbox for the map and search implementation. This may change, as I would prefer open-source dependencies where possible.
-
-Authentication and persistence are managed using Supabase.
+It serves purely as a route-planning tool, rather than as a navigation app, or social platform. There are already many fantastic open-source navigation apps for cycling.
 
 ## Running the app locally
 
-You'll need a locally-running brouter instance. I have dockerized a recent version of brouter in this repo: https://github.com/jamesoshea/brouter-dockerised. It is available for use on Docker Hub: `jimoshea89/brouter:latest` and `jimoshea89/brouter:amd64`.
+You will need to create a Supabase account and project, collect the following env vars, and add them to .env in the root directory:
 
-You'll also need to create a Supabase account / project, and add the credentials for that project to `.env`.
+```bash
+VITE_SUPABASE_URL // this is the URL where the Supabase endpoint is exposed
+VITE_SUPABASE_PUBLISHABLE_OR_ANON_KEY // this is the publicly-available key which Supabase uses to identify your instance of the project
+```
 
-After that, it's just the normal:
+You will then need to create a table in Supabase called `routes`, which will hold the metadata for user-generated routes. A row in this table contains everything brouter needs to return a consistent output. The SQL to create this table is here: `docs/db-schemas/routes.sql`
 
-`npm i`
+Finally, run `docker-compose build`, followed by `docker-compose up`. This will build the client, and start a local instance of the open-source brouter routing engine.
 
-`npm run dev`
+The client runs on port 5173
+The brouter instance runs on port 17777
+
+Navigate to `http://localhost:5173` and have fun.

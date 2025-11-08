@@ -32,6 +32,7 @@ function App() {
       container: mapContainerRef.current as HTMLElement,
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
+      minZoom: 5,
       style: "mapbox://styles/mapbox/outdoors-v12", // style URL
     });
     newMap.on("load", () => setMapLoaded(true));
