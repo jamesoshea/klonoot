@@ -375,6 +375,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             </select>
           </div>
           <PointsList
+            map={map}
             numberOfPatches={patches.length}
             points={points}
             setPoints={setPoints}

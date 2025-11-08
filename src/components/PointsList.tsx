@@ -7,12 +7,14 @@ import { ICON_BUTTON_SIZES } from "../consts";
 import { IconButton } from "./shared/IconButton";
 
 export const PointsList = ({
+  map,
   numberOfPatches,
   points,
   setPoints,
   setSelectedPoint,
   onUndo,
 }: {
+  map: mapboxgl.Map;
   numberOfPatches: number;
   points: Coordinate[];
   setPoints: Dispatch<Coordinate[]>;
@@ -31,6 +33,11 @@ export const PointsList = ({
     const [point] = newArray.splice(index, 1);
     newArray.splice(index - 1, 0, point);
     setPoints(newArray);
+  };
+
+  const handlePointClick = (point: Coordinate) => {
+    setSelectedPoint(point);
+    map.flyTo({ center: [point[0], point[1]] });
   };
 
   return (
@@ -52,7 +59,7 @@ export const PointsList = ({
           return (
             <li className="list-row items-center p-1 gap-2" key={index}>
               <div className="opacity-60">{index + 1}</div>
-              <div className="cursor-pointer" onClick={() => setSelectedPoint(point)}>
+              <div className="cursor-pointer" onClick={() => handlePointClick(point)}>
                 {name ? name : `${lat.toFixed(3)}, ${lon.toFixed(3)}`}
               </div>
               <div>

@@ -288,7 +288,7 @@ export const Feature = ({
   }, [onClose]);
 
   return (
-    <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen">
+    <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen" onClick={onClose}>
       <div className="search-result card bg-base-100 rounded-lg z-10 w-[220px]">
         <div className="card-body gap-0 p-3 mt-2">
           <CloseButton onClick={onClose} />
