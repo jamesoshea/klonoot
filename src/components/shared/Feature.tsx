@@ -125,14 +125,14 @@ const DisplayPoint = ({
             color={COLOR__ERROR}
             icon={faTrashAlt}
             onClick={() => handleDeletePoint(index)}
-            size={ICON_BUTTON_SIZES.MEDIUM}
+            size={ICON_BUTTON_SIZES.LARGE}
           />
           <div className="tooltip tooltip-right" data-tip="Route directly from this point">
             <IconButton
               active={point[3]}
               icon={faArrowRight}
               onClick={() => handleUpdatePointIsDirect(!point[3])}
-              size={ICON_BUTTON_SIZES.MEDIUM}
+              size={ICON_BUTTON_SIZES.LARGE}
             />
           </div>
         </div>
@@ -289,7 +289,8 @@ export const Feature = ({
 
   return (
     <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen" onClick={onClose}>
-      <div className="search-result card bg-base-100 rounded-lg z-10 w-[220px]">
+      <div className="min-w-screen min-h-screen bg-base-100 opacity-30" />
+      <div className="feature-card card bg-base-100 rounded-lg z-10 w-[256px]">
         <div className="card-body gap-0 p-3 mt-2">
           <CloseButton onClick={onClose} />
           {GeoJSONFeature && <DisplayFeature GeoJSONFeature={GeoJSONFeature} />}
