@@ -46,7 +46,7 @@ export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) 
     },
   });
 
-  const img = new Image(24, 24); //create HTMLElement
+  const img = new Image(240, 240); //create HTMLElement
   img.src = pathArrowUrl; //set HTMLELement img src
 
   img.onload = () => map.addImage("arrow-right", img); // when img is loaded, add it to the map
@@ -60,7 +60,7 @@ export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) 
       "symbol-spacing": 200,
       "icon-allow-overlap": true,
       "icon-image": "arrow-right",
-      "icon-size": 1,
+      "icon-size": 0.1,
       visibility: "visible",
     },
   });
