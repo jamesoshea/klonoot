@@ -4,6 +4,7 @@ import type { Dispatch } from "react";
 
 import { COLOR__ACCENT } from "../consts";
 import type { BrouterResponse } from "../types";
+import pathArrowUrl from "../assets/path-arrow.svg";
 
 export const addTerrain = (map: mapboxgl.Map) => {
   if (map.getSource("mapbox-dem")) return;
@@ -17,7 +18,7 @@ export const addTerrain = (map: mapboxgl.Map) => {
   map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
 };
 
-export const drawRoute = (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
+export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
   if (map.getLayer("route")) map.removeLayer("route");
   if (map.getSource("route")) map.removeSource("route");
 
@@ -42,6 +43,25 @@ export const drawRoute = (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
       "line-color": COLOR__ACCENT,
       "line-width": 8,
       "line-opacity": 0.7,
+    },
+  });
+
+  const img = new Image(24, 24); //create HTMLElement
+  img.src = pathArrowUrl; //set HTMLELement img src
+
+  img.onload = () => map.addImage("arrow-right", img); // when img is loaded, add it to the map
+
+  map.addLayer({
+    id: "route-arrow",
+    type: "symbol",
+    source: "route",
+    layout: {
+      "symbol-placement": "line",
+      "symbol-spacing": 200,
+      "icon-allow-overlap": true,
+      "icon-image": "arrow-right",
+      "icon-size": 1,
+      visibility: "visible",
     },
   });
 };

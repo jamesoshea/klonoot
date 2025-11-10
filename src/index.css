@@ -4,17 +4,17 @@
 }
 
 @plugin "daisyui/theme" {
-  name: "coffee";
+  name: "coffeejim";
   default: true;
   prefersdark: false;
   color-scheme: "dark";
-  --color-base-100: oklch(24% 0.023 329.708);
-  --color-base-200: oklch(21% 0.021 329.708);
-  --color-base-300: oklch(16% 0.019 329.708);
+  --color-base-100: oklch(20% 0.042 265.755);
+  --color-base-200: oklch(12% 0.042 264.695);
+  --color-base-300: oklch(12% 0.042 264.695);
   --color-base-content: oklch(98% 0.026 102.212);
-  --color-primary: oklch(71.996% 0.123 62.756);
+  --color-primary: oklch(76% 0.188 70.08);
   --color-primary-content: oklch(14.399% 0.024 62.756);
-  --color-secondary: oklch(34.465% 0.029 199.194);
+  --color-secondary: oklch(76% 0.188 70.08);
   --color-secondary-content: oklch(86.893% 0.005 199.194);
   --color-accent: oklch(66% 0.179 58.318);
   --color-accent-content: oklch(27% 0.077 45.635);
@@ -28,9 +28,9 @@
   --color-warning-content: oklch(17.63% 0.028 87.722);
   --color-error: oklch(77.318% 0.128 31.871);
   --color-error-content: oklch(15.463% 0.025 31.871);
-  --radius-selector: 1rem;
+  --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
-  --radius-box: 1rem;
+  --radius-box: 0.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
