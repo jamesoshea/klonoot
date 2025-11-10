@@ -4,7 +4,6 @@ import type { Dispatch } from "react";
 
 import { COLOR__ACCENT } from "../consts";
 import type { BrouterResponse } from "../types";
-import pathArrowUrl from "../assets/path-arrow.svg";
 
 export const addTerrain = (map: mapboxgl.Map) => {
   if (map.getSource("mapbox-dem")) return;
@@ -19,6 +18,7 @@ export const addTerrain = (map: mapboxgl.Map) => {
 };
 
 export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
+  if (map.getLayer("route-arrow")) map.removeLayer("route-arrow");
   if (map.getLayer("route")) map.removeLayer("route");
   if (map.getSource("route")) map.removeSource("route");
 
@@ -45,11 +45,6 @@ export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) 
       "line-opacity": 0.7,
     },
   });
-
-  const img = new Image(240, 240); //create HTMLElement
-  img.src = pathArrowUrl; //set HTMLELement img src
-
-  img.onload = () => map.addImage("arrow-right", img); // when img is loaded, add it to the map
 
   map.addLayer({
     id: "route-arrow",

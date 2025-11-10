@@ -29,6 +29,8 @@ import { WeatherControls } from "./WeatherControls.tsx";
 import { useGetDrinkingWater } from "../queries/useGetDrinkingWater.ts";
 import { Feature } from "./shared/Feature.tsx";
 
+import pathArrowUrl from "../assets/path-arrow.svg";
+
 const profileNameMap = {
   TREKKING: "Trekking",
   GRAVEL: "Gravel",
@@ -174,6 +176,15 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       map.off("idle", () => addTerrain(map));
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const img = new Image(240, 240);
+    img.src = pathArrowUrl;
+
+    img.onload = () => {
+      if (!map.hasImage("arrow-right")) map.addImage("arrow-right", img);
+    };
+  }, [map]);
 
   // authenticated users: select route from list
   // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
