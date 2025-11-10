@@ -290,7 +290,10 @@ export const Feature = ({
   return (
     <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen" onClick={onClose}>
       <div className="min-w-screen min-h-screen bg-base-100 opacity-30" />
-      <div className="feature-card card bg-base-100 rounded-lg z-10 w-[256px]">
+      <div
+        className="feature-card card bg-base-100 rounded-lg z-10 w-[256px]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="card-body gap-0 p-3 mt-2">
           <CloseButton onClick={onClose} />
           {GeoJSONFeature && <DisplayFeature GeoJSONFeature={GeoJSONFeature} />}
