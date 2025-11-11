@@ -33,7 +33,7 @@ export const Layers = () => {
               Drinking water
             </label>
           </div>
-          <div className="px-1 pt-4">
+          <div className="px-1">
             <label className="label">
               <input
                 type="checkbox"

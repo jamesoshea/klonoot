@@ -15,6 +15,7 @@ export const useGetPublicTransport = (
   return useQuery({
     enabled: !!bbox && showPOIs.transit,
     queryKey: [QUERY_KEYS.GET_PUBLIC_TRANSPORT, bbox],
+    staleTime: 1000 * 60 * 60 * 24 * 7,
     queryFn: async () => {
       if (!bbox) {
         return undefined;

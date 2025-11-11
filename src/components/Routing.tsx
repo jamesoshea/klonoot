@@ -21,7 +21,7 @@ import {
 
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
-import { setNewPoint } from "../utils/route.ts";
+import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain, drawRoute, drawCurrentPointMarker } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
@@ -155,6 +155,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   }, [setCurrentPointDistance]);
 
   const handlePOIClick = (e: MouseEvent, feature: OverpassFeature) => {
+    setSelectedPOI(formatOverpassFeatureAsGeoJSONPoint(feature));
+
     e.preventDefault();
     e.stopPropagation();
   };
@@ -289,7 +291,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         : [];
 
     setMarkersInState([...pointMarkers, ...waterMarkers, ...publicTransportMarkers]);
-  }, [drinkingWater, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [drinkingWater, publicTransport, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // add marker to currently-hovered point (map or elevation chart)
   useEffect(

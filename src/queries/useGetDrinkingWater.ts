@@ -12,6 +12,7 @@ export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowP
   return useQuery({
     enabled: !!bbox && showPOIs.water,
     queryKey: [QUERY_KEYS.GET_DRINKING_WATER, bbox],
+    staleTime: 1000 * 60 * 60 * 24 * 7,
     queryFn: async () => {
       if (!bbox) {
         return undefined;
