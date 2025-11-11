@@ -29,6 +29,12 @@ const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<Ge
         {(GeoJSONFeature?.properties?.place_formatted || GeoJSONFeature?.properties?.category_en) ??
           ""}
       </div>
+      <CopyCoordinates
+        coordinates={[
+          GeoJSONFeature.geometry.coordinates[0],
+          GeoJSONFeature.geometry.coordinates[1],
+        ]}
+      />
     </>
   );
 };
@@ -156,7 +162,7 @@ const DisplayPoint = ({
   );
 };
 
-const CopyCoordinates = ({ coordinates }: { coordinates: [lat: number, lon: number] }) => {
+const CopyCoordinates = ({ coordinates }: { coordinates: [lon: number, lat: number] }) => {
   const spanRef = useRef<HTMLSpanElement>(null);
   const [copyCoordinatesText, setCopyCoordinatesText] = useState<string>("Copy coordinates");
   const [showIcon, setShowIcon] = useState<boolean>(false);
@@ -189,7 +195,7 @@ const CopyCoordinates = ({ coordinates }: { coordinates: [lat: number, lon: numb
   }, []);
 
   return (
-    <span ref={spanRef} className="tooltip w-fit mt-2 pl-2" data-tip={copyCoordinatesText}>
+    <span ref={spanRef} className="tooltip w-fit mt-2 pl-1" data-tip={copyCoordinatesText}>
       <span
         className="cursor-pointer text-sm opacity-60"
         onClick={() =>
@@ -228,7 +234,7 @@ const FancyButton = ({
         className="max-w-[34px]"
         type="number"
         min={1}
-        max={existingPoints.length}
+        max={existingPoints.length + 1}
         value={newIndex + 1}
         onChange={handlePointIndexChange}
         onClick={(e) => e.stopPropagation()}
@@ -268,7 +274,7 @@ export const Feature = ({
     if (GeoJSONFeature) {
       const newPoints = [...existingPoints];
       // the incoming number is not zero-indexed
-      newPoints.splice(newIndex - 1, 0, formatGeoJSONFeatureAsPoint(GeoJSONFeature));
+      newPoints.splice(newIndex, 0, formatGeoJSONFeatureAsPoint(GeoJSONFeature));
       setPoints(newPoints);
       onClose();
     }
@@ -296,7 +302,6 @@ export const Feature = ({
       >
         <div className="card-body gap-0 p-3 mt-2">
           <CloseButton onClick={onClose} />
-          {GeoJSONFeature && <DisplayFeature GeoJSONFeature={GeoJSONFeature} />}
           {point && (
             <DisplayPoint
               existingPoints={existingPoints}
@@ -310,19 +315,18 @@ export const Feature = ({
           )}
           {GeoJSONFeature && (
             <>
+              <DisplayFeature GeoJSONFeature={GeoJSONFeature} />
               <div className="card-actions justify-end items-center mt-4">
                 <span>Add as:</span>
                 <div className="flex gap-1">
                   <FancyButton
-                    defaultIndex={
-                      getNewPointIndex(
-                        [
-                          GeoJSONFeature.geometry.coordinates[0],
-                          GeoJSONFeature.geometry.coordinates[1],
-                        ],
-                        existingPoints,
-                      ) + 1
-                    }
+                    defaultIndex={getNewPointIndex(
+                      [
+                        GeoJSONFeature.geometry.coordinates[0],
+                        GeoJSONFeature.geometry.coordinates[1],
+                      ],
+                      existingPoints,
+                    )}
                     existingPoints={existingPoints}
                     onAddFeatureToMiddle={handleAddFeatureToMiddle}
                   />

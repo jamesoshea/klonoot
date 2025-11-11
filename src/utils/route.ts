@@ -11,7 +11,9 @@ export const getNewPointIndex = (
 ): number => {
   let newIndex = 0;
 
-  if (points.length < 2) {
+  if (!points.length) {
+    newIndex = 0;
+  } else if (points.length < 2) {
     newIndex = 1;
   } else {
     const line = turf.lineString(points.map((point) => [point[0], point[1]]));
