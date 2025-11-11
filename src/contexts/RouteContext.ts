@@ -1,13 +1,18 @@
 import { createContext, useContext, type Dispatch } from "react";
 import { BROUTER_PROFILES, type BrouterResponse, type UserRoute } from "../types";
 
+export type ShowPOIContextType = {
+  transit: boolean;
+  water: boolean;
+};
+
 export type RouteContextType = {
   currentPointDistance: number;
   setCurrentPointDistance: Dispatch<number>;
   routeTrack: BrouterResponse | null;
   setRouteTrack: Dispatch<BrouterResponse | null>;
-  showPOIs: boolean;
-  setShowPOIs: Dispatch<boolean>;
+  showPOIs: ShowPOIContextType;
+  setShowPOIs: Dispatch<ShowPOIContextType>;
   selectedRouteId: string | null;
   setSelectedRouteId: Dispatch<string>;
   selectedUserRoute: UserRoute;
@@ -20,8 +25,8 @@ export const RouteContext = createContext<RouteContextType>({
   setRouteTrack: () => null,
   selectedRouteId: null,
   setSelectedRouteId: () => null,
-  showPOIs: false,
-  setShowPOIs: () => true,
+  showPOIs: { water: false, transit: false },
+  setShowPOIs: () => {},
   selectedUserRoute: {
     id: "",
     brouterProfile: BROUTER_PROFILES.TREKKING,

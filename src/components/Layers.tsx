@@ -21,17 +21,30 @@ export const Layers = () => {
         </div>
       </div>
       {menuIsOpen && (
-        <div className="px-1 pt-4">
-          <label className="label">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm"
-              checked={showPOIs}
-              onChange={(e) => setShowPOIs(e.target.checked)}
-            />
-            Drinking water
-          </label>
-        </div>
+        <>
+          <div className="px-1 pt-4">
+            <label className="label">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-sm"
+                checked={showPOIs.water}
+                onChange={(e) => setShowPOIs({ ...showPOIs, water: e.target.checked })}
+              />
+              Drinking water
+            </label>
+          </div>
+          <div className="px-1 pt-4">
+            <label className="label">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-sm"
+                checked={showPOIs.transit}
+                onChange={(e) => setShowPOIs({ ...showPOIs, transit: e.target.checked })}
+              />
+              Public Transport
+            </label>
+          </div>
+        </>
       )}
     </div>
   ) : null;

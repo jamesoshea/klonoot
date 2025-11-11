@@ -6,12 +6,15 @@ import { QUERY_KEYS } from "../consts";
 import type { BrouterResponse } from "../types";
 import type { ShowPOIContextType } from "../contexts/RouteContext";
 
-export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowPOIContextType) => {
+export const useGetPublicTransport = (
+  routeTrack: BrouterResponse,
+  showPOIs: ShowPOIContextType,
+) => {
   const bbox = routeTrack ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5)) : undefined;
 
   return useQuery({
-    enabled: !!bbox && showPOIs.water,
-    queryKey: [QUERY_KEYS.GET_DRINKING_WATER, bbox],
+    enabled: !!bbox && showPOIs.transit,
+    queryKey: [QUERY_KEYS.GET_PUBLIC_TRANSPORT, bbox],
     queryFn: async () => {
       if (!bbox) {
         return undefined;
@@ -24,20 +27,7 @@ export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowP
             [bbox:${[bbox[1], bbox[0], bbox[3], bbox[2]].join(",")}];
             (
                 nwr
-                    ["amenity"="drinking_water"]
-                    ["man_made"!="reservoir_covered"]
-                    ["access"!="permissive"]
-                    ["access"!="private"];
-                nwr
-                    ["disused:amenity"="drinking_water"]
-                    ["man_made"!="reservoir_covered"]
-                    ["access"!="permissive"]
-                    ["access"!="private"];
-                nwr
-                    ["drinking_water"="yes"]
-                    ["man_made"!="reservoir_covered"]
-                    ["access"!="permissive"]
-                    ["access"!="private"];
+                    ["railway"="station"];
             );
             out body;
             out meta;
