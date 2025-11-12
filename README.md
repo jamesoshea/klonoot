@@ -8,6 +8,8 @@ Klonoot is a webapp inspired the core route-planning functionality of a popular 
 
 It serves purely as a route-planning tool, rather than as a navigation app, or social platform. There are already many fantastic open-source navigation apps for cycling.
 
+![A screenshot of klonoot.org](https://klonoot.org/screenshot.png)
+
 ## Running the app locally
 
 You will need to create a Supabase account and project, collect the following env vars, and add them to .env in the root directory:
