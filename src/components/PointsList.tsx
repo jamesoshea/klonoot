@@ -53,7 +53,7 @@ export const PointsList = ({
           />
         </div>
       </div>
-      <ul className="list min-w-full max-h-[208px] overflow-y-auto overflow-x-hidden px-2 mx-[-16px] point-list pb-2">
+      <ul className="list min-w-full max-h-[208px] overflow-y-auto overflow-x-hidden mr-[-16px] pr-2 point-list pb-2">
         {points.map((point, index) => {
           const [lat, lon, name] = point;
           return (

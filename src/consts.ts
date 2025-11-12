@@ -23,7 +23,7 @@ export const SURFACE_COLOR_YELLOW = "#FACC6B";
 
 export const TRAFFIC_COLOR_NONE = "#6FA960";
 export const TRAFFIC_COLOR_LOW = "#9BC995";
-export const TRAFFIC_COLOR_NORMAL = COLOR__BASE_200;
+export const TRAFFIC_COLOR_NORMAL = COLOR__BASE_100;
 
 export const HIGHWAY_COLORS = {
   motorway: TRAFFIC_COLOR_NORMAL,
