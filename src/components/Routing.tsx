@@ -444,7 +444,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         )}
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {routeTrack && <MainChart mode={chartMode} routeTrack={routeTrack} />}
+      {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
       {selectedPOI && (
         <Feature
           existingPoints={points}

@@ -1,9 +1,9 @@
-import * as turf from "@turf/turf";
 import { Map, Marker } from "mapbox-gl";
 import type { Dispatch } from "react";
 
 import { COLOR__ACCENT } from "../consts";
 import type { BrouterResponse } from "../types";
+import { getPointAlongLine } from "./route";
 
 export const addTerrain = (map: mapboxgl.Map) => {
   if (map.getSource("mapbox-dem")) return;
@@ -83,12 +83,11 @@ export const drawCurrentPointMarker = ({
   element.className =
     "rounded-[5px] min-w-[10px] min-h-[10px] text-center border-1 bg-neutral text-neutral z-1";
 
-  const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
-  const along = turf.along(line, currentPointDistance, { units: "metres" });
+  const point = getPointAlongLine({ distanceInMetres: currentPointDistance, routeTrack });
 
   const marker = new Marker({ element })
     .addClassName("cursor-default")
-    .setLngLat([along.geometry.coordinates[0], along.geometry.coordinates[1]])
+    .setLngLat([point.geometry.coordinates[0], point.geometry.coordinates[1]])
     .addTo(map);
 
   setCurrentPointMarker(marker);

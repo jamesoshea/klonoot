@@ -108,3 +108,14 @@ export const formatOverpassFeatureAsGeoJSONPoint = (
     },
   };
 };
+
+export const getPointAlongLine = ({
+  distanceInMetres,
+  routeTrack,
+}: {
+  distanceInMetres: number;
+  routeTrack: BrouterResponse;
+}) => {
+  const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
+  return turf.along(line, distanceInMetres, { units: "metres" });
+};

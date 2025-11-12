@@ -14,6 +14,7 @@ import { faArrowRight, faCheck, faCopy, faTrashAlt } from "@fortawesome/free-sol
 import { IconButton } from "./IconButton";
 import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../consts";
 import { InfoCircleIcon } from "./InfoCircleIcon";
+import { Mask } from "./Mask";
 
 const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point> }) => {
   const displayName =
@@ -294,10 +295,9 @@ export const Feature = ({
   }, [onClose]);
 
   return (
-    <div className="top-[-8px] left-1 fixed z-10 min-w-screen min-h-screen" onClick={onClose}>
-      <div className="min-w-screen min-h-screen bg-base-100 opacity-30" />
+    <Mask onClose={onClose}>
       <div
-        className="feature-card card bg-base-100 rounded-lg z-10 w-[256px]"
+        className="feature-card card bg-base-100 rounded-lg w-[256px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="card-body gap-0 p-3 mt-2">
@@ -339,6 +339,6 @@ export const Feature = ({
           )}
         </div>
       </div>
-    </div>
+    </Mask>
   );
 };

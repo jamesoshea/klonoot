@@ -1,9 +1,8 @@
-import * as turf from "@turf/turf";
 import axios, { type AxiosResponse } from "axios";
 import dayjs from "dayjs";
 
 import type { BrouterResponse, ChartMode, OpenMeteoHourlyData, WeatherData } from "../types";
-import { getTrackLength } from "./route";
+import { getPointAlongLine, getTrackLength } from "./route";
 
 export const getSubstring = (ISODateString: string) =>
   ISODateString.substring(0, ISODateString.indexOf("T") + 6);
@@ -25,13 +24,11 @@ export const callOpenMeteo = (routeTrack: BrouterResponse, pace: number, startTi
   const calls = Array(numberOfCalls)
     .fill(null)
     .map((_, index) => {
-      const distance = (pace / 1000) * index; // must be in kilometers
+      const point = getPointAlongLine({ distanceInMetres: pace * index, routeTrack });
 
-      const line = turf.lineString(routeTrack?.features[0].geometry.coordinates);
-      const relevantPointOnLine = turf.along(line, distance, { units: "kilometres" });
       const location: [number, number] = [
-        relevantPointOnLine.geometry.coordinates[0], // lng
-        relevantPointOnLine.geometry.coordinates[1], // lat
+        point.geometry.coordinates[0], // lng
+        point.geometry.coordinates[1], // lat
       ];
 
       const timestamp = dayjs(startTime)

@@ -26,15 +26,17 @@ import {
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
-import { getTrackLength } from "../utils/route";
+import { getPointAlongLine, getTrackLength } from "../utils/route";
 import { useWeatherContext } from "../contexts/WeatherContext";
 import { getMinMaxWeatherValue, getWeather } from "../utils/weather";
 import { useRouteContext } from "../contexts/RouteContext";
 
 export const MainChart = ({
+  map,
   mode,
   routeTrack,
 }: {
+  map: mapboxgl.Map;
   mode: ChartMode;
   routeTrack: BrouterResponse;
 }) => {
@@ -141,6 +143,23 @@ export const MainChart = ({
     }
   }, [canvasWidth, routeTrack]);
 
+  const handleCanvasClick = useCallback(
+    (e: MouseEvent) => {
+      const mouseDistance = scale(
+        e.offsetX,
+        0,
+        parseInt((e.target as HTMLCanvasElement).style.width),
+        0,
+        trackLength,
+      );
+
+      const point = getPointAlongLine({ distanceInMetres: mouseDistance, routeTrack });
+
+      map.flyTo({ center: [point.geometry.coordinates[0], point.geometry.coordinates[1]] });
+    },
+    [map, routeTrack, trackLength],
+  );
+
   const handleResetCurrentPointDistance = useCallback(() => {
     setCurrentPointDistance(-1);
   }, [setCurrentPointDistance]);
@@ -172,14 +191,16 @@ export const MainChart = ({
   useEffect(() => {
     const canvas = elevationCanvasRef.current!;
 
-    canvas.addEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
+    canvas.addEventListener("click", handleCanvasClick);
     canvas.addEventListener("mouseleave", handleResetCurrentPointDistance);
+    canvas.addEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
 
     return () => {
-      canvas.removeEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
+      canvas.removeEventListener("click", handleCanvasClick);
       canvas.removeEventListener("mouseleave", handleResetCurrentPointDistance);
+      canvas.removeEventListener("mousemove", handleSetCurrentPointDistanceFromCanvas);
     };
-  }, [handleResetCurrentPointDistance, handleSetCurrentPointDistanceFromCanvas]);
+  }, [handleCanvasClick, handleResetCurrentPointDistance, handleSetCurrentPointDistanceFromCanvas]);
 
   useEffect(drawDataChart, [collapsed, drawDataChart]);
   useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);
