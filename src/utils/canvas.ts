@@ -3,8 +3,10 @@ import {
   COLOR__ACCENT,
   COLOR__BASE_100_80,
   COLOR__PRIMARY,
+  CYCLEWAY_COLORS,
   CYCLEWAY_NAMES,
   DEFAULT_PACE,
+  HIGHWAY_COLORS,
   HIGHWAY_NAMES,
   SURFACE_COLORS,
   SURFACE_NAMES,
@@ -221,6 +223,33 @@ export const drawCurrentPointOnChart = ({
       const surfaceTextString = `${array[index + 1].wayTags.surface ? `${SURFACE_NAMES[array[index + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[array[index + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[array[index + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
       drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
     }
+  });
+};
+
+export const drawTrafficOnChart = ({
+  ctx,
+  currentCanvasWidth,
+  routeTrack,
+}: {
+  ctx: CanvasRenderingContext2D;
+  currentCanvasWidth: number;
+  routeTrack: BrouterResponse;
+}) => {
+  const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
+  ctx.clearRect(0, 0, currentCanvasWidth, 10);
+
+  const points = routeMarks.points.slice(1);
+
+  points.forEach((point) => {
+    if (point.wayTags.highway) {
+      ctx.fillStyle = HIGHWAY_COLORS[point.wayTags.highway as HIGHWAY];
+    }
+
+    if (point.wayTags.cycleway) {
+      ctx.fillStyle = CYCLEWAY_COLORS[point.wayTags.cycleway as CYCLEWAY];
+    }
+
+    ctx.fillRect(point.left, 0, 10, 10);
   });
 };
 

@@ -4,8 +4,6 @@ import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons
 
 import {
   CANVAS_HEIGHT,
-  CYCLEWAY_COLORS,
-  HIGHWAY_COLORS,
   SURFACE_COLOR_GRAY,
   SURFACE_COLOR_LIGHT_GRAY,
   SURFACE_COLOR_ORANGE,
@@ -14,14 +12,14 @@ import {
   TRAFFIC_COLOR_NONE,
 } from "../consts";
 
-import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, WeatherData } from "../types";
+import type { BrouterResponse, ChartMode, WeatherData } from "../types";
 
 import {
   calculateMaxElevation,
   calculateMinElevation,
-  createRouteMarks,
   drawCurrentPointOnChart,
   drawElevationChart,
+  drawTrafficOnChart,
   drawWeatherChart,
   scale,
   setupCanvas,
@@ -107,7 +105,7 @@ export const MainChart = ({
     drawCurrentPointOnChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
   }, [canvasWidth, currentPointDistance, routeTrack]);
 
-  const drawTrafficMap = useCallback(() => {
+  const drawTrafficChart = useCallback(() => {
     const canvas = trafficCanvasRef.current;
     const { currentCanvasWidth, ctx } = setupCanvas({
       canvas,
@@ -120,22 +118,7 @@ export const MainChart = ({
       return;
     }
 
-    const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
-    ctx.clearRect(0, 0, currentCanvasWidth, 10);
-
-    const points = routeMarks.points.slice(1);
-
-    points.forEach((point) => {
-      if (point.wayTags.highway) {
-        ctx.fillStyle = HIGHWAY_COLORS[point.wayTags.highway as HIGHWAY];
-      }
-
-      if (point.wayTags.cycleway) {
-        ctx.fillStyle = CYCLEWAY_COLORS[point.wayTags.cycleway as CYCLEWAY];
-      }
-
-      ctx.fillRect(point.left, 0, 10, 10);
-    });
+    drawTrafficOnChart({ ctx, currentCanvasWidth, routeTrack });
   }, [routeTrack]);
 
   const handleCanvasClick = useCallback(
@@ -178,13 +161,13 @@ export const MainChart = ({
 
   useEffect(() => {
     window.addEventListener("resize", drawDataChart);
-    window.addEventListener("resize", drawTrafficMap);
+    window.addEventListener("resize", drawTrafficChart);
 
     return () => {
       window.removeEventListener("resize", drawDataChart);
-      window.addEventListener("resize", drawTrafficMap);
+      window.addEventListener("resize", drawTrafficChart);
     };
-  }, [drawDataChart, drawTrafficMap]);
+  }, [drawDataChart, drawTrafficChart]);
 
   useEffect(() => {
     const canvas = pointCanvasRef.current!;
@@ -201,7 +184,7 @@ export const MainChart = ({
   }, [handleCanvasClick, handleResetCurrentPointDistance, handleSetCurrentPointDistanceFromCanvas]);
 
   useEffect(drawDataChart, [collapsed, canvasWidth, drawDataChart]);
-  useEffect(drawTrafficMap, [collapsed, canvasWidth, drawTrafficMap]);
+  useEffect(drawTrafficChart, [collapsed, canvasWidth, drawTrafficChart]);
   useEffect(drawCurrentPointChart, [currentPointDistance, drawCurrentPointChart]);
 
   useEffect(() => {
