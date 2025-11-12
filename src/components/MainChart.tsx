@@ -20,6 +20,7 @@ import {
   calculateMaxElevation,
   calculateMinElevation,
   createRouteMarks,
+  drawCurrentPointOnChart,
   drawElevationChart,
   drawWeatherChart,
   scale,
@@ -50,7 +51,7 @@ export const MainChart = ({
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
   const chartCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  // const currentPointCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pointCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const trackLength = getTrackLength(routeTrack);
@@ -72,7 +73,7 @@ export const MainChart = ({
 
     switch (mode) {
       case "elevation":
-        drawElevationChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
+        drawElevationChart({ ctx, currentCanvasWidth, routeTrack });
         return;
       default:
         drawWeatherChart({
@@ -87,6 +88,24 @@ export const MainChart = ({
         return;
     }
   }, [canvasWidth, currentPointDistance, mode, pace, routeTrack, weatherData]);
+
+  const drawCurrentPointChart = useCallback(() => {
+    const canvas = pointCanvasRef.current;
+    const { currentCanvasWidth, ctx } = setupCanvas({
+      canvas,
+      containerRef: canvasContainerRef,
+      height: CANVAS_HEIGHT,
+      setCanvasWidth,
+    });
+
+    if (!ctx) {
+      return;
+    }
+
+    ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
+
+    drawCurrentPointOnChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
+  }, [canvasWidth, currentPointDistance, routeTrack]);
 
   const drawTrafficMap = useCallback(() => {
     const canvas = trafficCanvasRef.current;
@@ -131,7 +150,10 @@ export const MainChart = ({
 
       const point = getPointAlongLine({ distanceInMetres: mouseDistance, routeTrack });
 
-      map.flyTo({ center: [point.geometry.coordinates[0], point.geometry.coordinates[1]] });
+      map.flyTo({
+        center: [point.geometry.coordinates[0], point.geometry.coordinates[1]],
+        zoom: 14,
+      });
     },
     [map, routeTrack, trackLength],
   );
@@ -165,7 +187,7 @@ export const MainChart = ({
   }, [drawDataChart, drawTrafficMap]);
 
   useEffect(() => {
-    const canvas = chartCanvasRef.current!;
+    const canvas = pointCanvasRef.current!;
 
     canvas.addEventListener("click", handleCanvasClick);
     canvas.addEventListener("mouseleave", handleResetCurrentPointDistance);
@@ -180,6 +202,7 @@ export const MainChart = ({
 
   useEffect(drawDataChart, [collapsed, canvasWidth, drawDataChart]);
   useEffect(drawTrafficMap, [collapsed, canvasWidth, drawTrafficMap]);
+  useEffect(drawCurrentPointChart, [currentPointDistance, drawCurrentPointChart]);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -197,13 +220,13 @@ export const MainChart = ({
   return (
     <div className={`indicator elevation z-3 ${collapsed ? "collapsed" : ""}`}>
       <div className="rounded-lg bg-base-100 relative p-2 w-full h-full">
-        <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2 pointer-events-none">
-          <span className="bg-base-200 pl-1">
+        <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2 z-3 pointer-events-none">
+          <span>
             {mode === "elevation"
               ? `${calculateMaxElevation(routeTrack)}m`
               : getMinMaxWeatherValue(mode, "max", weatherData)}
           </span>
-          <span className="bg-base-200 pl-1">
+          <span>
             {mode === "elevation"
               ? `${calculateMinElevation(routeTrack)}m`
               : getMinMaxWeatherValue(mode, "min", weatherData)}
@@ -246,13 +269,22 @@ export const MainChart = ({
             </div>
           )}
           <div
-            className="bg-base-200"
+            className="relative mb-2"
             ref={canvasContainerRef}
-            style={{ maxWidth: collapsed ? 256 : "initial" }}
+            style={{
+              maxWidth: collapsed ? 256 : "initial",
+              height: CANVAS_HEIGHT,
+            }}
           >
+            <canvas
+              height={CANVAS_HEIGHT}
+              ref={pointCanvasRef}
+              width={canvasWidth}
+              style={{ position: "absolute" }}
+            ></canvas>
             <canvas height={CANVAS_HEIGHT} ref={chartCanvasRef} width={canvasWidth}></canvas>
-            <canvas height={10} ref={trafficCanvasRef} width={canvasWidth}></canvas>
           </div>
+          <canvas height={10} ref={trafficCanvasRef} width={canvasWidth}></canvas>
           <div className="w-full flex justify-between mt-1 text-xs opacity-60">
             <span>0km</span>
             <span>{(trackLength / 1000).toFixed(0)}km</span>

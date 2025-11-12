@@ -2,8 +2,8 @@ import { getThemeColor } from "./utils/colors";
 
 export const COLOR__ACCENT = getThemeColor("--color-accent");
 export const COLOR__BASE_100 = getThemeColor("--color-base-100");
+export const COLOR__BASE_100_80 = getThemeColor("--color-base-100", 204);
 export const COLOR__BASE_200 = getThemeColor("--color-base-200");
-export const COLOR__BASE_200_80 = getThemeColor("--color-base-200", 204);
 export const COLOR__BASE_CONTENT = getThemeColor("--color-base-content");
 export const COLOR__PRIMARY = getThemeColor("--color-primary");
 export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");

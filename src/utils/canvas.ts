@@ -1,7 +1,7 @@
 import {
   CANVAS_HEIGHT,
   COLOR__ACCENT,
-  COLOR__BASE_200_80,
+  COLOR__BASE_100_80,
   COLOR__PRIMARY,
   CYCLEWAY_NAMES,
   DEFAULT_PACE,
@@ -165,6 +165,29 @@ export const setupCanvas = ({
 export const drawElevationChart = ({
   ctx,
   currentCanvasWidth,
+  routeTrack,
+}: {
+  ctx: CanvasRenderingContext2D;
+  currentCanvasWidth: number;
+  routeTrack: BrouterResponse;
+}) => {
+  const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
+  const points = routeMarks.points.slice(1);
+
+  points.forEach((point, index) => {
+    ctx.beginPath();
+    ctx.moveTo(routeMarks.points[index].left, CANVAS_HEIGHT - routeMarks.points[index].top);
+    ctx.strokeStyle = SURFACE_COLORS[point.wayTags.surface as SURFACE];
+    ctx.lineTo(routeMarks.points[index + 1].left, CANVAS_HEIGHT - routeMarks.points[index + 1].top);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  });
+};
+
+export const drawCurrentPointOnChart = ({
+  ctx,
+  currentCanvasWidth,
   currentPointDistance,
   routeTrack,
 }: {
@@ -177,16 +200,6 @@ export const drawElevationChart = ({
   const points = routeMarks.points.slice(1);
   const trackLength = getTrackLength(routeTrack);
 
-  points.forEach((point, index) => {
-    ctx.beginPath();
-    ctx.moveTo(routeMarks.points[index].left, CANVAS_HEIGHT - routeMarks.points[index].top);
-    ctx.strokeStyle = SURFACE_COLORS[point.wayTags.surface as SURFACE];
-    ctx.lineTo(routeMarks.points[index + 1].left, CANVAS_HEIGHT - routeMarks.points[index + 1].top);
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.stroke();
-  });
-
   points.forEach((point, index, array) => {
     if (
       currentPointDistance > point.distance &&
@@ -197,7 +210,7 @@ export const drawElevationChart = ({
 
       ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
 
-      const flip = index > points.length * 0.9;
+      const flip = point.distance > trackLength / 2;
 
       const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
       drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
@@ -296,7 +309,7 @@ export const drawTextWithBackground = (
   ctx.textBaseline = "top";
 
   /// color for background
-  ctx.fillStyle = COLOR__BASE_200_80;
+  ctx.fillStyle = COLOR__BASE_100_80;
 
   /// get width of text
   const width = ctx.measureText(txt).width;
