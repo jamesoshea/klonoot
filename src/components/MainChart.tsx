@@ -23,6 +23,7 @@ import {
   drawElevationChart,
   drawWeatherChart,
   scale,
+  setupCanvas,
 } from "../utils/canvas";
 
 import { InfoCircleIcon } from "./shared/InfoCircleIcon";
@@ -48,100 +49,75 @@ export const MainChart = ({
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
-  const elevationCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const chartCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  // const currentPointCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const trackLength = getTrackLength(routeTrack);
 
   const drawDataChart = useCallback(() => {
-    const canvas = elevationCanvasRef.current;
-    if (canvas?.getContext) {
-      const ctx = canvas.getContext("2d");
+    const canvas = chartCanvasRef.current;
+    const { currentCanvasWidth, ctx } = setupCanvas({
+      canvas,
+      containerRef: canvasContainerRef,
+      height: CANVAS_HEIGHT,
+      setCanvasWidth,
+    });
 
-      if (!ctx) {
+    if (!ctx) {
+      return;
+    }
+
+    ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
+
+    switch (mode) {
+      case "elevation":
+        drawElevationChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
         return;
-      }
-
-      const currentCanvasWidth = canvasContainerRef.current?.clientWidth ?? 0;
-      setCanvasWidth(currentCanvasWidth);
-
-      // Get the DPR and size of the canvas
-      const dpr = window.devicePixelRatio;
-
-      // Set the "actual" size of the canvas
-      canvas.width = currentCanvasWidth * dpr;
-      canvas.height = CANVAS_HEIGHT * dpr;
-
-      // Scale the context to ensure correct drawing operations
-      ctx.scale(dpr, dpr);
-
-      canvas.style.width = `${currentCanvasWidth}px`;
-      canvas.style.height = `${CANVAS_HEIGHT}px`;
-
-      ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
-
-      switch (mode) {
-        case "elevation":
-          drawElevationChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
-          return;
-        default:
-          drawWeatherChart({
-            ctx,
-            currentCanvasWidth,
-            currentPointDistance,
-            mode,
-            pace,
-            routeTrack,
-            weatherData,
-          });
-          return;
-      }
+      default:
+        drawWeatherChart({
+          ctx,
+          currentCanvasWidth,
+          currentPointDistance,
+          mode,
+          pace,
+          routeTrack,
+          weatherData,
+        });
+        return;
     }
   }, [canvasWidth, currentPointDistance, mode, pace, routeTrack, weatherData]);
 
   const drawTrafficMap = useCallback(() => {
     const canvas = trafficCanvasRef.current;
-    if (canvas?.getContext) {
-      const ctx = canvas.getContext("2d");
+    const { currentCanvasWidth, ctx } = setupCanvas({
+      canvas,
+      containerRef: canvasContainerRef,
+      height: 10,
+      setCanvasWidth,
+    });
 
-      if (!ctx) {
-        return;
+    if (!ctx) {
+      return;
+    }
+
+    const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
+    ctx.clearRect(0, 0, currentCanvasWidth, 10);
+
+    const points = routeMarks.points.slice(1);
+
+    points.forEach((point) => {
+      if (point.wayTags.highway) {
+        ctx.fillStyle = HIGHWAY_COLORS[point.wayTags.highway as HIGHWAY];
       }
 
-      const currentCanvasWidth = canvasContainerRef.current?.clientWidth ?? 0;
-      setCanvasWidth(currentCanvasWidth);
+      if (point.wayTags.cycleway) {
+        ctx.fillStyle = CYCLEWAY_COLORS[point.wayTags.cycleway as CYCLEWAY];
+      }
 
-      // Get the DPR and size of the canvas
-      const dpr = window.devicePixelRatio;
-
-      // Set the "actual" size of the canvas
-      canvas.width = currentCanvasWidth * dpr;
-      canvas.height = 10 * dpr;
-
-      // Scale the context to ensure correct drawing operations
-      ctx.scale(dpr, dpr);
-
-      canvas.style.width = `${currentCanvasWidth}px`;
-      canvas.style.height = `${10}px`;
-
-      const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
-
-      ctx.clearRect(0, 0, canvasWidth, 10);
-      const points = routeMarks.points.slice(1);
-
-      points.forEach((point) => {
-        if (point.wayTags.highway) {
-          ctx.fillStyle = HIGHWAY_COLORS[point.wayTags.highway as HIGHWAY];
-        }
-
-        if (point.wayTags.cycleway) {
-          ctx.fillStyle = CYCLEWAY_COLORS[point.wayTags.cycleway as CYCLEWAY];
-        }
-
-        ctx.fillRect(point.left, 0, 10, 10);
-      });
-    }
-  }, [canvasWidth, routeTrack]);
+      ctx.fillRect(point.left, 0, 10, 10);
+    });
+  }, [routeTrack]);
 
   const handleCanvasClick = useCallback(
     (e: MouseEvent) => {
@@ -189,7 +165,7 @@ export const MainChart = ({
   }, [drawDataChart, drawTrafficMap]);
 
   useEffect(() => {
-    const canvas = elevationCanvasRef.current!;
+    const canvas = chartCanvasRef.current!;
 
     canvas.addEventListener("click", handleCanvasClick);
     canvas.addEventListener("mouseleave", handleResetCurrentPointDistance);
@@ -202,8 +178,8 @@ export const MainChart = ({
     };
   }, [handleCanvasClick, handleResetCurrentPointDistance, handleSetCurrentPointDistanceFromCanvas]);
 
-  useEffect(drawDataChart, [collapsed, drawDataChart]);
-  useEffect(drawTrafficMap, [collapsed, drawTrafficMap]);
+  useEffect(drawDataChart, [collapsed, canvasWidth, drawDataChart]);
+  useEffect(drawTrafficMap, [collapsed, canvasWidth, drawTrafficMap]);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -274,7 +250,7 @@ export const MainChart = ({
             ref={canvasContainerRef}
             style={{ maxWidth: collapsed ? 256 : "initial" }}
           >
-            <canvas height={CANVAS_HEIGHT} ref={elevationCanvasRef} width={canvasWidth}></canvas>
+            <canvas height={CANVAS_HEIGHT} ref={chartCanvasRef} width={canvasWidth}></canvas>
             <canvas height={10} ref={trafficCanvasRef} width={canvasWidth}></canvas>
           </div>
           <div className="w-full flex justify-between mt-1 text-xs opacity-60">
