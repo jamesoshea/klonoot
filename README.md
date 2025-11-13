@@ -24,6 +24,7 @@ You will then need to create a table in Supabase called `routes`, which will hol
 Finally, run `docker-compose build`, followed by `docker-compose up`. This will build the client, and start a local instance of the open-source brouter routing engine.
 
 The client runs on port 5173
+
 The brouter instance runs on port 17777
 
 Navigate to `http://localhost:5173` and have fun.
