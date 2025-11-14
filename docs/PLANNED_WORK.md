@@ -46,6 +46,5 @@
 - Explainer for brouter profiles
 - Access restrictions on route
 - Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)
-- Off-Route POIs (for example, shops, water fountains or bail-out public transport stops)
 - GPX import
 - Bulk route export

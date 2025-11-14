@@ -43,7 +43,7 @@ export const PointsList = ({
   return (
     <>
       <div className="flex justify-between items-center mt-3 p-0 px-1 min-w-full">
-        <div className="text-xs opacity-60">Anchor points</div>
+        <div className="text-xs opacity-60">Waypoints</div>
         <div className="tooltip cursor-pointer" data-tip="Undo">
           <IconButton
             disabled={numberOfPatches < 2}
