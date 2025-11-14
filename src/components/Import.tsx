@@ -7,7 +7,7 @@ import * as turf from "@turf/turf";
 import { COLOR__BASE_100 } from "../consts";
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 
-export const Import = ({ map }: { map: mapboxgl.Map }) => {
+export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
   const [showInput, setShowInput] = useState<boolean>(false);
 
   const handleFileImport = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +27,14 @@ export const Import = ({ map }: { map: mapboxgl.Map }) => {
     };
   };
 
+  //   const convertToPoints = () => {
+  //     // heavily indebted to the work here:
+  //     // https://github.com/nrenner/brouter-web/blob/master/js/plugin/RouteLoaderConverter.js
+  //   };
+
   const drawTrackOnMap = (geoJSON: FeatureCollection<Geometry, GeoJsonProperties>) => {
+    if (!map) return;
+
     if (map.getLayer("importedTrack")) map.removeLayer("importedTrack");
     if (map.getSource("importedTrack")) map.removeSource("importedTrack");
 
