@@ -14,6 +14,7 @@ import { Nav } from "./components/Nav";
 import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
 import { Layers } from "./components/Layers";
 import { NewRoute } from "./components/NewRoute";
+import { Import } from "./components/Import";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -56,6 +57,7 @@ function App() {
                 <Nav />
                 <Layers />
                 <NewRoute />
+                <Import map={map} />
               </div>
             </WeatherContextProvider>
           </LoadingContextProvider>
