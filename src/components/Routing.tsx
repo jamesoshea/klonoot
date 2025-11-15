@@ -89,7 +89,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       ];
       newArray.splice(index, 1, newPoint);
       setPoints(newArray);
-      setSelectedPoint(newPoint);
     },
     [points],
   );

@@ -169,17 +169,18 @@ export const UserRouteList = ({
         </div>
       </div>
       <dialog id="delete_modal" className="modal">
-        <div className="modal-box">
+        <div className="modal-box bg-base-200">
           <h3 className="font-bold text-lg">Are you sure?</h3>
           <p className="py-4">Deleting a route cannot be undone</p>
-          <div className="modal-action">
-            <form method="dialog">
+          <form method="dialog">
+            <div className="modal-action">
               {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-ghost">Cancel</button>
               <button className="btn text-white bg-red-500" onClick={handleDeleteRoute}>
                 Delete {selectedUserRoute?.name}
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </dialog>
     </>
