@@ -5,16 +5,19 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
 
+import { Import } from "./components/Import";
+import { Layers } from "./components/Layers";
+import { Nav } from "./components/Nav";
+import { NewRoute } from "./components/NewRoute";
 import { Routing } from "./components/Routing";
+
 import { LoadingContextProvider } from "./contexts/LoadingContextProvider";
+import { PatchesContextProvider } from "./contexts/PatchesContextProvider";
 import { RouteContextProvider } from "./contexts/RouteContextProvider";
 import { SessionContextProvider } from "./contexts/SessionContextProvider";
-import { queryClient } from "./queries/queryClient";
-import { Nav } from "./components/Nav";
 import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
-import { Layers } from "./components/Layers";
-import { NewRoute } from "./components/NewRoute";
-import { Import } from "./components/Import";
+
+import { queryClient } from "./queries/queryClient";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -49,18 +52,20 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider>
         <RouteContextProvider>
-          <LoadingContextProvider>
-            <WeatherContextProvider>
-              {map && mapLoaded && <Routing map={map} />}
-              <div id="map-container" ref={mapContainerRef} />
-              <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
-                <Nav />
-                <Layers />
-                <NewRoute />
-                <Import map={map} />
-              </div>
-            </WeatherContextProvider>
-          </LoadingContextProvider>
+          <PatchesContextProvider>
+            <LoadingContextProvider>
+              <WeatherContextProvider>
+                {map && mapLoaded && <Routing map={map} />}
+                <div id="map-container" ref={mapContainerRef} />
+                <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
+                  <Nav />
+                  <Layers />
+                  <NewRoute />
+                  <Import map={map} />
+                </div>
+              </WeatherContextProvider>
+            </LoadingContextProvider>
+          </PatchesContextProvider>
         </RouteContextProvider>
       </SessionContextProvider>
     </QueryClientProvider>

@@ -6,18 +6,16 @@ import type { Coordinate } from "../types";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { IconButton } from "./shared/IconButton";
 import { useRouteContext } from "../contexts/RouteContext";
+import { usePatchesContext } from "../contexts/PatchesContext";
 
 export const PointsList = ({
   map,
-  numberOfPatches,
   setSelectedPoint,
-  onUndo,
 }: {
   map: mapboxgl.Map;
-  numberOfPatches: number;
   setSelectedPoint: Dispatch<Coordinate | null>;
-  onUndo: () => void;
 }) => {
+  const { handleUndoPatch, patches } = usePatchesContext();
   const { points, setPoints } = useRouteContext();
 
   const handleMovePointDown = (index: number) => {
@@ -45,10 +43,10 @@ export const PointsList = ({
         <div className="text-xs opacity-60">Waypoints</div>
         <div className="tooltip cursor-pointer" data-tip="Undo">
           <IconButton
-            disabled={numberOfPatches < 2}
+            disabled={patches.length < 2}
             icon={faUndo}
             size={ICON_BUTTON_SIZES.SMALL}
-            onClick={onUndo}
+            onClick={handleUndoPatch}
           />
         </div>
       </div>

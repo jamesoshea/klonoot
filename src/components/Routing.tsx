@@ -31,6 +31,7 @@ import { Feature } from "./shared/Feature.tsx";
 
 import pathArrowUrl from "../assets/path-arrow.svg";
 import { useGetPublicTransport } from "../queries/useGetPublicTransport.ts";
+import { usePatchesContext } from "../contexts/PatchesContext.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -40,14 +41,16 @@ const profileNameMap = {
 };
 
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
+  const { setPatches } = usePatchesContext();
   const {
     currentPointDistance,
     setCurrentPointDistance,
+    points,
+    setPoints,
     selectedRouteId,
     setRouteTrack,
     showPOIs,
   } = useRouteContext();
-  const { points, setPoints } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
@@ -66,7 +69,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const [chartMode, setChartMode] = useState<ChartMode>("elevation");
   const [currentPointMarker, setCurrentPointMarker] = useState<Marker | null>(null);
   const [markersInState, setMarkersInState] = useState<Marker[]>([]);
-  const [patches, setPatches] = useState<Coordinate[][]>([]);
+
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
   const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
   const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
@@ -158,16 +161,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
     e.preventDefault();
     e.stopPropagation();
-  };
-
-  const handleUndo = () => {
-    if (!patches.length) {
-      return;
-    }
-
-    const newPatches = patches.slice(0, -1);
-    setPatches(newPatches);
-    setPoints(newPatches.slice(-1)[0]);
   };
 
   // on component mount: add elevation tiles to map
@@ -305,16 +298,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     [map, routeTrack, currentPointDistance], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  // apply patches
-  useEffect(() => {
-    if (JSON.stringify(patches.slice(-1)[0]) === JSON.stringify(points)) {
-      // we got here by applying a patch. Don't apply it again
-      return;
-    }
-
-    setPatches([...patches, points]);
-  }, [points]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // add event listeners for map interactions
   useEffect(() => {
     map.on("click", handleContextMenuOpen);
@@ -368,7 +351,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   useEffect(() => {
     setSelectedPoint(null);
     setPatches([]);
-  }, [selectedRouteId]);
+  }, [selectedRouteId, setPatches]);
 
   useEffect(() => {
     if (showRouteInfo) {
@@ -410,12 +393,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               ))}
             </select>
           </div>
-          <PointsList
-            map={map}
-            numberOfPatches={patches.length}
-            setSelectedPoint={setSelectedPoint}
-            onUndo={handleUndo}
-          />
+          <PointsList map={map} setSelectedPoint={setSelectedPoint} />
           {routeTrack && (
             <>
               <Divider />
