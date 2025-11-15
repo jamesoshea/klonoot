@@ -1,5 +1,5 @@
 import { createContext, useContext, type Dispatch } from "react";
-import { BROUTER_PROFILES, type BrouterResponse, type UserRoute } from "../types";
+import { BROUTER_PROFILES, type BrouterResponse, type Coordinate, type UserRoute } from "../types";
 
 export type ShowPOIContextType = {
   transit: boolean;
@@ -9,6 +9,8 @@ export type ShowPOIContextType = {
 export type RouteContextType = {
   currentPointDistance: number;
   setCurrentPointDistance: Dispatch<number>;
+  points: Coordinate[];
+  setPoints: Dispatch<Coordinate[]>;
   routeTrack: BrouterResponse | null;
   setRouteTrack: Dispatch<BrouterResponse | null>;
   showPOIs: ShowPOIContextType;
@@ -21,6 +23,8 @@ export type RouteContextType = {
 export const RouteContext = createContext<RouteContextType>({
   currentPointDistance: -1,
   setCurrentPointDistance: () => -1,
+  points: [],
+  setPoints: () => null,
   routeTrack: null,
   setRouteTrack: () => null,
   selectedRouteId: null,

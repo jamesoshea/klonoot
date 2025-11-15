@@ -47,11 +47,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setRouteTrack,
     showPOIs,
   } = useRouteContext();
+  const { points, setPoints } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
-  const [points, setPoints] = useState<Coordinate[]>([]);
 
   const { data: routeTrack } = useFetchRoute({
     enabled: points.length > 1,
@@ -90,13 +90,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       newArray.splice(index, 1, newPoint);
       setPoints(newArray);
     },
-    [points],
+    [points, setPoints],
   );
 
   const handleNewPointSet = useCallback(
     (e: mapboxgl.MapMouseEvent) =>
       setPoints(setNewPoint([e.lngLat.lng, e.lngLat.lat, "", false], points)),
-    [points],
+    [points, setPoints],
   );
 
   const handleContextMenuOpen = useCallback(
@@ -229,7 +229,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         padding: 256,
       },
     );
-  }, [map, selectedRouteId, loggedIn, setCurrentPointDistance, userRoutes]);
+  }, [map, selectedRouteId, loggedIn, setCurrentPointDistance, setPoints, userRoutes]);
 
   // set markers upon points change
   useEffect(() => {
@@ -363,7 +363,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [brouterProfile, map, points, supabase.auth]);
+  }, [brouterProfile, map, points, setPoints, supabase.auth]);
 
   useEffect(() => {
     setSelectedPoint(null);
