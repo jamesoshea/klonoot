@@ -395,7 +395,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           />
         )}
         <div className="mt-2 p-2 rounded-lg bg-base-100 flex flex-col items-center">
-          <Search map={map} points={points} setPoints={setPoints} />
+          <Search map={map} />
           <div className="w-full mt-2">
             <p className="pb-1 pl-0.5 text-xs opacity-60">Brouter profile</p>
             <select
@@ -413,8 +413,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           <PointsList
             map={map}
             numberOfPatches={patches.length}
-            points={points}
-            setPoints={setPoints}
             setSelectedPoint={setSelectedPoint}
             onUndo={handleUndo}
           />
@@ -424,9 +422,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
               <RouteSummary
                 brouterProfile={brouterProfile}
                 chartMode={chartMode}
-                points={points}
                 routeTrack={routeTrack}
-                setPoints={setPoints}
                 showRouteInfo={showRouteInfo}
                 onToggleMode={(mode: ChartMode) => setChartMode(mode)}
               />
@@ -434,24 +430,12 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           )}
         </div>
         {routeTrack && selectedPoint && chartMode === "elevation" && (
-          <Feature
-            existingPoints={points}
-            point={selectedPoint}
-            setPoints={setPoints}
-            onClose={() => setSelectedPoint(null)}
-          />
+          <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />
         )}
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
-      {selectedPOI && (
-        <Feature
-          existingPoints={points}
-          GeoJSONFeature={selectedPOI}
-          setPoints={setPoints}
-          onClose={() => setSelectedPOI(null)}
-        />
-      )}
+      {selectedPOI && <Feature GeoJSONFeature={selectedPOI} onClose={() => setSelectedPOI(null)} />}
     </>
   );
 };
