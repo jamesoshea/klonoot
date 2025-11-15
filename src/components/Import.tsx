@@ -5,9 +5,12 @@ import { useState, type ChangeEvent } from "react";
 import * as turf from "@turf/turf";
 
 import { COLOR__BASE_100 } from "../consts";
-import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
+import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString } from "geojson";
+import { useRouteContext } from "../contexts/RouteContext";
 
 export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
+  const { setPoints } = useRouteContext();
+
   const [showInput, setShowInput] = useState<boolean>(false);
 
   const handleFileImport = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,13 +27,34 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
       drawTrackOnMap(geoJSON);
 
       setShowInput(false);
+
+      convertToPoints(geoJSON);
     };
   };
 
-  //   const convertToPoints = () => {
-  //     // heavily indebted to the work here:
-  //     // https://github.com/nrenner/brouter-web/blob/master/js/plugin/RouteLoaderConverter.js
-  //   };
+  const convertToPoints = (geoJSON: FeatureCollection<Geometry, GeoJsonProperties>) => {
+    // heavily indebted to the work here:
+    // https://github.com/nrenner/brouter-web/blob/master/js/plugin/RouteLoaderConverter.js
+
+    const flat = turf.flatten(geoJSON);
+
+    const linePoints = flat.features
+      .map((feature) => {
+        if (turf.getType(feature) == "LineString") {
+          feature = turf.cleanCoords(feature);
+          return turf.coordAll(feature);
+        }
+        return [];
+      })
+      .flat();
+
+    const linesGeoJSON = turf.lineString(linePoints);
+    const coords = getSimplifiedCoords(linesGeoJSON.geometry);
+
+    setPoints(coords.map((coord) => [coord[0], coord[1], "", false]));
+
+    return linesGeoJSON;
+  };
 
   const drawTrackOnMap = (geoJSON: FeatureCollection<Geometry, GeoJsonProperties>) => {
     if (!map) return;
@@ -65,6 +89,16 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     const enveloped = turf.envelope(geoJSON);
     const [lng1, lat1, lng2, lat2] = enveloped.bbox!;
     map.fitBounds([lng1, lat1, lng2, lat2]);
+  };
+
+  const getSimplifiedCoords = (
+    linesGeoJSON: Feature<LineString, GeoJsonProperties>["geometry"],
+  ) => {
+    const simplifiedLine = turf.simplify(linesGeoJSON, {
+      tolerance: 0.0025,
+      highQuality: true,
+    });
+    return simplifiedLine.coordinates;
   };
 
   return (
