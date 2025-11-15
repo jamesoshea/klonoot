@@ -51,6 +51,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     setRouteTrack,
     showPOIs,
   } = useRouteContext();
+  const { points, setPoints } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
   const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
