@@ -5,22 +5,21 @@ import { faCircleChevronDown, faCircleChevronUp, faUndo } from "@fortawesome/fre
 import type { Coordinate } from "../types";
 import { ICON_BUTTON_SIZES } from "../consts";
 import { IconButton } from "./shared/IconButton";
+import { useRouteContext } from "../contexts/RouteContext";
 
 export const PointsList = ({
   map,
   numberOfPatches,
-  points,
-  setPoints,
   setSelectedPoint,
   onUndo,
 }: {
   map: mapboxgl.Map;
   numberOfPatches: number;
-  points: Coordinate[];
-  setPoints: Dispatch<Coordinate[]>;
   setSelectedPoint: Dispatch<Coordinate | null>;
   onUndo: () => void;
 }) => {
+  const { points, setPoints } = useRouteContext();
+
   const handleMovePointDown = (index: number) => {
     const newArray = [...points];
     const [point] = newArray.splice(index, 1);

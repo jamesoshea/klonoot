@@ -11,7 +11,6 @@ import {
   faWind,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import type { Dispatch } from "react";
 
 import {
   CHART_MODES,
@@ -50,22 +49,18 @@ const CHART_MODE_TOOLTIP_MAP: Record<ChartMode, string> = {
 export const RouteSummary = ({
   brouterProfile,
   chartMode,
-  points,
   routeTrack,
   showRouteInfo,
-  setPoints,
   onToggleMode,
 }: {
   brouterProfile: BROUTER_PROFILES;
   chartMode: ChartMode;
-  points: Coordinate[];
   routeTrack: BrouterResponse;
   showRouteInfo: boolean;
-  setPoints: Dispatch<Coordinate[]>;
   onToggleMode: (mode: ChartMode) => void;
 }) => {
   const { loading, setLoading } = useLoadingContext();
-  const { selectedUserRoute } = useRouteContext();
+  const { points, selectedUserRoute, setPoints } = useRouteContext();
 
   const handleGPXDownload = async () => {
     setLoading(true);

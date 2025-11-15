@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type ChangeEventHandler,
-  type Dispatch,
-} from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEventHandler } from "react";
 import { CloseButton } from "./CloseButton";
 import type { Coordinate } from "../../types";
 import { getNewPointIndex } from "../../utils/route";
@@ -15,6 +8,7 @@ import { IconButton } from "./IconButton";
 import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../consts";
 import { InfoCircleIcon } from "./InfoCircleIcon";
 import { Mask } from "./Mask";
+import { useRouteContext } from "../../contexts/RouteContext";
 
 const DisplayFeature = ({ GeoJSONFeature }: { GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point> }) => {
   const displayName =
@@ -44,15 +38,14 @@ const DisplayPoint = ({
   existingPoints,
   index,
   point,
-  setPoints,
   onClose,
 }: {
   existingPoints: Coordinate[];
   index: number;
   point: Coordinate;
-  setPoints: Dispatch<Coordinate[]>;
   onClose: () => void;
 }) => {
+  const { setPoints } = useRouteContext();
   const [pointName, setPointName] = useState<string>(point[2] ?? "");
 
   const nameChanged = (point[2] ?? "") !== pointName;
@@ -247,18 +240,12 @@ const FancyButton = ({
 type FeatureProps = {
   GeoJSONFeature?: GeoJSON.Feature<GeoJSON.Point>;
   point?: Coordinate;
-  existingPoints: Coordinate[];
-  setPoints: Dispatch<Coordinate[]>;
   onClose: () => void;
 };
 
-export const Feature = ({
-  GeoJSONFeature,
-  point,
-  existingPoints,
-  setPoints,
-  onClose,
-}: FeatureProps) => {
+export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
+  const { points: existingPoints, setPoints } = useRouteContext();
+
   const formatGeoJSONFeatureAsPoint = (
     GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point>,
   ): Coordinate => [
@@ -309,7 +296,6 @@ export const Feature = ({
                 (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
               )}
               point={point}
-              setPoints={setPoints}
               onClose={onClose}
             />
           )}
