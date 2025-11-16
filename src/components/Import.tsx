@@ -114,7 +114,13 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
             />
           </div>
           {showInput && (
-            <input type="file" className="file-input mt-3" onChange={handleFileImport} />
+            <input
+              type="file"
+              accept=".gpx"
+              className="file-input mt-3"
+              placeholder="Upload a GPX file"
+              onChange={handleFileImport}
+            />
           )}
         </div>
       </div>

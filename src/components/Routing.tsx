@@ -407,11 +407,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             </>
           )}
         </div>
-        {routeTrack && selectedPoint && chartMode === "elevation" && (
-          <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />
-        )}
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
+      {routeTrack && selectedPoint && chartMode === "elevation" && (
+        <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />
+      )}
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
       {selectedPOI && <Feature GeoJSONFeature={selectedPOI} onClose={() => setSelectedPOI(null)} />}
     </>
