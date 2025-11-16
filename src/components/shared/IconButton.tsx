@@ -35,7 +35,7 @@ export const IconButton = ({
 
   return (
     <button
-      className={`btn btn-circle btn-ghost ${active ? " bg-neutral text-neutral-content" : " text-neutral"}`}
+      className={`btn btn-circle btn-ghost ${active ? " bg-neutral text-base-100" : " text-neutral"}`}
       data-testid={dataTestId}
       disabled={disabled}
       style={{

@@ -11,7 +11,7 @@ export const Layers = () => {
   return routeTrack ? (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-4">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
-        <div className="tooltip tooltip-left" data-tip="Select layers">
+        <div className="tooltip tooltip-left" data-tip={menuIsOpen ? "" : "Select layers"}>
           <FontAwesomeIcon
             className="cursor-pointer text-neutral"
             icon={faLayerGroup}
