@@ -104,20 +104,17 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
   return (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
-        <div className="tooltip tooltip-left" data-tip={showInput ? "" : "Create new route"}>
-          {showInput ? (
-            <input
-              type="file"
-              className="file-input file-input-ghost file-input-primary"
-              onChange={handleFileImport}
-            />
-          ) : (
+        <div className="tooltip tooltip-left" data-tip={showInput ? "" : "Import GPX file"}>
+          <div className="flex justify-end">
             <FontAwesomeIcon
               className="cursor-pointer text-neutral"
               icon={faFileImport}
               size="xl"
               onClick={() => setShowInput(!showInput)}
             />
+          </div>
+          {showInput && (
+            <input type="file" className="file-input mt-3" onChange={handleFileImport} />
           )}
         </div>
       </div>
