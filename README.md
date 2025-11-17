@@ -2,9 +2,9 @@
 
 ## Motivation
 
-Bikes are a tool of liberation, and the tools and software surrounding cycling should also be tools of liberation. They hould be open-source, accessible, and free where possible.
+The bike is a tool of liberation, and the tools and software surrounding cycling should also be tools of liberation. They should be open-source, accessible, and free where possible.
 
-Klonoot is a webapp inspired the core route-planning functionality of a popular outdoorsy platform. It relies on [brouter](https://github.com/abrensch/brouter) for its routing, and leans heavily on Mapbox for the map and search implementation. Authentication and persistence are managed using Supabase. This will change, as I would prefer open-source dependencies and easily self-hostable infrastructure wherever possible.
+Klonoot is a webapp inspired by the core route-planning functionality of a popular outdoorsy platform. It relies on [brouter](https://github.com/abrensch/brouter) for its routing, and leans heavily on Mapbox for the map and search implementation. Authentication and persistence are managed using Supabase. This will change, as I would prefer open-source dependencies and easily self-hostable infrastructure wherever possible.
 
 It serves purely as a route-planning tool, rather than as a navigation app, or social platform. There are already many fantastic open-source navigation apps for cycling.
 
