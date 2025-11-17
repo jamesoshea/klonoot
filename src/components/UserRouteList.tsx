@@ -141,8 +141,9 @@ export const UserRouteList = ({
                     disabled={loading}
                     icon={faTrash}
                     size={ICON_BUTTON_SIZES.LARGE}
-                    // @ts-expect-error yeah I know
-                    onClick={() => document.getElementById("delete_modal")?.showModal()}
+                    onClick={() =>
+                      (document.getElementById("delete_modal") as HTMLDialogElement)?.showModal()
+                    }
                   />
                 </div>
               </>
