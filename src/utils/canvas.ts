@@ -45,14 +45,11 @@ export const calculateMinElevation = (routeTrack: BrouterResponse): number =>
 export const createRouteMarks = (currentCanvasWidth: number, routeTrack: BrouterResponse) => {
   const trackLength = getTrackLength(routeTrack);
 
+  const minElevation = calculateMinElevation(routeTrack);
+  const maxElevation = calculateMaxElevation(routeTrack);
+
   const scaleYWithParams = (pointElevation: number) =>
-    scale(
-      pointElevation,
-      calculateMinElevation(routeTrack),
-      calculateMaxElevation(routeTrack),
-      0,
-      CANVAS_HEIGHT - 4,
-    );
+    scale(pointElevation, minElevation, maxElevation, 0, CANVAS_HEIGHT - 4);
 
   const scaleXWithParams = (pointDistance: number) =>
     scale(pointDistance, 0, trackLength, 0, currentCanvasWidth);
@@ -199,31 +196,32 @@ export const drawCurrentPointOnChart = ({
   routeTrack: BrouterResponse;
 }) => {
   const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
+
   const points = routeMarks.points.slice(1);
   const trackLength = getTrackLength(routeTrack);
 
-  points.forEach((point, index, array) => {
-    if (
-      currentPointDistance > point.distance &&
-      currentPointDistance < points[index + 1].distance
-    ) {
-      ctx.fillStyle = COLOR__ACCENT;
-      const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
+  const relevantPointIndex = points.findIndex(
+    (point, index) =>
+      currentPointDistance > point.distance && currentPointDistance < points[index + 1].distance,
+  );
 
-      ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
+  if (relevantPointIndex < 0) return;
 
-      const flip = point.distance > trackLength / 2;
+  ctx.fillStyle = COLOR__ACCENT;
+  const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
 
-      const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
-      drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
+  ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
 
-      const topographyTextString = `${point.elevation}m, ${point.gradient}%`;
-      drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
+  const flip = points[relevantPointIndex].distance > trackLength / 2;
 
-      const surfaceTextString = `${array[index + 1].wayTags.surface ? `${SURFACE_NAMES[array[index + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[array[index + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[array[index + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
-      drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
-    }
-  });
+  const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
+  drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
+
+  const topographyTextString = `${points[relevantPointIndex].elevation}m, ${points[relevantPointIndex].gradient}%`;
+  drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
+
+  const surfaceTextString = `${points[relevantPointIndex + 1].wayTags.surface ? `${SURFACE_NAMES[points[relevantPointIndex + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[points[relevantPointIndex + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[points[relevantPointIndex + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
+  drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
 };
 
 export const drawTrafficOnChart = ({
