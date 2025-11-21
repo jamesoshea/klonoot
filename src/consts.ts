@@ -10,6 +10,7 @@ export const COLOR__PRIMARY_CONTENT = getThemeColor("--color-primary-content");
 export const COLOR__PRIMARY_CONTENT_60 = getThemeColor("--color-primary-content", 153);
 export const COLOR__SECONDARY = getThemeColor("--color-secondary");
 export const COLOR__ERROR = getThemeColor("--color-error");
+export const COLOR__INFO = getThemeColor("--color-info");
 
 export const CANVAS_HEIGHT = 100;
 
