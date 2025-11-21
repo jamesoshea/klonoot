@@ -23,7 +23,7 @@ export const Layers = () => {
       {menuIsOpen && (
         <>
           <div className="px-1 pt-4">
-            <label className="label">
+            <label className="label text-neutral">
               <input
                 type="checkbox"
                 className="checkbox checkbox-sm"
@@ -33,8 +33,8 @@ export const Layers = () => {
               Drinking water
             </label>
           </div>
-          <div className="px-1">
-            <label className="label">
+          <div className="px-1 mt-1">
+            <label className="label text-neutral">
               <input
                 type="checkbox"
                 className="checkbox checkbox-sm"

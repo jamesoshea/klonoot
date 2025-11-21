@@ -10,6 +10,8 @@ import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineStrin
 import { useRouteContext } from "../contexts/RouteContext";
 
 const GPX_TRACK_COLOR = COLOR__ERROR;
+const MAX_SLIDER_VALUE = 0.0025;
+const MIN_SLIDER_VALUE = 0.0005;
 
 const getSimplifiedCoords = (
   linesGeoJSON: Feature<LineString, GeoJsonProperties>["geometry"],
@@ -22,15 +24,15 @@ const getSimplifiedCoords = (
   return simplifiedLine.coordinates;
 };
 
-const scaleLogarithmically = scaleLog().range([0.00025, 0.0025]);
+const scaleLogarithmically = scaleLog().range([MIN_SLIDER_VALUE, MAX_SLIDER_VALUE]);
 
 export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
   const { selectedRouteId, setPoints } = useRouteContext();
 
   const [showInput, setShowInput] = useState<boolean>(false);
-  const [sliderValue, setSliderValue] = useState<number>(scaleLogarithmically.invert(0.00025));
+  const [sliderValue, setSliderValue] = useState<number>(scaleLogarithmically(MAX_SLIDER_VALUE));
   const [debouncedValue, setDebouncedValue] = useState<number>(
-    scaleLogarithmically.invert(0.00025),
+    scaleLogarithmically.invert(MAX_SLIDER_VALUE),
   );
   const [trackGeoJSON, setTrackGeoJSON] = useState<FeatureCollection<
     Geometry,
@@ -56,8 +58,6 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     (geoJSON: FeatureCollection<Geometry, GeoJsonProperties>, tolerance: number) => {
       // heavily indebted to the work here:
       // https://github.com/nrenner/brouter-web/blob/master/js/plugin/RouteLoaderConverter.js
-
-      console.log(tolerance);
 
       const flat = turf.flatten(geoJSON);
 
@@ -150,6 +150,8 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
       return;
     }
 
+    console.log(debouncedValue);
+
     convertToPoints(trackGeoJSON, debouncedValue);
   }, [convertToPoints, debouncedValue, trackGeoJSON]);
 
@@ -167,40 +169,45 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
           </div>
           {showInput && (
             <>
+              <input
+                type="file"
+                accept=".gpx"
+                className="file-input mt-4"
+                placeholder="Upload a GPX file"
+                onChange={handleFileImport}
+              />
               {trackGeoJSON && (
                 <div className="px-3">
-                  <div className="flex gap-2 mt-2 items-center">
+                  <div className="flex gap-2 mt-4 items-center">
                     <div
-                      className="h-5 w-5 rounded-full"
-                      style={{ background: GPX_TRACK_COLOR, outline: `${COLOR__INFO} solid 1px` }}
+                      className="h-4 w-4 rounded-full"
+                      style={{ background: GPX_TRACK_COLOR, border: `${COLOR__INFO} solid 1px` }}
                     ></div>
                     <span>Your GPX</span>
                   </div>
-                  <div className="flex gap-2 mt-2 items-center">
+                  <div className="flex gap-2 mt-1 items-center">
                     <div
-                      className="h-5 w-5 rounded-full"
+                      className="h-4 w-4 rounded-full"
                       style={{ background: COLOR__ACCENT }}
                     ></div>
                     <span>Klonoot route</span>
                   </div>
                   <input
                     type="range"
-                    min="0.00025"
-                    max="0.005"
+                    min={MIN_SLIDER_VALUE}
+                    max={MAX_SLIDER_VALUE}
                     value={scaleLogarithmically.invert(sliderValue)}
                     onChange={(e) => setSliderValue(scaleLogarithmically(+e.target.value))}
                     step="any"
                     className="range range-neutral range-xs mt-4"
                   />
+                  <div className="flex justify-between my-2 text-xs">
+                    <span>Accuracy</span>
+                    <span>|</span>
+                    <span>Simplicity</span>
+                  </div>
                 </div>
               )}
-              <input
-                type="file"
-                accept=".gpx"
-                className="file-input mt-3"
-                placeholder="Upload a GPX file"
-                onChange={handleFileImport}
-              />
             </>
           )}
         </div>
