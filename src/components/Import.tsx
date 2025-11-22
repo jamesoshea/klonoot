@@ -8,6 +8,8 @@ import { scaleLog } from "d3-scale";
 import { COLOR__ACCENT, COLOR__ERROR, COLOR__INFO } from "../consts";
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString } from "geojson";
 import { useRouteContext } from "../contexts/RouteContext";
+import { RightHandPopover } from "./shared/RightHandPopover";
+import { useGeneralContext } from "../contexts/GeneralContext";
 
 const GPX_TRACK_COLOR = COLOR__ERROR;
 const MAX_SLIDER_VALUE = 0.0025;
@@ -28,8 +30,8 @@ const scaleLogarithmically = scaleLog().range([MIN_SLIDER_VALUE, MAX_SLIDER_VALU
 
 export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
   const { selectedRouteId, setPoints } = useRouteContext();
+  const { currentlyOpenMenu, setCurrentlyOpenMenu } = useGeneralContext();
 
-  const [showInput, setShowInput] = useState<boolean>(false);
   const [sliderValue, setSliderValue] = useState<number>(scaleLogarithmically(MAX_SLIDER_VALUE));
   const [debouncedValue, setDebouncedValue] = useState<number>(
     scaleLogarithmically.invert(MAX_SLIDER_VALUE),
@@ -155,61 +157,58 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     convertToPoints(trackGeoJSON, debouncedValue);
   }, [convertToPoints, debouncedValue, trackGeoJSON]);
 
+  const menuIsOpen = currentlyOpenMenu === "IMPORT";
+
   return (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
-        <div className="tooltip tooltip-left" data-tip={showInput ? "" : "Import GPX file"}>
+        <div className="tooltip tooltip-left" data-tip={menuIsOpen ? "" : "Import GPX file"}>
           <div className="flex justify-end">
             <FontAwesomeIcon
               className="cursor-pointer text-neutral"
               icon={faFileImport}
               size="xl"
-              onClick={() => setShowInput(!showInput)}
+              onClick={() => setCurrentlyOpenMenu(menuIsOpen ? "" : "IMPORT")}
             />
           </div>
-          {showInput && (
-            <>
-              <input
-                type="file"
-                accept=".gpx"
-                className="file-input mt-4"
-                placeholder="Upload a GPX file"
-                onChange={handleFileImport}
-              />
-              {trackGeoJSON && (
-                <div className="px-3">
-                  <div className="flex gap-2 mt-4 items-center">
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ background: GPX_TRACK_COLOR, border: `${COLOR__INFO} solid 1px` }}
-                    ></div>
-                    <span>Your GPX</span>
-                  </div>
-                  <div className="flex gap-2 mt-1 items-center">
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ background: COLOR__ACCENT }}
-                    ></div>
-                    <span>Klonoot route</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={MIN_SLIDER_VALUE}
-                    max={MAX_SLIDER_VALUE}
-                    value={scaleLogarithmically.invert(sliderValue)}
-                    onChange={(e) => setSliderValue(scaleLogarithmically(+e.target.value))}
-                    step="any"
-                    className="range range-neutral range-xs mt-4"
-                  />
-                  <div className="flex justify-between my-2 text-xs">
-                    <span>Accuracy</span>
-                    <span>|</span>
-                    <span>Simplicity</span>
-                  </div>
+          <RightHandPopover menuType="IMPORT">
+            <input
+              type="file"
+              accept=".gpx"
+              className="file-input"
+              placeholder="Upload a GPX file"
+              onChange={handleFileImport}
+            />
+            {trackGeoJSON && (
+              <>
+                <div className="flex gap-2 mt-4 items-center">
+                  <div
+                    className="h-4 w-4 rounded-full"
+                    style={{ background: GPX_TRACK_COLOR, border: `${COLOR__INFO} solid 1px` }}
+                  ></div>
+                  <span>Your GPX</span>
                 </div>
-              )}
-            </>
-          )}
+                <div className="flex gap-2 mt-1 items-center">
+                  <div className="h-4 w-4 rounded-full" style={{ background: COLOR__ACCENT }}></div>
+                  <span>Klonoot route</span>
+                </div>
+                <input
+                  type="range"
+                  min={MIN_SLIDER_VALUE}
+                  max={MAX_SLIDER_VALUE}
+                  value={scaleLogarithmically.invert(sliderValue)}
+                  onChange={(e) => setSliderValue(scaleLogarithmically(+e.target.value))}
+                  step="any"
+                  className="range range-neutral range-xs mt-4"
+                />
+                <div className="flex justify-between my-2 text-xs">
+                  <span>Accuracy</span>
+                  <span>|</span>
+                  <span>Simplicity</span>
+                </div>
+              </>
+            )}
+          </RightHandPopover>
         </div>
       </div>
     </div>

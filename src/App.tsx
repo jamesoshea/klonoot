@@ -18,6 +18,7 @@ import { SessionContextProvider } from "./contexts/SessionContextProvider";
 import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
 
 import { queryClient } from "./queries/queryClient";
+import { GeneralContextProvider } from "./contexts/GeneralContextProvider";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -51,22 +52,24 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider>
-        <RouteContextProvider>
-          <PatchesContextProvider>
-            <LoadingContextProvider>
-              <WeatherContextProvider>
-                {map && mapLoaded && <Routing map={map} />}
-                <div id="map-container" ref={mapContainerRef} />
-                <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
-                  <Nav />
-                  <Layers />
-                  <Import map={map} />
-                  <NewRoute />
-                </div>
-              </WeatherContextProvider>
-            </LoadingContextProvider>
-          </PatchesContextProvider>
-        </RouteContextProvider>
+        <GeneralContextProvider>
+          <RouteContextProvider>
+            <PatchesContextProvider>
+              <LoadingContextProvider>
+                <WeatherContextProvider>
+                  {map && mapLoaded && <Routing map={map} />}
+                  <div id="map-container" ref={mapContainerRef} />
+                  <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
+                    <Nav />
+                    <Layers />
+                    <Import map={map} />
+                    <NewRoute />
+                  </div>
+                </WeatherContextProvider>
+              </LoadingContextProvider>
+            </PatchesContextProvider>
+          </RouteContextProvider>
+        </GeneralContextProvider>
       </SessionContextProvider>
     </QueryClientProvider>
   );
