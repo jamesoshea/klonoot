@@ -1,31 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import { useContext } from "react";
-import { SessionContext } from "../contexts/SessionContext";
+
 import { MUTATION_KEYS, QUERY_KEYS } from "../consts";
 import { queryClient } from "./queryClient";
+import { useSessionContext } from "../contexts/SessionContext";
 
 export const useDeleteRoute = () => {
-  const { supabase } = useContext(SessionContext);
+  const { supabase } = useSessionContext();
 
   return useMutation({
     mutationKey: [MUTATION_KEYS.DELETE_USER_ROUTE],
-    mutationFn: async ({
-      selectedRouteId,
-    }: {
-      selectedRouteId: string | null;
-    }) => {
+    mutationFn: async ({ selectedRouteId }: { selectedRouteId: string | null }) => {
       if (!selectedRouteId) {
         return Promise.reject("Route ID is null");
       }
 
-      return supabase
-        ?.from("routes")
-        .delete()
-        .eq("id", selectedRouteId)
-        .select();
+      return await supabase?.from("routes").delete().eq("id", selectedRouteId).select();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_USER_ROUTES] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_USER_ROUTES] }),
   });
 };

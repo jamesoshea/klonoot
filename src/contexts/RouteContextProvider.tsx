@@ -51,6 +51,7 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
         selectedUserRoute,
         showPOIs,
         setShowPOIs,
+        userRoutes,
       }}
     >
       {children}

@@ -20,6 +20,7 @@ export type RouteContextType = {
   selectedRouteId: string | null;
   setSelectedRouteId: Dispatch<string>;
   selectedUserRoute: UserRoute;
+  userRoutes: UserRoute[];
 };
 
 export const RouteContext = createContext<RouteContextType>({
@@ -41,6 +42,7 @@ export const RouteContext = createContext<RouteContextType>({
     name: "Example Route",
     points: [],
   },
+  userRoutes: [],
 });
 
 export const useRouteContext = () => useContext(RouteContext);

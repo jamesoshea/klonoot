@@ -40,7 +40,7 @@ export const UserRouteList = ({
 
   const { data: userRoutes } = useGetUserRoutes();
   const { mutate: updateUserRoute } = useUpdateRoute();
-  const { mutate: deleteUserRoute } = useDeleteRoute();
+  const { mutateAsync: deleteUserRoute } = useDeleteRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
 
   const [mode, setMode] = useState<Mode>(MODES.DEFAULT);
@@ -58,6 +58,8 @@ export const UserRouteList = ({
     await deleteUserRoute({
       selectedRouteId,
     });
+
+    setSelectedRouteId(userRoutes.find((route) => route.id !== selectedRouteId).id ?? null);
   };
 
   const handleUpdateRouteName = async () => {
