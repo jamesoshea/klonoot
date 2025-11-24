@@ -67,7 +67,6 @@ const DisplayPoint = ({
     newPoints.splice(newIndex, 0, pointToMove[0]);
 
     setPoints(newPoints);
-    onClose();
   };
 
   const handleUpdatePointIsDirect = (isDirect: boolean) => {
