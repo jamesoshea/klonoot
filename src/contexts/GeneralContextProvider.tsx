@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { GeneralContext } from "./GeneralContext";
+import { GeneralContext, MENU_TYPES } from "./GeneralContext";
 
 export const GeneralContextProvider = ({ children }: { children: ReactNode }) => {
-  const [currentlyOpenMenu, setCurrentlyOpenMenu] = useState<string>("");
+  const [currentlyOpenMenu, setCurrentlyOpenMenu] = useState<MENU_TYPES | null>(null);
 
   return (
     <GeneralContext.Provider

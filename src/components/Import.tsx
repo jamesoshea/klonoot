@@ -9,7 +9,7 @@ import { COLOR__ACCENT, COLOR__ERROR, COLOR__INFO } from "../consts";
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString } from "geojson";
 import { useRouteContext } from "../contexts/RouteContext";
 import { RightHandPopover } from "./shared/RightHandPopover";
-import { useGeneralContext } from "../contexts/GeneralContext";
+import { MENU_TYPES, useGeneralContext } from "../contexts/GeneralContext";
 
 const GPX_TRACK_COLOR = COLOR__ERROR;
 const MAX_SLIDER_VALUE = 0.0025;
@@ -157,7 +157,7 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     convertToPoints(trackGeoJSON, debouncedValue);
   }, [convertToPoints, debouncedValue, trackGeoJSON]);
 
-  const menuIsOpen = currentlyOpenMenu === "IMPORT";
+  const menuIsOpen = currentlyOpenMenu === MENU_TYPES.IMPORT;
 
   return (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
@@ -168,10 +168,10 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
               className="cursor-pointer text-neutral"
               icon={faFileImport}
               size="xl"
-              onClick={() => setCurrentlyOpenMenu(menuIsOpen ? "" : "IMPORT")}
+              onClick={() => setCurrentlyOpenMenu(menuIsOpen ? null : MENU_TYPES.IMPORT)}
             />
           </div>
-          <RightHandPopover menuType="IMPORT">
+          <RightHandPopover menuType={MENU_TYPES.IMPORT}>
             <input
               type="file"
               accept=".gpx"

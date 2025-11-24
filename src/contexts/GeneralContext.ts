@@ -1,13 +1,19 @@
 import { createContext, useContext, type Dispatch } from "react";
 
+export enum MENU_TYPES {
+  AUTH,
+  IMPORT,
+  LAYERS,
+}
+
 export type GeneralContextType = {
-  currentlyOpenMenu: string; // TODO: change to enum
-  setCurrentlyOpenMenu: Dispatch<string>;
+  currentlyOpenMenu: MENU_TYPES | null;
+  setCurrentlyOpenMenu: Dispatch<MENU_TYPES | null>;
 };
 
 export const GeneralContext = createContext<GeneralContextType>({
-  currentlyOpenMenu: "",
-  setCurrentlyOpenMenu: () => {},
+  currentlyOpenMenu: null,
+  setCurrentlyOpenMenu: () => null,
 });
 
 export const useGeneralContext = () => useContext(GeneralContext);

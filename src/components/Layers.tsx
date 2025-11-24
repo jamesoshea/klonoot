@@ -2,14 +2,14 @@ import { useRouteContext } from "../contexts/RouteContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { RightHandPopover } from "./shared/RightHandPopover";
-import { useGeneralContext } from "../contexts/GeneralContext";
+import { MENU_TYPES, useGeneralContext } from "../contexts/GeneralContext";
 
 export const Layers = () => {
   const { routeTrack, showPOIs, setShowPOIs } = useRouteContext();
 
   const { currentlyOpenMenu, setCurrentlyOpenMenu } = useGeneralContext();
 
-  const menuIsOpen = currentlyOpenMenu === "LAYERS";
+  const menuIsOpen = currentlyOpenMenu === MENU_TYPES.LAYERS;
 
   return routeTrack ? (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-4">
@@ -19,11 +19,11 @@ export const Layers = () => {
             className="cursor-pointer text-neutral"
             icon={faLayerGroup}
             size="xl"
-            onClick={() => setCurrentlyOpenMenu(menuIsOpen ? "" : "LAYERS")}
+            onClick={() => setCurrentlyOpenMenu(menuIsOpen ? null : MENU_TYPES.LAYERS)}
           />
         </div>
       </div>
-      <RightHandPopover menuType="LAYERS">
+      <RightHandPopover menuType={MENU_TYPES.LAYERS}>
         <div>
           <label className="label text-neutral">
             <input

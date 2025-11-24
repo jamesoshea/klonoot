@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { MENU_TYPES, useGeneralContext } from "../../contexts/GeneralContext";
 import { Mask } from "./Mask";
 
 export const RightHandPopover = ({
@@ -7,12 +7,12 @@ export const RightHandPopover = ({
   menuType,
 }: {
   children: ReactNode;
-  menuType: string;
+  menuType: MENU_TYPES;
 }) => {
   const { currentlyOpenMenu, setCurrentlyOpenMenu } = useGeneralContext();
 
   return currentlyOpenMenu === menuType ? (
-    <Mask onClose={() => setCurrentlyOpenMenu("")}>
+    <Mask onClose={() => setCurrentlyOpenMenu(null)}>
       <div
         className="fixed right-17 top-3 p-3 bg-base-100 rounded-lg w-64"
         onClick={(e) => e.stopPropagation()}
