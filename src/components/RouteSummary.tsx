@@ -12,13 +12,7 @@ import {
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  CHART_MODES,
-  type BROUTER_PROFILES,
-  type BrouterResponse,
-  type ChartMode,
-  type Coordinate,
-} from "../types";
+import { CHART_MODES, type BrouterResponse, type ChartMode, type Coordinate } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
@@ -47,20 +41,18 @@ const CHART_MODE_TOOLTIP_MAP: Record<ChartMode, string> = {
 };
 
 export const RouteSummary = ({
-  brouterProfile,
   chartMode,
   routeTrack,
   showRouteInfo,
   onToggleMode,
 }: {
-  brouterProfile: BROUTER_PROFILES;
   chartMode: ChartMode;
   routeTrack: BrouterResponse;
   showRouteInfo: boolean;
   onToggleMode: (mode: ChartMode) => void;
 }) => {
   const { loading, setLoading } = useLoadingContext();
-  const { points, selectedUserRoute, setPoints } = useRouteContext();
+  const { brouterProfile, points, selectedUserRoute, setPoints } = useRouteContext();
 
   const handleGPXDownload = async () => {
     setLoading(true);

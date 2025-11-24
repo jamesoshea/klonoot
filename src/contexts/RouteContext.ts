@@ -7,12 +7,14 @@ export type ShowPOIContextType = {
 };
 
 export type RouteContextType = {
+  brouterProfile: BROUTER_PROFILES;
+  setBrouterProfile: Dispatch<BROUTER_PROFILES>;
   currentPointDistance: number;
   setCurrentPointDistance: Dispatch<number>;
+  debouncedPoints: Coordinate[];
   points: Coordinate[];
   setPoints: Dispatch<Coordinate[]>;
   routeTrack: BrouterResponse | null;
-  setRouteTrack: Dispatch<BrouterResponse | null>;
   showPOIs: ShowPOIContextType;
   setShowPOIs: Dispatch<ShowPOIContextType>;
   selectedRouteId: string | null;
@@ -21,12 +23,14 @@ export type RouteContextType = {
 };
 
 export const RouteContext = createContext<RouteContextType>({
+  brouterProfile: BROUTER_PROFILES.TREKKING,
+  setBrouterProfile: () => "",
   currentPointDistance: -1,
   setCurrentPointDistance: () => -1,
+  debouncedPoints: [],
   points: [],
   setPoints: () => null,
   routeTrack: null,
-  setRouteTrack: () => null,
   selectedRouteId: null,
   setSelectedRouteId: () => null,
   showPOIs: { water: false, transit: false },

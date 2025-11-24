@@ -22,7 +22,6 @@ import {
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
-import { useFetchRoute } from "../queries/useFetchRoute.ts";
 import { addTerrain, drawRoute, drawCurrentPointMarker } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { WeatherControls } from "./WeatherControls.tsx";
@@ -43,24 +42,17 @@ const profileNameMap = {
 export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { setPatches } = usePatchesContext();
   const {
+    brouterProfile,
     currentPointDistance,
     setCurrentPointDistance,
     points,
     setPoints,
     selectedRouteId,
-    setRouteTrack,
+    setBrouterProfile,
+    routeTrack,
     showPOIs,
   } = useRouteContext();
   const { session, supabase } = useSessionContext();
-
-  const [brouterProfile, setBrouterProfile] = useState<BROUTER_PROFILES>(BROUTER_PROFILES.TREKKING);
-  const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
-
-  const { data: routeTrack } = useFetchRoute({
-    enabled: points.length > 1,
-    brouterProfile,
-    points: debouncedPoints,
-  });
 
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: publicTransport } = useGetPublicTransport(routeTrack as BrouterResponse, showPOIs);
@@ -222,7 +214,15 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         padding: 256,
       },
     );
-  }, [map, selectedRouteId, loggedIn, setCurrentPointDistance, setPoints, userRoutes]);
+  }, [
+    map,
+    selectedRouteId,
+    loggedIn,
+    setBrouterProfile,
+    setCurrentPointDistance,
+    setPoints,
+    userRoutes,
+  ]);
 
   // set markers upon points change
   useEffect(() => {
@@ -311,19 +311,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, [map, handleContextMenuOpen, handleLineMouseMove, handleLineMouseLeave, handleNewPointSet]);
 
-  // debounce point changes
-  useEffect(() => {
-    // Set a timeout to update debounced value after 500ms
-    const handler = setTimeout(() => {
-      setDebouncedPoints(points);
-    }, 500);
-
-    // Cleanup the timeout if `query` changes before 500ms
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [points]);
-
   // draw route on map
   useEffect(() => {
     drawRoute(map, routeTrack as BrouterResponse);
@@ -346,7 +333,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [brouterProfile, map, points, setPoints, supabase.auth]);
+  }, [map, points, setBrouterProfile, setPoints, supabase.auth]);
 
   useEffect(() => {
     setSelectedPoint(null);
@@ -360,18 +347,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     }
   }, [showRouteInfo]);
 
-  useEffect(() => {
-    if (routeTrack) {
-      setRouteTrack(routeTrack);
-    }
-  }, [routeTrack, setRouteTrack]);
-
   return (
     <>
       <div className="routing m-3 z-3">
         {session && (
           <UserRouteList
-            brouterProfile={brouterProfile}
             points={points}
             showRouteInfo={showRouteInfo}
             onToggleShowRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
@@ -398,7 +378,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             <>
               <Divider />
               <RouteSummary
-                brouterProfile={brouterProfile}
                 chartMode={chartMode}
                 routeTrack={routeTrack}
                 showRouteInfo={showRouteInfo}

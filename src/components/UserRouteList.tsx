@@ -13,7 +13,7 @@ import { useGetUserRoutes } from "../queries/useGetUserRoutes";
 import { useDeleteRoute } from "../queries/useDeleteRoute";
 import { useUpdateRoute } from "../queries/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/useUpdateRouteName";
-import { BROUTER_PROFILES, type Coordinate, type UserRoute } from "../types";
+import { type Coordinate, type UserRoute } from "../types";
 import { useLoadingContext } from "../contexts/LoadingContext";
 import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
@@ -26,18 +26,17 @@ enum MODES {
 type Mode = (typeof MODES)[keyof typeof MODES];
 
 export const UserRouteList = ({
-  brouterProfile,
   points,
   showRouteInfo,
   onToggleShowRouteInfo,
 }: {
-  brouterProfile: BROUTER_PROFILES;
   points: Coordinate[];
   showRouteInfo: boolean;
   onToggleShowRouteInfo: () => void;
 }) => {
   const { loading } = useLoadingContext();
-  const { selectedUserRoute, selectedRouteId, setSelectedRouteId } = useRouteContext();
+  const { brouterProfile, selectedUserRoute, selectedRouteId, setSelectedRouteId } =
+    useRouteContext();
 
   const { data: userRoutes } = useGetUserRoutes();
   const { mutate: updateUserRoute } = useUpdateRoute();
