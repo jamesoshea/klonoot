@@ -3,14 +3,12 @@
 ### Missing Documentation
 
 - Update CoC
-- Local setup using docker-compose
-- Deployment / git hooks
 
 ### Larger Projects
 
-- Run brouter serverless/ as an AWS Lambda
+- Run brouter serverless / as an AWS Lambda
 - Support graphhopper and give users a choice of routing algorithm
-- Reserch MapLibre
+- Research MapLibre
 - E2E testing
   - Log in
   - Add a point
@@ -46,5 +44,4 @@
 - Explainer for brouter profiles
 - Access restrictions on route
 - Optimistic UI updates for point drags (only querying for parts of route from brouter to improve performance)
-- GPX import
 - Bulk route export

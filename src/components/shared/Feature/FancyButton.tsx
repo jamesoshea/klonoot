@@ -1,6 +1,10 @@
 import { useState, type ChangeEventHandler } from "react";
 import type { Coordinate } from "../../../types";
 
+/**
+ * @description I couldn't think of a good name for this one.
+ * It's a button with a number input inside
+ */
 export const FancyButton = ({
   defaultIndex,
   existingPoints,

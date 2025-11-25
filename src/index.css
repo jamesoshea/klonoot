@@ -56,13 +56,17 @@ mapbox-search-box {
 }
 
 mapbox-search-box * {
-  color: var(--color-base-content) !important;
-  max-height: 28px !important;
+  max-height: 32px !important;
+}
+
+mapbox-search-box [class$="--Input"] {
+  color: var(--color-base-200) !important;
 }
 
 mapbox-search-box [class$="--SearchBox"] {
+  background-color: var(--color-neutral);
   border: 0.5px solid color-mix(in oklab, var(--color-base-content) 20%, #0000) !important;
-  border-radius: 0.25rem !important;
+  border-radius: 0.5rem !important;
 }
 
 mapbox-search-box [class$="--SearchBox"]:focus {
@@ -73,23 +77,21 @@ mapbox-search-box [class$="--SearchBox"] input:focus {
   border: none !important;
 }
 
-mapbox-search-box [class$="--ActionIcon"]:hover {
-  background-color: var(--color-base-300);
-  border-radius: 1rem;
-  cursor: pointer;
+mapbox-search-box [class$="--ActionIcon"] {
+  color: var(--color-base-300);
 }
 
 mapbox-search-box [class$="--ActionIcon"]:hover svg {
   color: var(--color-primary-content) !important;
+  cursor: pointer;
 }
 
 mapbox-search-box [class$="--SearchIcon"] {
-  fill: var(--color-neutral);
-  transform: scale(0.8);
+  fill: var(--color-base-200) !important;
 }
 
 mapbox-search-box [class$="--ClearBtn"] {
-  transform: scale(0.55);
+  transform: scale(0.8);
 }
 
 mapbox-search-listbox [class$="--Results"] {
