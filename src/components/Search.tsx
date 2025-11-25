@@ -11,7 +11,7 @@ import {
 
 import { getThemeFont } from "../utils/colors";
 
-import { Feature } from "./shared/Feature";
+import { Feature } from "./shared/Feature/Feature";
 
 type SearchProps = {
   map: mapboxgl.Map;

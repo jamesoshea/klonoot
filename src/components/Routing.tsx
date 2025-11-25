@@ -26,7 +26,7 @@ import { addTerrain, drawRoute, drawCurrentPointMarker } from "../utils/map.ts";
 import { Divider } from "./shared/Divider.tsx";
 import { WeatherControls } from "./WeatherControls.tsx";
 import { useGetDrinkingWater } from "../queries/useGetDrinkingWater.ts";
-import { Feature } from "./shared/Feature.tsx";
+import { Feature } from "./shared/Feature/Feature.tsx";
 
 import pathArrowUrl from "../assets/path-arrow.svg";
 import { useGetPublicTransport } from "../queries/useGetPublicTransport.ts";
@@ -388,9 +388,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         </div>
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {routeTrack && selectedPoint && (
-        <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />
-      )}
+      {selectedPoint && <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />}
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
       {selectedPOI && <Feature GeoJSONFeature={selectedPOI} onClose={() => setSelectedPOI(null)} />}
     </>
