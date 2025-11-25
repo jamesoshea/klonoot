@@ -12,7 +12,11 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
-  const [showPOIs, setShowPOIs] = useState<ShowPOIContextType>({ transit: false, water: false });
+  const [showPOIs, setShowPOIs] = useState<ShowPOIContextType>({
+    bikeShops: false,
+    transit: false,
+    water: false,
+  });
 
   const { data: routeTrack } = useFetchRoute({
     enabled: points.length > 1,

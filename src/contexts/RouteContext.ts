@@ -2,6 +2,7 @@ import { createContext, useContext, type Dispatch } from "react";
 import { BROUTER_PROFILES, type BrouterResponse, type Coordinate, type UserRoute } from "../types";
 
 export type ShowPOIContextType = {
+  bikeShops: boolean;
   transit: boolean;
   water: boolean;
 };
@@ -34,7 +35,7 @@ export const RouteContext = createContext<RouteContextType>({
   routeTrack: null,
   selectedRouteId: null,
   setSelectedRouteId: () => null,
-  showPOIs: { water: false, transit: false },
+  showPOIs: { bikeShops: false, water: false, transit: false },
   setShowPOIs: () => {},
   selectedUserRoute: {
     id: "",

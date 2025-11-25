@@ -46,6 +46,17 @@ export const Layers = () => {
             Public Transport
           </label>
         </div>
+        <div className="mt-1">
+          <label className="label text-neutral">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-sm"
+              checked={showPOIs.bikeShops}
+              onChange={(e) => setShowPOIs({ ...showPOIs, bikeShops: e.target.checked })}
+            />
+            Bike shops
+          </label>
+        </div>
       </RightHandPopover>
     </div>
   ) : null;
