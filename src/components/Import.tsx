@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { gpx } from "@tmcw/togeojson";
 import * as turf from "@turf/turf";
-import { useCallback, useEffect, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 import { scaleLog } from "d3-scale";
 
 import { COLOR__ACCENT, COLOR__ERROR, COLOR__INFO } from "../consts";
@@ -32,6 +32,9 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
   const { selectedRouteId, setPoints } = useRouteContext();
   const { currentlyOpenMenu, setCurrentlyOpenMenu } = useGeneralContext();
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [sliderValue, setSliderValue] = useState<number>(scaleLogarithmically(MAX_SLIDER_VALUE));
   const [debouncedValue, setDebouncedValue] = useState<number>(
     scaleLogarithmically.invert(MAX_SLIDER_VALUE),
@@ -45,6 +48,8 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     if (!e.target.files?.[0]) {
       return;
     }
+
+    setCurrentFile(e.target.files?.[0]);
 
     const reader = new FileReader();
     reader.readAsText(e.target.files?.[0]);
@@ -121,9 +126,16 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     [map],
   );
 
+  // reset map when the route ID changes (new route created or selected)
   useEffect(() => {
     setTrackGeoJSON(null);
-  }, [selectedRouteId]);
+    setCurrentFile(null);
+
+    if (!map) return;
+
+    if (map.getLayer("importedTrack")) map.removeLayer("importedTrack");
+    if (map.getSource("importedTrack")) map.removeSource("importedTrack");
+  }, [map, selectedRouteId]);
 
   useEffect(() => {
     if (!trackGeoJSON) {
@@ -152,12 +164,18 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
       return;
     }
 
-    console.log(debouncedValue);
-
     convertToPoints(trackGeoJSON, debouncedValue);
   }, [convertToPoints, debouncedValue, trackGeoJSON]);
 
   const menuIsOpen = currentlyOpenMenu === MENU_TYPES.IMPORT;
+
+  useEffect(() => {
+    if (currentFile && menuIsOpen && inputRef.current) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(currentFile);
+      inputRef.current.files = dataTransfer.files;
+    }
+  }, [currentFile, menuIsOpen]);
 
   return (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
@@ -173,10 +191,11 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
           </div>
           <RightHandPopover menuType={MENU_TYPES.IMPORT}>
             <input
-              type="file"
               accept=".gpx"
               className="file-input"
               placeholder="Upload a GPX file"
+              ref={inputRef}
+              type="file"
               onChange={handleFileImport}
             />
             {trackGeoJSON && (
