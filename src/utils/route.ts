@@ -104,7 +104,7 @@ export const formatOverpassFeatureAsGeoJSONPoint = (
       coordinates: [feature.lon, feature.lat],
     },
     properties: {
-      name: feature.tags.name,
+      name: feature.tags?.name ?? "Unknown Name",
     },
   };
 };

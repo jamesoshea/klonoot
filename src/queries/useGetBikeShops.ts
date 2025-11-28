@@ -20,9 +20,9 @@ export const useGetBikeShops = (routeTrack: BrouterResponse, showPOIs: ShowPOICo
       }
 
       const queryString = `
-        nwr
+        nr
             ["amenity"="bicycle_repair_station"];
-        nwr
+        nr
             ["shop"="bicycle"];
       `;
 

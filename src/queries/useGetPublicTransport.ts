@@ -23,14 +23,8 @@ export const useGetPublicTransport = (
       }
 
       const queryString = `
-          (
-              nwr
-                  ["railway"="station"];
-          );
-          out body;
-          out meta;
-          >;
-          out skel qt;
+        nr
+          ["railway"="station"];
       `;
       const query = buildOverpassQuery({ bbox, queryString });
 

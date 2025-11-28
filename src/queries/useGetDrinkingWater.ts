@@ -20,28 +20,22 @@ export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowP
       }
 
       const queryString = `
-            (
-                nwr
-                    ["amenity"="drinking_water"]
-                    ["man_made"!="reservoir_covered"]
-                    ["access"!="permissive"]
-                    ["access"!="private"];
-                nwr
-                    ["disused:amenity"="drinking_water"]
-                    ["man_made"!="reservoir_covered"]
-                    ["access"!="permissive"]
-                    ["access"!="private"];
-                nwr
-                    ["drinking_water"="yes"]
-                    ["man_made"!="reservoir_covered"]
-                    ["access"!="permissive"]
-                    ["access"!="private"];
-            );
-            out body;
-            out meta;
-            >;
-            out skel qt;
-        `;
+        nr
+            ["amenity"="drinking_water"]
+            ["man_made"!="reservoir_covered"]
+            ["access"!="permissive"]
+            ["access"!="private"];
+        nr
+            ["disused:amenity"="drinking_water"]
+            ["man_made"!="reservoir_covered"]
+            ["access"!="permissive"]
+            ["access"!="private"];
+        nr
+            ["drinking_water"="yes"]
+            ["man_made"!="reservoir_covered"]
+            ["access"!="permissive"]
+            ["access"!="private"];
+      `;
       const query = buildOverpassQuery({ bbox, queryString });
 
       const { data } = await axios.get(query);

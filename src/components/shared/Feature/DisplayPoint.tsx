@@ -94,7 +94,9 @@ export const DisplayPoint = ({
           </div>
         )}
       </div>
-      <CopyCoordinates coordinates={coordinates} />
+      <div className="mt-2 pl-2">
+        <CopyCoordinates coordinates={coordinates} />
+      </div>
       <div className="card-actions justify-between items-center mt-2">
         <div className="flex gap-1">
           <IconButton

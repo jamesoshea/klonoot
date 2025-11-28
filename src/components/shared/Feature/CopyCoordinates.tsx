@@ -36,7 +36,7 @@ export const CopyCoordinates = ({ coordinates }: { coordinates: [lon: number, la
   }, []);
 
   return (
-    <span ref={spanRef} className="tooltip w-fit mt-2 pl-1" data-tip={copyCoordinatesText}>
+    <span ref={spanRef} className="tooltip w-fit" data-tip={copyCoordinatesText}>
       <span
         className="cursor-pointer text-sm opacity-60"
         onClick={() =>
