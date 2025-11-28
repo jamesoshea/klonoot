@@ -5,6 +5,7 @@ import axios from "axios";
 import { QUERY_KEYS } from "../consts";
 import type { BrouterResponse } from "../types";
 import type { ShowPOIContextType } from "../contexts/RouteContext";
+import { buildOverpassQuery } from "../utils/queries";
 
 export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowPOIContextType) => {
   const bbox = routeTrack ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5)) : undefined;
@@ -14,15 +15,11 @@ export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowP
     queryKey: [QUERY_KEYS.GET_DRINKING_WATER, bbox],
     staleTime: 1000 * 60 * 60 * 24 * 7,
     queryFn: async () => {
-      if (!bbox) {
+      if (!bbox || !routeTrack) {
         return undefined;
       }
 
-      const query = routeTrack
-        ? `https://overpass-api.de/api/interpreter?data=
-            [out:json]
-            [timeout:30]
-            [bbox:${[bbox[1], bbox[0], bbox[3], bbox[2]].join(",")}];
+      const queryString = `
             (
                 nwr
                     ["amenity"="drinking_water"]
@@ -44,8 +41,8 @@ export const useGetDrinkingWater = (routeTrack: BrouterResponse, showPOIs: ShowP
             out meta;
             >;
             out skel qt;
-        `
-        : "";
+        `;
+      const query = buildOverpassQuery({ bbox, queryString });
 
       const { data } = await axios.get(query);
       return data;
