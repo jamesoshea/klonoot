@@ -95,28 +95,23 @@ export const drawCurrentPointMarker = ({
   setCurrentPointMarker(marker);
 };
 
-export const createPOIMarker =
-  (array: OverpassFeature[]) =>
-  ({
-    map,
-    SVGString,
-    onPOIClick,
-  }: {
-    map: mapboxgl.Map;
-    SVGString: string;
-    onPOIClick: (e: MouseEvent, feature: OverpassFeature) => void;
-  }) =>
-    array
-      .filter((feature: OverpassFeature) => feature.lon && feature.lat)
-      .map((publicTransportFeature: OverpassFeature) => {
-        const element = document.createElement("div");
-        element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[3px]`;
-        element.innerHTML = SVGString;
-        element.onclick = (e) => onPOIClick(e, publicTransportFeature);
+export const createPOIMarker = (
+  array: OverpassFeature[],
+  SVGString: string,
+  map: mapboxgl.Map,
+  onPOIClick: (e: MouseEvent, feature: OverpassFeature) => void,
+) =>
+  array
+    .filter((feature: OverpassFeature) => feature.lon && feature.lat)
+    .map((publicTransportFeature: OverpassFeature) => {
+      const element = document.createElement("div");
+      element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[3px]`;
+      element.innerHTML = SVGString;
+      element.onclick = (e) => onPOIClick(e, publicTransportFeature);
 
-        const marker = new mapboxgl.Marker({ element })
-          .setLngLat([publicTransportFeature.lon, publicTransportFeature.lat])
-          .addTo(map);
+      const marker = new mapboxgl.Marker({ element })
+        .setLngLat([publicTransportFeature.lon, publicTransportFeature.lat])
+        .addTo(map);
 
-        return marker;
-      });
+      return marker;
+    });
