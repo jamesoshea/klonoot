@@ -311,7 +311,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       ...publicTransportMarkers,
       ...bikeShopMarkers,
     ]);
-  }, [drinkingWater, publicTransport, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [bikeShops, drinkingWater, publicTransport, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // add marker to currently-hovered point (map or elevation chart)
   useEffect(
