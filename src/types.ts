@@ -83,5 +83,6 @@ export type OverpassFeature = {
   id: number;
   lat: number;
   lon: number;
+  changeset?: number;
   tags: Record<string, string>;
 };

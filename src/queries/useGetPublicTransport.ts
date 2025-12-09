@@ -3,7 +3,7 @@ import * as turf from "@turf/turf";
 import axios from "axios";
 
 import { QUERY_KEYS } from "../consts";
-import type { BrouterResponse } from "../types";
+import type { BrouterResponse, OverpassFeature } from "../types";
 import type { ShowPOIContextType } from "../contexts/RouteContext";
 import { buildOverpassQuery } from "../utils/queries";
 
@@ -28,8 +28,10 @@ export const useGetPublicTransport = (
       `;
       const query = buildOverpassQuery({ bbox, queryString });
 
-      const { data } = await axios.get(query);
-      return data;
+      const { data } = await axios.get<{ elements: OverpassFeature[] }>(query);
+      const elements = data.elements.filter((el) => el.changeset === undefined);
+
+      return { ...data, elements };
     },
   });
 };
