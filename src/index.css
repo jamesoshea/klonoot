@@ -42,15 +42,6 @@ html {
   font-size: 80%;
 }
 
-.select:focus,
-.select:focus-within,
-.input:focus,
-mapbox-search-box [class$="--SearchBox"]:focus-within {
-  border: 1px solid var(--input-color) !important;
-  outline: 1px solid var(--input-color) !important;
-  outline-offset: 1px !important;
-}
-
 mapbox-search-box {
   width: 100%;
 }
@@ -65,12 +56,12 @@ mapbox-search-box [class$="--Input"] {
 
 mapbox-search-box [class$="--SearchBox"] {
   background-color: var(--color-neutral);
-  border: 0.5px solid color-mix(in oklab, var(--color-base-content) 20%, #0000) !important;
   border-radius: 0.5rem !important;
 }
 
-mapbox-search-box [class$="--SearchBox"]:focus {
-  border: 0.5px solid black !important;
+mapbox-search-box [class$="--SearchBox"]:focus-within {
+  outline: 2px solid var(--color-neutral) !important;
+  outline-offset: 1px;
 }
 
 mapbox-search-box [class$="--SearchBox"] input:focus {
