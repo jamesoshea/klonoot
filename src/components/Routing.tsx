@@ -7,7 +7,20 @@ import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
 import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
+import { WeatherControls } from "./WeatherControls.tsx";
 
+import { Divider } from "./shared/Divider.tsx";
+import { Feature } from "./shared/Feature/Feature.tsx";
+
+import pathArrowUrl from "../assets/path-arrow.svg";
+
+import { usePatchesContext } from "../contexts/PatchesContext.ts";
+import { useRouteContext } from "../contexts/RouteContext.ts";
+import { useSessionContext } from "../contexts/SessionContext.ts";
+
+import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
+import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
+import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
 import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes.ts";
 
 import {
@@ -19,19 +32,8 @@ import {
   type OverpassFeature,
 } from "../types";
 
-import { useRouteContext } from "../contexts/RouteContext.ts";
-import { useSessionContext } from "../contexts/SessionContext.ts";
-import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 import { addTerrain, drawRoute, drawCurrentPointMarker, createPOIMarker } from "../utils/map.ts";
-import { Divider } from "./shared/Divider.tsx";
-import { WeatherControls } from "./WeatherControls.tsx";
-import { useGetDrinkingWater } from "../queries/useGetDrinkingWater.ts";
-import { Feature } from "./shared/Feature/Feature.tsx";
-
-import pathArrowUrl from "../assets/path-arrow.svg";
-import { useGetPublicTransport } from "../queries/useGetPublicTransport.ts";
-import { usePatchesContext } from "../contexts/PatchesContext.ts";
-import { useGetBikeShops } from "../queries/useGetBikeShops.ts";
+import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
