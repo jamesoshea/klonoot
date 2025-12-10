@@ -8,15 +8,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
-import { useRouteContext } from "../contexts/RouteContext";
-import { useGetUserRoutes } from "../queries/useGetUserRoutes";
-import { useDeleteRoute } from "../queries/useDeleteRoute";
-import { useUpdateRoute } from "../queries/useUpdateRoute";
-import { useUpdateRouteName } from "../queries/useUpdateRouteName";
-import { type Coordinate, type UserRoute } from "../types";
-import { useLoadingContext } from "../contexts/LoadingContext";
 import { IconButton } from "./shared/IconButton";
+
 import { ICON_BUTTON_SIZES } from "../consts";
+
+import { useLoadingContext } from "../contexts/LoadingContext";
+import { useRouteContext } from "../contexts/RouteContext";
+
+import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes";
+import { useDeleteRoute } from "../queries/routes/useDeleteRoute";
+import { useUpdateRoute } from "../queries/routes/useUpdateRoute";
+import { useUpdateRouteName } from "../queries/routes/useUpdateRouteName";
+
+import { type Coordinate, type UserRoute } from "../types";
 
 enum MODES {
   DEFAULT = "DEFAULT",

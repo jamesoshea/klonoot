@@ -8,7 +8,7 @@ import { RouteSummary } from "./RouteSummary.tsx";
 import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
 
-import { useGetUserRoutes } from "../queries/useGetUserRoutes.ts";
+import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes.ts";
 
 import {
   BROUTER_PROFILES,

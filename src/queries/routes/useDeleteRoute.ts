@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { MUTATION_KEYS, QUERY_KEYS } from "../consts";
-import { queryClient } from "./queryClient";
-import { useSessionContext } from "../contexts/SessionContext";
+import { queryClient } from "../queryClient";
+import { MUTATION_KEYS, QUERY_KEYS } from "../../consts";
+import { useSessionContext } from "../../contexts/SessionContext";
 
 export const useDeleteRoute = () => {
   const { supabase } = useSessionContext();

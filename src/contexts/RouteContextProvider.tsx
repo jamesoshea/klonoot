@@ -1,8 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
+
 import { RouteContext, type ShowPOIContextType } from "./RouteContext";
-import { useGetUserRoutes } from "../queries/useGetUserRoutes";
+
+import { useFetchRoute } from "../queries/routes/useFetchRoute";
+import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes";
+
 import { BROUTER_PROFILES, type Coordinate } from "../types";
-import { useFetchRoute } from "../queries/useFetchRoute";
 
 export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
   const { data: userRoutes } = useGetUserRoutes();

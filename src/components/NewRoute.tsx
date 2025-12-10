@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
-import { useCreateRoute } from "../queries/useCreateRoute";
-import { BROUTER_PROFILES } from "../types";
+
 import { usePatchesContext } from "../contexts/PatchesContext";
+import { useCreateRoute } from "../queries/routes/useCreateRoute";
+import { BROUTER_PROFILES } from "../types";
 
 export const NewRoute = () => {
   const { patches } = usePatchesContext();
