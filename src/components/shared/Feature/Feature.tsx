@@ -1,4 +1,4 @@
-import { useEffect, type Dispatch } from "react";
+import { useEffect } from "react";
 
 import { useRouteContext } from "../../../contexts/RouteContext";
 import type { Coordinate } from "../../../types";
@@ -15,11 +15,10 @@ import { useCreatePOI } from "../../../queries/pois/useCreatePOI";
 type FeatureProps = {
   GeoJSONFeature?: GeoJSON.Feature<GeoJSON.Point>;
   point?: Coordinate;
-  setSelectedPOI: Dispatch<GeoJSON.Feature<GeoJSON.Point> | null>;
   onClose: () => void;
 };
 
-export const Feature = ({ GeoJSONFeature, point, setSelectedPOI, onClose }: FeatureProps) => {
+export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
   const { points: existingPoints, setPoints } = useRouteContext();
   const { mutateAsync: createPOI } = useCreatePOI();
 
@@ -47,7 +46,7 @@ export const Feature = ({ GeoJSONFeature, point, setSelectedPOI, onClose }: Feat
         "",
     });
 
-    setSelectedPOI(null);
+    onClose();
   };
 
   const handleAddFeatureToMiddle = (newIndex: number) => {

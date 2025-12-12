@@ -410,27 +410,11 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         </div>
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {selectedPoint && (
-        <Feature
-          point={selectedPoint}
-          setSelectedPOI={setSelectedPOI}
-          onClose={() => setSelectedPoint(null)}
-        />
-      )}
+      {selectedPoint && <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />}
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
-      {selectedPOI && (
-        <Feature
-          GeoJSONFeature={selectedPOI}
-          setSelectedPOI={setSelectedPOI}
-          onClose={() => setSelectedPOI(null)}
-        />
-      )}
+      {selectedPOI && <Feature GeoJSONFeature={selectedPOI} onClose={() => setSelectedPOI(null)} />}
       {selectedRoutePOI && (
-        <DisplayRoutePOI
-          routePOI={selectedRoutePOI}
-          setSelectedRoutePOI={setSelectedRoutePOI}
-          onClose={() => setSelectedRoutePOI(null)}
-        />
+        <DisplayRoutePOI routePOI={selectedRoutePOI} onClose={() => setSelectedRoutePOI(null)} />
       )}
     </>
   );

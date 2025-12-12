@@ -1,4 +1,4 @@
-import { useEffect, type Dispatch } from "react";
+import { useEffect } from "react";
 
 import { CloseButton } from "./shared/CloseButton";
 import { Mask } from "./shared/Mask";
@@ -12,18 +12,16 @@ import { useDeletePOI } from "../queries/pois/useDeletePOI";
 
 export const DisplayRoutePOI = ({
   routePOI,
-  setSelectedRoutePOI,
   onClose,
 }: {
   routePOI: RoutePOI;
-  setSelectedRoutePOI: Dispatch<RoutePOI | null>;
   onClose: () => void;
 }) => {
   const { mutateAsync: deletePOI } = useDeletePOI();
 
   const handleDeleteRoutePOI = async () => {
     await deletePOI({ id: routePOI.id });
-    setSelectedRoutePOI(null);
+    onClose();
   };
 
   // add escape-key close event listener
