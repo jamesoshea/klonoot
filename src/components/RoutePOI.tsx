@@ -45,12 +45,15 @@ export const DisplayRoutePOI = ({
       >
         <div className="card-body gap-0 p-3 mt-2">
           <CloseButton onClick={onClose} />
-          <h2 className="card-title">{routePOI.name}</h2>
+          <h2 className="card-title" data-testid="route-poi-name">
+            {routePOI.name}
+          </h2>
           <div className="card-actions justify-between items-center mt-2 pl-1">
             <CopyCoordinates coordinates={routePOI.coordinates} />
             <div className="flex gap-1">
               <IconButton
                 color={COLOR__ERROR}
+                dataTestId="delete-route-poi"
                 icon={faTrashAlt}
                 onClick={handleDeleteRoutePOI}
                 size={ICON_BUTTON_SIZES.LARGE}

@@ -9,7 +9,7 @@ export default defineConfig({
       {
         test: {
           name: "component",
-          include: ["**/*.test.browser.tsx"],
+          include: ["**/*.browser.test.tsx"],
           browser: {
             provider: playwright(),
             enabled: true,

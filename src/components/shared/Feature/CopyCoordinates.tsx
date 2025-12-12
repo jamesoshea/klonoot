@@ -39,6 +39,7 @@ export const CopyCoordinates = ({ coordinates }: { coordinates: [lon: number, la
     <span ref={spanRef} className="tooltip w-fit" data-tip={copyCoordinatesText}>
       <span
         className="cursor-pointer text-sm opacity-60"
+        data-testid="display-coordinates"
         onClick={() =>
           // lat/lng reversed, to copy/paste into goodle maps more easily
           handleCopyCoordinates([coordinates[1], coordinates[0]])
