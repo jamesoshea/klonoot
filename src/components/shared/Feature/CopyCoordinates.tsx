@@ -12,8 +12,7 @@ export const CopyCoordinates = ({ coordinates }: { coordinates: [lon: number, la
     try {
       await navigator.clipboard.writeText(`${lat.toFixed(5)},${lng.toFixed(5)}`);
       setCopyCoordinatesText("Copied");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
+    } catch {
       setCopyCoordinatesText("Failed to copy");
     } finally {
       setTimeout(() => setCopyCoordinatesText("Copy coordinates"), 1000);
