@@ -19,6 +19,7 @@ import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
 
 import { queryClient } from "./queries/queryClient";
 import { GeneralContextProvider } from "./contexts/GeneralContextProvider";
+import { addTerrain } from "./utils/map";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -40,11 +41,13 @@ function App() {
       minZoom: 5,
       style: "mapbox://styles/mapbox/outdoors-v12", // style URL
     });
-    newMap.on("load", () => setMapLoaded(true));
 
+    newMap.on("load", () => setMapLoaded(true));
+    newMap.once("idle", () => addTerrain(newMap));
     setMap(newMap);
 
     return () => {
+      newMap.off("idle", () => addTerrain(newMap));
       newMap.remove();
     };
   }, []);

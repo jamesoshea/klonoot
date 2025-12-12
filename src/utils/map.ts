@@ -1,13 +1,13 @@
 import { Map, Marker } from "mapbox-gl";
 import type { Dispatch } from "react";
 
-import { COLOR__ACCENT } from "../consts";
-import type { BrouterResponse, OverpassFeature, RoutePOI } from "../types";
 import { getPointAlongLine } from "./route";
 
-import mapboxgl from "mapbox-gl";
+import pathArrowUrl from "../assets/path-arrow.svg";
+import { COLOR__ACCENT } from "../consts";
+import type { BrouterResponse, OverpassFeature, RoutePOI } from "../types";
 
-export const addTerrain = (map: mapboxgl.Map) => {
+export const addTerrain = (map: Map) => {
   if (map.getSource("mapbox-dem")) return;
 
   map.addSource("mapbox-dem", {
@@ -16,7 +16,17 @@ export const addTerrain = (map: mapboxgl.Map) => {
     tileSize: 512,
     maxzoom: 20,
   });
+
   map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
+};
+
+export const addDirectionArrow = (map: Map) => {
+  const img = new Image(240, 240);
+  img.src = pathArrowUrl;
+
+  img.onload = () => {
+    if (!map.hasImage("arrow-right")) map.addImage("arrow-right", img);
+  };
 };
 
 export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
@@ -106,7 +116,7 @@ export const createRoutePOIMarker = (
     element.innerHTML = "<strong>i</strong>";
     element.onclick = (e) => onPOIClick(e, POI);
 
-    const marker = new mapboxgl.Marker({ element })
+    const marker = new Marker({ element })
       .setLngLat([POI.coordinates[0], POI.coordinates[1]])
       .addTo(map);
 
@@ -127,7 +137,7 @@ export const createPOIMarker = (
       element.innerHTML = SVGString;
       element.onclick = (e) => onPOIClick(e, publicTransportFeature);
 
-      const marker = new mapboxgl.Marker({ element })
+      const marker = new Marker({ element })
         .setLngLat([publicTransportFeature.lon, publicTransportFeature.lat])
         .addTo(map);
 

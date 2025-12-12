@@ -12,7 +12,7 @@ import { WeatherControls } from "./WeatherControls.tsx";
 import { Divider } from "./shared/Divider.tsx";
 import { Feature } from "./shared/Feature/Feature.tsx";
 
-import pathArrowUrl from "../assets/path-arrow.svg";
+import { QUERY_KEYS } from "../consts.ts";
 
 import { usePatchesContext } from "../contexts/PatchesContext.ts";
 import { useRouteContext } from "../contexts/RouteContext.ts";
@@ -23,6 +23,7 @@ import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
 import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
 import { useGetPOIs } from "../queries/pois/useGetPOIs.ts";
 import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes.ts";
+import { queryClient } from "../queries/queryClient.ts";
 
 import {
   BROUTER_PROFILES,
@@ -35,11 +36,11 @@ import {
 } from "../types";
 
 import {
-  addTerrain,
   drawRoute,
   drawCurrentPointMarker,
   createPOIMarker,
   createRoutePOIMarker,
+  addDirectionArrow,
 } from "../utils/map.ts";
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 import { DisplayRoutePOI } from "./RoutePOI.tsx";
@@ -177,24 +178,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     e.stopPropagation();
   };
 
-  // on component mount: add elevation tiles to map
-  useEffect(() => {
-    // add the digital elevation model tiles
-    map.once("idle", () => addTerrain(map));
-
-    return () => {
-      map.off("idle", () => addTerrain(map));
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    const img = new Image(240, 240);
-    img.src = pathArrowUrl;
-
-    img.onload = () => {
-      if (!map.hasImage("arrow-right")) map.addImage("arrow-right", img);
-    };
-  }, [map]);
+  useEffect(() => addDirectionArrow(map), [map]);
 
   // authenticated users: select route from list
   // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
@@ -354,10 +338,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
     };
   }, [map, points, setBrouterProfile, setPoints, supabase.auth]);
 
+  // reset necessary state when changing route
   useEffect(() => {
     setSelectedPoint(null);
     setSelectedRoutePOI(null);
     setPatches([]);
+
+    queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
   }, [selectedRouteId, setPatches]);
 
   useEffect(() => {
@@ -366,8 +353,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       setChartMode("elevation");
     }
   }, [showRouteInfo]);
-
-  console.log(POIs);
 
   return (
     <>
