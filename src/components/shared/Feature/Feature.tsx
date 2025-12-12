@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type Dispatch } from "react";
 
 import { useRouteContext } from "../../../contexts/RouteContext";
 import type { Coordinate } from "../../../types";
@@ -10,15 +10,18 @@ import { Mask } from "../Mask";
 import { DisplayFeature } from "./DisplayFeature";
 import { DisplayPoint } from "./DisplayPoint";
 import { FancyButton } from "./FancyButton";
+import { useCreatePOI } from "../../../queries/pois/useCreatePOI";
 
 type FeatureProps = {
   GeoJSONFeature?: GeoJSON.Feature<GeoJSON.Point>;
   point?: Coordinate;
+  setSelectedPOI: Dispatch<GeoJSON.Feature<GeoJSON.Point> | null>;
   onClose: () => void;
 };
 
-export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
+export const Feature = ({ GeoJSONFeature, point, setSelectedPOI, onClose }: FeatureProps) => {
   const { points: existingPoints, setPoints } = useRouteContext();
+  const { mutateAsync: createPOI } = useCreatePOI();
 
   const formatGeoJSONFeatureAsPoint = (
     GeoJSONFeature: GeoJSON.Feature<GeoJSON.Point>,
@@ -31,6 +34,21 @@ export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
       "",
     false,
   ];
+
+  const handleAddFeatureAsPOI = async () => {
+    if (!GeoJSONFeature) return;
+
+    await createPOI({
+      coordinates: [GeoJSONFeature.geometry.coordinates[0], GeoJSONFeature.geometry.coordinates[1]],
+      name:
+        (GeoJSONFeature?.properties?.name ||
+          GeoJSONFeature?.properties?.category_en ||
+          GeoJSONFeature?.properties?.type) ??
+        "",
+    });
+
+    setSelectedPOI(null);
+  };
 
   const handleAddFeatureToMiddle = (newIndex: number) => {
     if (GeoJSONFeature) {
@@ -78,7 +96,7 @@ export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
               <DisplayFeature GeoJSONFeature={GeoJSONFeature} />
               <div className="card-actions justify-end items-center mt-4">
                 <span>Add as:</span>
-                <div className="flex gap-1">
+                <div className="flex gap-2">
                   <FancyButton
                     defaultIndex={getNewPointIndex(
                       [
@@ -90,8 +108,10 @@ export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
                     existingPoints={existingPoints}
                     onAddFeatureToMiddle={handleAddFeatureToMiddle}
                   />
-                  <div className="tooltip" data-tip="Coming soon!">
-                    <button className="btn btn-primary">POI</button>
+                  <div className="tooltip">
+                    <button className="btn btn-primary" onClick={handleAddFeatureAsPOI}>
+                      POI
+                    </button>
                   </div>
                 </div>
               </div>

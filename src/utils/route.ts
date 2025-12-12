@@ -1,5 +1,11 @@
 import * as turf from "@turf/turf";
-import type { BROUTER_PROFILES, BrouterResponse, Coordinate, OverpassFeature } from "../types";
+import type {
+  BROUTER_PROFILES,
+  BrouterResponse,
+  Coordinate,
+  OverpassFeature,
+  RoutePOI,
+} from "../types";
 import axios from "axios";
 
 export const getTrackLength = (routeTrack: BrouterResponse) =>
@@ -105,6 +111,21 @@ export const formatOverpassFeatureAsGeoJSONPoint = (
     },
     properties: {
       name: feature.tags?.name ?? "Unknown Name",
+    },
+  };
+};
+
+export const formatRoutePOIAsGeoJSONPoint = (
+  routePOI: RoutePOI,
+): GeoJSON.Feature<GeoJSON.Point> => {
+  return {
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [routePOI.coordinates[0], routePOI.coordinates[1]],
+    },
+    properties: {
+      name: routePOI.name ?? "Unknown Name",
     },
   };
 };

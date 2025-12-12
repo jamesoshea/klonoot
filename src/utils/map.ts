@@ -2,7 +2,7 @@ import { Map, Marker } from "mapbox-gl";
 import type { Dispatch } from "react";
 
 import { COLOR__ACCENT } from "../consts";
-import type { BrouterResponse, OverpassFeature } from "../types";
+import type { BrouterResponse, OverpassFeature, RoutePOI } from "../types";
 import { getPointAlongLine } from "./route";
 
 import mapboxgl from "mapbox-gl";
@@ -94,6 +94,24 @@ export const drawCurrentPointMarker = ({
 
   setCurrentPointMarker(marker);
 };
+
+export const createRoutePOIMarker = (
+  array: RoutePOI[],
+  map: mapboxgl.Map,
+  onPOIClick: (e: MouseEvent, feature: RoutePOI) => void,
+) =>
+  array.map((POI: RoutePOI) => {
+    const element = document.createElement("div");
+    element.className = `rounded-[11px] min-w-[22px] min-h-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white`;
+    element.innerHTML = "<strong>i</strong>";
+    element.onclick = (e) => onPOIClick(e, POI);
+
+    const marker = new mapboxgl.Marker({ element })
+      .setLngLat([POI.coordinates[0], POI.coordinates[1]])
+      .addTo(map);
+
+    return marker;
+  });
 
 export const createPOIMarker = (
   array: OverpassFeature[],

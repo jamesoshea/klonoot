@@ -86,3 +86,10 @@ export type OverpassFeature = {
   changeset?: number;
   tags: Record<string, string>;
 };
+
+export type RoutePOI = {
+  name: string;
+  coordinates: [lng: number, lat: number];
+  id: string;
+  routeId: string;
+};

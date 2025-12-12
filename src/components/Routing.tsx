@@ -21,6 +21,7 @@ import { useSessionContext } from "../contexts/SessionContext.ts";
 import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
 import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
 import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
+import { useGetPOIs } from "../queries/pois/useGetPOIs.ts";
 import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes.ts";
 
 import {
@@ -30,10 +31,18 @@ import {
   type ChartMode,
   type Coordinate,
   type OverpassFeature,
+  type RoutePOI,
 } from "../types";
 
-import { addTerrain, drawRoute, drawCurrentPointMarker, createPOIMarker } from "../utils/map.ts";
+import {
+  addTerrain,
+  drawRoute,
+  drawCurrentPointMarker,
+  createPOIMarker,
+  createRoutePOIMarker,
+} from "../utils/map.ts";
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
+import { DisplayRoutePOI } from "./RoutePOI.tsx";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -61,6 +70,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: publicTransport } = useGetPublicTransport(routeTrack as BrouterResponse, showPOIs);
   const { data: userRoutes } = useGetUserRoutes();
+  const { data: POIs } = useGetPOIs();
 
   const [chartMode, setChartMode] = useState<ChartMode>("elevation");
   const [currentPointMarker, setCurrentPointMarker] = useState<Marker | null>(null);
@@ -68,6 +78,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
   const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
+  const [selectedRoutePOI, setSelectedRoutePOI] = useState<RoutePOI | null>(null);
   const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
 
   const handlePointClick = (e: MouseEvent, index: number) => {
@@ -154,6 +165,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   const handlePOIClick = (e: MouseEvent, feature: OverpassFeature) => {
     setSelectedPOI(formatOverpassFeatureAsGeoJSONPoint(feature));
+
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleRoutePOIClick = (e: MouseEvent, routePOI: RoutePOI) => {
+    setSelectedRoutePOI(routePOI);
 
     e.preventDefault();
     e.stopPropagation();
@@ -275,13 +293,16 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           )
         : [];
 
+    const routePOIMarkers = POIs ? createRoutePOIMarker(POIs, map, handleRoutePOIClick) : [];
+
     setMarkersInState([
       ...pointMarkers,
       ...waterMarkers,
       ...publicTransportMarkers,
       ...bikeShopMarkers,
+      ...routePOIMarkers,
     ]);
-  }, [bikeShops, drinkingWater, publicTransport, map, points, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [bikeShops, drinkingWater, publicTransport, map, points, POIs, showPOIs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // add marker to currently-hovered point (map or elevation chart)
   useEffect(
@@ -335,6 +356,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   useEffect(() => {
     setSelectedPoint(null);
+    setSelectedRoutePOI(null);
     setPatches([]);
   }, [selectedRouteId, setPatches]);
 
@@ -344,6 +366,8 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
       setChartMode("elevation");
     }
   }, [showRouteInfo]);
+
+  console.log(POIs);
 
   return (
     <>
@@ -386,9 +410,28 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         </div>
         {chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {selectedPoint && <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />}
+      {selectedPoint && (
+        <Feature
+          point={selectedPoint}
+          setSelectedPOI={setSelectedPOI}
+          onClose={() => setSelectedPoint(null)}
+        />
+      )}
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
-      {selectedPOI && <Feature GeoJSONFeature={selectedPOI} onClose={() => setSelectedPOI(null)} />}
+      {selectedPOI && (
+        <Feature
+          GeoJSONFeature={selectedPOI}
+          setSelectedPOI={setSelectedPOI}
+          onClose={() => setSelectedPOI(null)}
+        />
+      )}
+      {selectedRoutePOI && (
+        <DisplayRoutePOI
+          routePOI={selectedRoutePOI}
+          setSelectedRoutePOI={setSelectedRoutePOI}
+          onClose={() => setSelectedRoutePOI(null)}
+        />
+      )}
     </>
   );
 };
