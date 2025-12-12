@@ -349,7 +349,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   useEffect(() => {
     if (showRouteInfo) {
-      setSelectedPoint(null);
       setChartMode("elevation");
     }
   }, [showRouteInfo]);
