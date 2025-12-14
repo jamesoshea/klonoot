@@ -164,7 +164,7 @@ export const RouteSummary = ({
                 onClick={handleGPXDownload}
               />
             </div>
-            <div className="tooltip" data-tip={CHART_MODE_TOOLTIP_MAP[chartMode]}>
+            <div className="tooltip" data-tip={`Chart mode: ${CHART_MODE_TOOLTIP_MAP[chartMode]}`}>
               <IconButton
                 disabled={loading}
                 icon={CHART_MODE_ICON_MAP[chartMode]}

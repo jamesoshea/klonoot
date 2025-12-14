@@ -30,6 +30,7 @@ import { getPointAlongLine, getTrackLength } from "../utils/route";
 import { useWeatherContext } from "../contexts/WeatherContext";
 import { getMinMaxWeatherValue, getWeather } from "../utils/weather";
 import { useRouteContext } from "../contexts/RouteContext";
+import { WeatherControls } from "./WeatherControls";
 
 export const MainChart = ({
   map,
@@ -44,7 +45,6 @@ export const MainChart = ({
   const { pace, startTime } = useWeatherContext();
 
   const canvasContainerRef = useRef<HTMLDivElement | null>(null);
-  const [canvasWidth, setCanvasWidth] = useState<number>(0);
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
 
@@ -53,14 +53,36 @@ export const MainChart = ({
   const trafficCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const trackLength = getTrackLength(routeTrack);
+  const canvasWidth = canvasContainerRef.current?.clientWidth ?? 0;
+
+  const drawCurrentPointChart = useCallback(() => {
+    const canvas = pointCanvasRef.current;
+    const { ctx } = setupCanvas({
+      canvas,
+      currentCanvasWidth: canvasWidth,
+      height: CANVAS_HEIGHT,
+    });
+
+    if (!ctx) {
+      return;
+    }
+
+    ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
+
+    drawCurrentPointOnChart({
+      ctx,
+      currentCanvasWidth: canvasWidth,
+      currentPointDistance,
+      routeTrack,
+    });
+  }, [canvasWidth, currentPointDistance, routeTrack]);
 
   const drawDataChart = useCallback(() => {
     const canvas = chartCanvasRef.current;
-    const { currentCanvasWidth, ctx } = setupCanvas({
+    const { ctx } = setupCanvas({
       canvas,
-      containerRef: canvasContainerRef,
+      currentCanvasWidth: canvasWidth,
       height: CANVAS_HEIGHT,
-      setCanvasWidth,
     });
 
     if (!ctx) {
@@ -71,12 +93,16 @@ export const MainChart = ({
 
     switch (mode) {
       case "elevation":
-        drawElevationChart({ ctx, currentCanvasWidth, routeTrack });
+        drawElevationChart({
+          ctx,
+          currentCanvasWidth: canvasWidth,
+          routeTrack,
+        });
         return;
       default:
         drawWeatherChart({
           ctx,
-          currentCanvasWidth,
+          currentCanvasWidth: canvasWidth,
           currentPointDistance,
           mode,
           pace,
@@ -87,39 +113,20 @@ export const MainChart = ({
     }
   }, [canvasWidth, currentPointDistance, mode, pace, routeTrack, weatherData]);
 
-  const drawCurrentPointChart = useCallback(() => {
-    const canvas = pointCanvasRef.current;
-    const { currentCanvasWidth, ctx } = setupCanvas({
-      canvas,
-      containerRef: canvasContainerRef,
-      height: CANVAS_HEIGHT,
-      setCanvasWidth,
-    });
-
-    if (!ctx) {
-      return;
-    }
-
-    ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
-
-    drawCurrentPointOnChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
-  }, [canvasWidth, currentPointDistance, routeTrack]);
-
   const drawTrafficChart = useCallback(() => {
     const canvas = trafficCanvasRef.current;
-    const { currentCanvasWidth, ctx } = setupCanvas({
+    const { ctx } = setupCanvas({
       canvas,
-      containerRef: canvasContainerRef,
+      currentCanvasWidth: canvasWidth,
       height: 10,
-      setCanvasWidth,
     });
 
     if (!ctx) {
       return;
     }
 
-    drawTrafficOnChart({ ctx, currentCanvasWidth, routeTrack });
-  }, [routeTrack]);
+    drawTrafficOnChart({ ctx, currentCanvasWidth: canvasWidth, routeTrack });
+  }, [canvasWidth, routeTrack]);
 
   const handleCanvasClick = useCallback(
     (e: MouseEvent) => {
@@ -201,80 +208,77 @@ export const MainChart = ({
   }, [routeTrack, pace, startTime]);
 
   return (
-    <div className={`indicator elevation z-3 ${collapsed ? "collapsed" : ""}`}>
-      <div className="rounded-lg bg-base-100 relative p-2 w-full h-full">
-        <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2 z-3 pointer-events-none">
-          <span>
-            {mode === "elevation"
-              ? `${calculateMaxElevation(routeTrack)}m`
-              : getMinMaxWeatherValue(mode, "max", weatherData)}
-          </span>
-          <span>
-            {mode === "elevation"
-              ? `${calculateMinElevation(routeTrack)}m`
-              : getMinMaxWeatherValue(mode, "min", weatherData)}
-          </span>
-        </div>
-        <div className="w-full">
-          {mode === "elevation" && (
-            <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
-              <div className="tooltip-content p-3">
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_GRAY }} />
-                  <p className="text-s">Paved (Good)</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div
-                    className="min-h-3 min-w-3"
-                    style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
-                  />
-                  <p className="text-s">Paved (Poor)</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_YELLOW }} />
-                  <p className="text-s">Unpaved (Good)</p>
-                </div>
-                <div className="flex gap-3 justify-between items-center w-full mb-4">
-                  <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_ORANGE }} />
-                  <p className="text-s">Unpaved (Poor)</p>
-                </div>
+    <div className="chart-container flex justify-between gap-5">
+      <div className={`indicator chart z-3 ${collapsed ? "collapsed" : ""}`}>
+        <div className="rounded-lg bg-base-100 relative p-2 w-full">
+          <div className="flex flex-col justify-between text-xs opacity-60 min-h-[100px] absolute top-2 left-2 z-3 pointer-events-none">
+            <span>
+              {mode === "elevation"
+                ? `${calculateMaxElevation(routeTrack)}m`
+                : getMinMaxWeatherValue(mode, "max", weatherData)}
+            </span>
+            <span>
+              {mode === "elevation"
+                ? `${calculateMinElevation(routeTrack)}m`
+                : getMinMaxWeatherValue(mode, "min", weatherData)}
+            </span>
+          </div>
+          <div>
+            {mode === "elevation" && (
+              <div className="tooltip absolute top-2 right-2 cursor-pointer z-100 tooltip-left">
+                <div className="tooltip-content p-3">
+                  <div className="flex gap-3 justify-between items-center w-full">
+                    <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_GRAY }} />
+                    <p className="text-s">Paved (Good)</p>
+                  </div>
+                  <div className="flex gap-3 justify-between items-center w-full">
+                    <div
+                      className="min-h-3 min-w-3"
+                      style={{ background: SURFACE_COLOR_LIGHT_GRAY }}
+                    />
+                    <p className="text-s">Paved (Poor)</p>
+                  </div>
+                  <div className="flex gap-3 justify-between items-center w-full">
+                    <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_YELLOW }} />
+                    <p className="text-s">Unpaved (Good)</p>
+                  </div>
+                  <div className="flex gap-3 justify-between items-center w-full mb-4">
+                    <div className="min-h-3 min-w-3" style={{ background: SURFACE_COLOR_ORANGE }} />
+                    <p className="text-s">Unpaved (Poor)</p>
+                  </div>
 
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_LOW }} />
-                  <p className="text-s">Low traffic</p>
+                  <div className="flex gap-3 justify-between items-center w-full">
+                    <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_LOW }} />
+                    <p className="text-s">Low traffic</p>
+                  </div>
+                  <div className="flex gap-3 justify-between items-center w-full">
+                    <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_NONE }} />
+                    <p className="text-s">No traffic</p>
+                  </div>
                 </div>
-                <div className="flex gap-3 justify-between items-center w-full">
-                  <div className="min-h-3 min-w-3" style={{ background: TRAFFIC_COLOR_NONE }} />
-                  <p className="text-s">No traffic</p>
-                </div>
+                <InfoCircleIcon />
               </div>
-              <InfoCircleIcon />
+            )}
+            <div
+              className="relative mb-2"
+              ref={canvasContainerRef}
+              style={{ height: CANVAS_HEIGHT }}
+            >
+              <canvas
+                height={CANVAS_HEIGHT}
+                ref={pointCanvasRef}
+                width={canvasWidth}
+                style={{ position: "absolute" }}
+              ></canvas>
+              <canvas height={CANVAS_HEIGHT} ref={chartCanvasRef} width={canvasWidth}></canvas>
             </div>
-          )}
-          <div
-            className="relative mb-2"
-            ref={canvasContainerRef}
-            style={{
-              maxWidth: collapsed ? 256 : "initial",
-              height: CANVAS_HEIGHT,
-            }}
-          >
-            <canvas
-              height={CANVAS_HEIGHT}
-              ref={pointCanvasRef}
-              width={canvasWidth}
-              style={{ position: "absolute" }}
-            ></canvas>
-            <canvas height={CANVAS_HEIGHT} ref={chartCanvasRef} width={canvasWidth}></canvas>
-          </div>
-          <canvas height={10} ref={trafficCanvasRef} width={canvasWidth}></canvas>
-          <div className="w-full flex justify-between mt-1 text-xs opacity-60">
-            <span>0km</span>
-            <span>{(trackLength / 1000).toFixed(0)}km</span>
+            <canvas height={10} ref={trafficCanvasRef} width={canvasWidth}></canvas>
+            <div className="w-full flex justify-between mt-1 text-xs opacity-60">
+              <span>0km</span>
+              <span>{(trackLength / 1000).toFixed(0)}km</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="indicator">
         <span className="indicator-item indicator-middle">
           <button
             className="btn btn-soft btn-sm btn-circle"
@@ -288,6 +292,7 @@ export const MainChart = ({
           </button>
         </span>
       </div>
+      {mode !== "elevation" && <WeatherControls />}
     </div>
   );
 };

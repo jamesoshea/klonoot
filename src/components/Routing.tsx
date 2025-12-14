@@ -7,7 +7,6 @@ import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
 import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
-import { WeatherControls } from "./WeatherControls.tsx";
 
 import { Divider } from "./shared/Divider.tsx";
 import { Feature } from "./shared/Feature/Feature.tsx";
@@ -392,10 +391,9 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             </>
           )}
         </div>
-        {chartMode !== "elevation" && <WeatherControls />}
       </div>
-      {selectedPoint && <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />}
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}
+      {selectedPoint && <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />}
       {selectedPOI && <Feature GeoJSONFeature={selectedPOI} onClose={() => setSelectedPOI(null)} />}
       {selectedRoutePOI && (
         <DisplayRoutePOI routePOI={selectedRoutePOI} onClose={() => setSelectedRoutePOI(null)} />

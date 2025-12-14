@@ -13,14 +13,18 @@
   background-color: lightgrey;
 }
 
-.elevation {
+.chart-container {
   position: absolute;
   bottom: 36px;
   left: 9px;
   width: calc(100vw - 24px);
 }
 
-.elevation.collapsed {
+.chart {
+  flex-grow: 1;
+}
+
+.chart.collapsed {
   max-width: 266px;
 }
 

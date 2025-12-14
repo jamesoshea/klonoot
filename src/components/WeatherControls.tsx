@@ -7,8 +7,8 @@ export const WeatherControls = () => {
   const { pace, setPace, startTime, setStartTime } = useWeatherContext();
 
   return (
-    <div className="relative bg-base-100 rounded-lg p-2 mt-2">
-      <div className="tooltip absolute top-1 right-1 cursor-pointer z-100 tooltip-top">
+    <div className="grow bg-base-100 rounded-lg p-2 min-w-36 max-w-36 z-4 flex flex-col justify-center">
+      <div className="tooltip absolute top-1 right-1 cursor-pointer z-100 tooltip-left">
         <div className="tooltip-content">
           These values are needed for a (somewhat) accurate weather forecast for your ride.
         </div>
@@ -27,7 +27,7 @@ export const WeatherControls = () => {
             </option>
           ))}
       </select>
-      <span className="text-xs opacity-60 pb-1 pl-0.5">Average pace (km/h)</span>
+      <span className="text-xs opacity-60 pb-1 pl-0.5 mt-2">Average pace (km/h)</span>
       <input
         className="input"
         max="50"

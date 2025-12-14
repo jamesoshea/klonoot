@@ -14,7 +14,6 @@ import {
 import { getTrackLength } from "./route";
 import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
 import { bearingToCardinalDirection } from "./weather";
-import type { Dispatch, RefObject } from "react";
 
 const filterElevationNoise = (message: string[]) => {
   return Number(message[2]) !== -8192;
@@ -122,27 +121,22 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
 
 type SetupCanvasProps = {
   canvas: HTMLCanvasElement | null;
-  containerRef: RefObject<HTMLDivElement | null>;
+  currentCanvasWidth: number;
   height: number;
-  setCanvasWidth: Dispatch<number>;
 };
 
 export const setupCanvas = ({
   canvas,
-  containerRef,
+  currentCanvasWidth,
   height,
-  setCanvasWidth,
-}: SetupCanvasProps): { currentCanvasWidth: number; ctx: CanvasRenderingContext2D | null } => {
-  const currentCanvasWidth = containerRef.current?.clientWidth ?? 0;
-  setCanvasWidth(currentCanvasWidth);
-
+}: SetupCanvasProps): { ctx: CanvasRenderingContext2D | null } => {
   if (!canvas?.getContext) {
-    return { currentCanvasWidth, ctx: null };
+    return { ctx: null };
   }
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
-    return { currentCanvasWidth, ctx: null };
+    return { ctx: null };
   }
 
   // Get the DPR and size of the canvas
@@ -158,7 +152,7 @@ export const setupCanvas = ({
   canvas.style.width = `${currentCanvasWidth}px`;
   canvas.style.height = `${height}px`;
 
-  return { currentCanvasWidth, ctx };
+  return { ctx };
 };
 
 export const drawElevationChart = ({
