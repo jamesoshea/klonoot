@@ -61,31 +61,6 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     };
   };
 
-  const convertToPoints = useCallback(
-    (geoJSON: FeatureCollection<Geometry, GeoJsonProperties>, tolerance: number) => {
-      // heavily indebted to the work here:
-      // https://github.com/nrenner/brouter-web/blob/master/js/plugin/RouteLoaderConverter.js
-
-      const flat = turf.flatten(geoJSON);
-
-      const linePoints = flat.features
-        .map((feature) => {
-          if (turf.getType(feature) == "LineString") {
-            feature = turf.cleanCoords(feature);
-            return turf.coordAll(feature);
-          }
-          return [];
-        })
-        .flat();
-
-      const linesGeoJSON = turf.lineString(linePoints);
-      const coords = getSimplifiedCoords(linesGeoJSON.geometry, tolerance);
-
-      setPoints(coords.map((coord) => [coord[0], coord[1], "", false]));
-    },
-    [setPoints],
-  );
-
   const drawTrackOnMap = useCallback(
     (geoJSON: FeatureCollection<Geometry, GeoJsonProperties>) => {
       if (!map) return;
@@ -143,8 +118,27 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
     }
 
     drawTrackOnMap(trackGeoJSON);
-    convertToPoints(trackGeoJSON, debouncedValue);
-  }, [convertToPoints, debouncedValue, drawTrackOnMap, trackGeoJSON]);
+
+    // heavily indebted to the work here:
+    // https://github.com/nrenner/brouter-web/blob/master/js/plugin/RouteLoaderConverter.js
+
+    const flat = turf.flatten(trackGeoJSON);
+
+    const linePoints = flat.features
+      .map((feature) => {
+        if (turf.getType(feature) == "LineString") {
+          feature = turf.cleanCoords(feature);
+          return turf.coordAll(feature);
+        }
+        return [];
+      })
+      .flat();
+
+    const linesGeoJSON = turf.lineString(linePoints);
+    const coords = getSimplifiedCoords(linesGeoJSON.geometry, debouncedValue);
+
+    setPoints(coords.map((coord) => [coord[0], coord[1], "", false]));
+  }, [debouncedValue, drawTrackOnMap, setPoints, trackGeoJSON]);
 
   // debounce point changes
   useEffect(() => {
@@ -158,14 +152,6 @@ export const Import = ({ map }: { map: mapboxgl.Map | null }) => {
       clearTimeout(handler);
     };
   }, [sliderValue]);
-
-  useEffect(() => {
-    if (!trackGeoJSON) {
-      return;
-    }
-
-    convertToPoints(trackGeoJSON, debouncedValue);
-  }, [convertToPoints, debouncedValue, trackGeoJSON]);
 
   const menuIsOpen = currentlyOpenMenu === MENU_TYPES.IMPORT;
 
