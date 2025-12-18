@@ -86,6 +86,7 @@ export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
               index={existingPoints.findIndex(
                 (existingPoint) => JSON.stringify(existingPoint) === JSON.stringify(point),
               )}
+              key={point.toString()}
               point={point}
               onClose={onClose}
             />

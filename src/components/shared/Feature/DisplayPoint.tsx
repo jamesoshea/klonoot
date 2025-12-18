@@ -1,5 +1,5 @@
 import { faArrowRight, faCheck, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../../consts";
 import { useRouteContext } from "../../../contexts/RouteContext";
@@ -57,10 +57,6 @@ export const DisplayPoint = ({
     existingPoints[index][2] = pointName;
     setPoints(newPoints);
   };
-
-  useEffect(() => {
-    setPointName(point[2] ?? "");
-  }, [point]);
 
   const coordinates: [lat: number, lon: number] = [point[0], point[1]];
 
