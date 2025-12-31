@@ -20,6 +20,7 @@ import { WeatherContextProvider } from "./contexts/WeatherContextProvider";
 import { queryClient } from "./queries/queryClient";
 import { GeneralContextProvider } from "./contexts/GeneralContextProvider";
 import { addTerrain } from "./utils/map";
+import { WeatherControls } from "./components/WeatherControls";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -66,6 +67,7 @@ function App() {
                     <Nav />
                     <Layers />
                     <Import map={map} />
+                    <WeatherControls />
                     <NewRoute />
                   </div>
                 </WeatherContextProvider>
