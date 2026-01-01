@@ -38,39 +38,47 @@ export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) 
     return;
   }
 
-  map.addSource("route", {
-    type: "geojson",
-    data: routeTrack,
-  });
+  const draw = () => {
+    map.addSource("route", {
+      type: "geojson",
+      data: routeTrack,
+    });
 
-  map.addLayer({
-    id: "route",
-    type: "line",
-    source: "route",
-    layout: {
-      "line-join": "round",
-      "line-cap": "round",
-    },
-    paint: {
-      "line-color": COLOR__ACCENT,
-      "line-width": 8,
-      "line-opacity": 0.7,
-    },
-  });
+    map.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": COLOR__ACCENT,
+        "line-width": 8,
+        "line-opacity": 0.7,
+      },
+    });
 
-  map.addLayer({
-    id: "route-arrow",
-    type: "symbol",
-    source: "route",
-    layout: {
-      "symbol-placement": "line",
-      "symbol-spacing": 200,
-      "icon-allow-overlap": true,
-      "icon-image": "arrow-right",
-      "icon-size": 0.1,
-      visibility: "visible",
-    },
-  });
+    map.addLayer({
+      id: "route-arrow",
+      type: "symbol",
+      source: "route",
+      layout: {
+        "symbol-placement": "line",
+        "symbol-spacing": 200,
+        "icon-allow-overlap": true,
+        "icon-image": "arrow-right",
+        "icon-size": 0.1,
+        visibility: "visible",
+      },
+    });
+  };
+
+  if (!map.isStyleLoaded()) {
+    map.on("load", draw);
+  } else {
+    draw();
+  }
 };
 
 export const drawCurrentPointMarker = ({

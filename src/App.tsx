@@ -21,6 +21,7 @@ import { queryClient } from "./queries/queryClient";
 import { GeneralContextProvider } from "./contexts/GeneralContextProvider";
 import { addTerrain } from "./utils/map";
 import { WeatherControls } from "./components/WeatherControls";
+import type { MapStyle } from "./types";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -32,6 +33,7 @@ function App() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
+  const [mapStyle, setMapStyle] = useState<MapStyle>("SATELLITE");
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -40,7 +42,10 @@ function App() {
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
       minZoom: 5,
-      style: "mapbox://styles/mapbox/outdoors-v12", // style URL
+      style:
+        mapStyle === "OUTDOORS"
+          ? "mapbox://styles/mapbox/outdoors-v12"
+          : "mapbox://styles/mapbox/satellite-streets-v11", // style URL
     });
 
     newMap.on("load", () => setMapLoaded(true));
@@ -51,7 +56,7 @@ function App() {
       newMap.off("idle", () => addTerrain(newMap));
       newMap.remove();
     };
-  }, []);
+  }, [mapStyle]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -65,7 +70,8 @@ function App() {
                   <div id="map-container" ref={mapContainerRef} />
                   <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
                     <Nav />
-                    <Layers />
+                    <Layers currentMapStyle={mapStyle} setCurrentMapStyle={setMapStyle} />{" "}
+                    {/* TODO: add callback for toggle */}
                     <Import map={map} />
                     <WeatherControls />
                     <NewRoute />

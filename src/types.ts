@@ -93,3 +93,5 @@ export type RoutePOI = {
   id: string;
   routeId: string;
 };
+
+export type MapStyle = "OUTDOORS" | "SATELLITE";

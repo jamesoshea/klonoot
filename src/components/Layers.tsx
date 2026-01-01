@@ -3,10 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { RightHandPopover } from "./shared/RightHandPopover";
 import { MENU_TYPES, useGeneralContext } from "../contexts/GeneralContext";
+import type { Dispatch } from "react";
+import type { MapStyle } from "../types";
 
-export const Layers = () => {
+type LayersProps = {
+  currentMapStyle: MapStyle;
+  setCurrentMapStyle: Dispatch<MapStyle>;
+};
+
+export const Layers = ({ currentMapStyle, setCurrentMapStyle }: LayersProps) => {
   const { routeTrack, showPOIs, setShowPOIs } = useRouteContext();
-
   const { currentlyOpenMenu, setCurrentlyOpenMenu } = useGeneralContext();
 
   const menuIsOpen = currentlyOpenMenu === MENU_TYPES.LAYERS;
@@ -25,6 +31,28 @@ export const Layers = () => {
       </div>
       <RightHandPopover menuType={MENU_TYPES.LAYERS}>
         <div>
+          <label className="label text-neutral">
+            <input
+              type="radio"
+              className="checkbox checkbox-sm"
+              checked={currentMapStyle === "OUTDOORS"}
+              onClick={() => setCurrentMapStyle("OUTDOORS")}
+            />
+            Mapbox Outdoors
+          </label>
+        </div>
+        <div className="mt-1">
+          <label className="label text-neutral">
+            <input
+              type="radio"
+              className="checkbox checkbox-sm"
+              checked={currentMapStyle === "SATELLITE"}
+              onClick={() => setCurrentMapStyle("SATELLITE")}
+            />
+            Mapbox Satellite
+          </label>
+        </div>
+        <div className="mt-4">
           <label className="label text-neutral">
             <input
               type="checkbox"
