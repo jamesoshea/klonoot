@@ -30,15 +30,11 @@ export const addDirectionArrow = (map: Map) => {
 };
 
 export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
-  if (map.getLayer("route-arrow")) map.removeLayer("route-arrow");
-  if (map.getLayer("route")) map.removeLayer("route");
-  if (map.getSource("route")) map.removeSource("route");
-
-  if (!routeTrack) {
-    return;
-  }
-
   const draw = () => {
+    if (map.getLayer("route-arrow")) map.removeLayer("route-arrow");
+    if (map.getLayer("route")) map.removeLayer("route");
+    if (map.getSource("route")) map.removeSource("route");
+
     map.addSource("route", {
       type: "geojson",
       data: routeTrack,
@@ -74,10 +70,13 @@ export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) 
     });
   };
 
-  if (!map.isStyleLoaded()) {
-    map.on("load", draw);
-  } else {
+  if (map.loaded() && routeTrack) {
     draw();
+    return;
+  }
+
+  if (!map.loaded() && routeTrack) {
+    map.once("idle", draw);
   }
 };
 

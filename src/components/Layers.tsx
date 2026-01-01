@@ -33,9 +33,10 @@ export const Layers = ({ currentMapStyle, setCurrentMapStyle }: LayersProps) => 
         <div>
           <label className="label text-neutral">
             <input
+              name="map-layer"
               type="radio"
               className="checkbox checkbox-sm"
-              checked={currentMapStyle === "OUTDOORS"}
+              defaultChecked={currentMapStyle === "OUTDOORS"}
               onClick={() => setCurrentMapStyle("OUTDOORS")}
             />
             Mapbox Outdoors
@@ -44,9 +45,10 @@ export const Layers = ({ currentMapStyle, setCurrentMapStyle }: LayersProps) => 
         <div className="mt-1">
           <label className="label text-neutral">
             <input
+              name="map-layer"
               type="radio"
               className="checkbox checkbox-sm"
-              checked={currentMapStyle === "SATELLITE"}
+              defaultChecked={currentMapStyle === "SATELLITE"}
               onClick={() => setCurrentMapStyle("SATELLITE")}
             />
             Mapbox Satellite
