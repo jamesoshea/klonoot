@@ -39,7 +39,7 @@ export const PointsList = ({
 
   return (
     <>
-      <div className="flex justify-between items-center mt-3 p-0 px-1 min-w-full">
+      <div className="justify-between items-center mt-3 p-0 px-1 min-w-full hidden sm:flex">
         <div className="text-xs opacity-60">Waypoints</div>
         <div className="tooltip cursor-pointer" data-tip="Undo">
           <IconButton
@@ -50,7 +50,7 @@ export const PointsList = ({
           />
         </div>
       </div>
-      <ul className="list min-w-full max-h-[208px] overflow-y-auto overflow-x-hidden mr-[-16px] pr-2 point-list pb-2">
+      <ul className="list min-w-full max-h-[208px] overflow-y-auto overflow-x-hidden mr-[-16px] pr-2 point-list pb-2 hidden sm:block">
         {points.map((point, index) => {
           const [lat, lon, name] = point;
           return (

@@ -26,8 +26,8 @@ export const WeatherControls = () => {
         </div>
       </div>
       <RightHandPopover menuType={MENU_TYPES.WEATHER}>
-        <div className="relative bg-base-100 rounded-lg p-2 mt-2">
-          <div className="tooltip absolute top-1 right-1 cursor-pointer z-100 tooltip-top">
+        <div className="relative bg-base-100 rounded-lg">
+          <div className="tooltip absolute right-[-4px] top-[-4px] cursor-pointer z-100 tooltip-left">
             <div className="tooltip-content">
               These values are needed for a (somewhat) accurate weather forecast for your ride.
             </div>

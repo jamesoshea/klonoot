@@ -7,7 +7,6 @@ import { PointsList } from "./PointsList.tsx";
 import { RouteSummary } from "./RouteSummary.tsx";
 import { Search } from "./Search";
 import { UserRouteList } from "./UserRouteList.tsx";
-import { WeatherControls } from "./WeatherControls.tsx";
 
 import { Divider } from "./shared/Divider.tsx";
 import { Feature } from "./shared/Feature/Feature.tsx";
@@ -365,7 +364,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
         )}
         <div className="mt-2 px-2 py-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} />
-          <div className="w-full mt-2">
+          <div className="w-full mt-2 hidden sm:block">
             <p className="pb-1 pl-0.5 text-xs opacity-60">Brouter profile</p>
             <select
               className="select pr-0 bg-base-100 w-full"
@@ -382,7 +381,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
           <PointsList map={map} setSelectedPoint={setSelectedPoint} />
           {routeTrack && (
             <>
-              <Divider />
+              <Divider className="hidden sm:flex" />
               <RouteSummary
                 chartMode={chartMode}
                 routeTrack={routeTrack}
@@ -392,7 +391,6 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
             </>
           )}
         </div>
-        {chartMode !== "elevation" && <WeatherControls />}
       </div>
       {selectedPoint && <Feature point={selectedPoint} onClose={() => setSelectedPoint(null)} />}
       {routeTrack && <MainChart map={map} mode={chartMode} routeTrack={routeTrack} />}

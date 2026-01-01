@@ -36,7 +36,7 @@ export const Search = ({ map }: SearchProps) => {
   };
 
   return (
-    <div className="mb-2 w-full">
+    <div className="mb-2 w-full hidden sm:block">
       <div className="flex items-center justify-between w-full">
         <SearchBox
           accessToken={MAPBOX_ACCESS_TOKEN}

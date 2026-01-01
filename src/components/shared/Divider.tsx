@@ -1,1 +1,3 @@
-export const Divider = () => <div className="divider m-0" />;
+export const Divider = ({ className }: { className?: string }) => (
+  <div className={`divider m-0${className ? ` ${className}` : ""}`} />
+);
