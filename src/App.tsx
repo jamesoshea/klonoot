@@ -33,7 +33,7 @@ function App() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
-  const [mapStyle, setMapStyle] = useState<MapStyle>("SATELLITE");
+  const [mapStyle, setMapStyle] = useState<MapStyle>("OUTDOORS");
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 
   useEffect(() => {
