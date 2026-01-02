@@ -5,7 +5,6 @@ import {
   COLOR__PRIMARY,
   CYCLEWAY_COLORS,
   CYCLEWAY_NAMES,
-  DEFAULT_PACE,
   HIGHWAY_COLORS,
   HIGHWAY_NAMES,
   SURFACE_COLORS,
@@ -229,6 +228,7 @@ export const drawCurrentPointOnWeatherChart = ({
   currentCanvasWidth,
   currentPointDistance,
   mode,
+  pace,
   trackLength,
   weatherData,
 }: {
@@ -237,6 +237,7 @@ export const drawCurrentPointOnWeatherChart = ({
   currentPointDistance: number;
   trackLength: number;
   mode: Exclude<ChartMode, "elevation">;
+  pace: number;
   weatherData: WeatherData[];
 }) => {
   if (currentPointDistance <= 0) return;
@@ -247,7 +248,7 @@ export const drawCurrentPointOnWeatherChart = ({
   ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
 
   const flip = leftPoint > currentCanvasWidth / 2;
-  const point = Math.floor(currentPointDistance / DEFAULT_PACE);
+  const point = Math.floor(currentPointDistance / pace);
 
   const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
   drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);

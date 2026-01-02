@@ -116,11 +116,12 @@ export const MainChart = ({
         currentCanvasWidth,
         currentPointDistance,
         mode,
+        pace,
         trackLength,
         weatherData,
       });
     }
-  }, [canvasWidth, currentPointDistance, mode, routeTrack, trackLength, weatherData]);
+  }, [canvasWidth, currentPointDistance, mode, pace, routeTrack, trackLength, weatherData]);
 
   const drawTrafficChart = useCallback(() => {
     const canvas = trafficCanvasRef.current;
