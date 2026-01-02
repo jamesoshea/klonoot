@@ -12,15 +12,21 @@ import {
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { CHART_MODES, type BrouterResponse, type ChartMode, type Coordinate } from "../types";
-import { useLoadingContext } from "../contexts/LoadingContext";
-import { IconButton } from "./shared/IconButton";
 import { ICON_BUTTON_SIZES } from "../consts";
-import { SquareButton } from "./shared/SquareButton";
-import { downloadRoute, getTrackLength } from "../utils/route";
-import { RouteInfo } from "./RouteInfo";
+
 import { useRouteContext } from "../contexts/RouteContext";
+import { useLoadingContext } from "../contexts/LoadingContext";
+
+import { useGetPOIs } from "../queries/pois/useGetPOIs";
+
+import { CHART_MODES, type BrouterResponse, type ChartMode, type Coordinate } from "../types";
+
+import { downloadRoute, getTrackLength } from "../utils/route";
 import { convertToSafeFileName } from "../utils/strings";
+
+import { RouteInfo } from "./RouteInfo";
+import { IconButton } from "./shared/IconButton";
+import { SquareButton } from "./shared/SquareButton";
 
 const CHART_MODE_ICON_MAP: Record<ChartMode, IconDefinition> = {
   cloudCover: faCloud,
@@ -54,17 +60,29 @@ export const RouteSummary = ({
   const { loading, setLoading } = useLoadingContext();
   const { brouterProfile, points, selectedUserRoute, setPoints } = useRouteContext();
 
+  const { data: POIs } = useGetPOIs();
+
   const handleGPXDownload = async () => {
     setLoading(true);
     const safeFilename = convertToSafeFileName(selectedUserRoute?.name ?? "klonoot_route");
 
     const route = await downloadRoute(points, brouterProfile, safeFilename);
+    if (!route) return;
 
-    if (!route) {
-      return;
-    }
+    const POIString = POIs.map(
+      (poi) =>
+        `<wpt lat="${poi.coordinates[1]}" lon="${poi.coordinates[0]}"><name>${poi.name}</name></wpt>`,
+    )
+      .join("\n")
+      .concat("\n"); // adding a final newline to make the output a little more readable
 
-    const blob = new Blob([route], { type: "text/plain" });
+    const indexOfTrackSegment = route?.indexOf("<trk>");
+
+    const arrFromString = route?.split("");
+    arrFromString?.splice(indexOfTrackSegment - 1, 0, POIString);
+    const newString = arrFromString.join("");
+
+    const blob = new Blob([newString], { type: "text/plain" });
     const fileURL = URL.createObjectURL(blob);
     const downloadLink = document.createElement("a");
     downloadLink.href = fileURL;
