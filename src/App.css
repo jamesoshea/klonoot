@@ -15,7 +15,7 @@
 
 .elevation {
   position: absolute;
-  bottom: 36px;
+  bottom: 24px;
   left: 9px;
   width: calc(100vw - 24px);
 }
