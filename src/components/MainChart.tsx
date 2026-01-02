@@ -17,7 +17,8 @@ import type { BrouterResponse, ChartMode, WeatherData } from "../types";
 import {
   calculateMaxElevation,
   calculateMinElevation,
-  drawCurrentPointOnChart,
+  drawCurrentPointOnElevationChart,
+  drawCurrentPointOnWeatherChart,
   drawElevationChart,
   drawTrafficOnChart,
   drawWeatherChart,
@@ -102,8 +103,24 @@ export const MainChart = ({
 
     ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
 
-    drawCurrentPointOnChart({ ctx, currentCanvasWidth, currentPointDistance, routeTrack });
-  }, [canvasWidth, currentPointDistance, routeTrack]);
+    if (mode === "elevation") {
+      drawCurrentPointOnElevationChart({
+        ctx,
+        currentCanvasWidth,
+        currentPointDistance,
+        routeTrack,
+      });
+    } else {
+      drawCurrentPointOnWeatherChart({
+        ctx,
+        currentCanvasWidth,
+        currentPointDistance,
+        mode,
+        trackLength,
+        weatherData,
+      });
+    }
+  }, [canvasWidth, currentPointDistance, mode, routeTrack, trackLength, weatherData]);
 
   const drawTrafficChart = useCallback(() => {
     const canvas = trafficCanvasRef.current;

@@ -184,7 +184,7 @@ export const drawElevationChart = ({
   });
 };
 
-export const drawCurrentPointOnChart = ({
+export const drawCurrentPointOnElevationChart = ({
   ctx,
   currentCanvasWidth,
   currentPointDistance,
@@ -212,7 +212,7 @@ export const drawCurrentPointOnChart = ({
 
   ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
 
-  const flip = points[relevantPointIndex].distance > trackLength / 2;
+  const flip = leftPoint > currentCanvasWidth / 2;
 
   const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
   drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
@@ -222,6 +222,41 @@ export const drawCurrentPointOnChart = ({
 
   const surfaceTextString = `${points[relevantPointIndex + 1].wayTags.surface ? `${SURFACE_NAMES[points[relevantPointIndex + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[points[relevantPointIndex + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[points[relevantPointIndex + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
   drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
+};
+
+export const drawCurrentPointOnWeatherChart = ({
+  ctx,
+  currentCanvasWidth,
+  currentPointDistance,
+  mode,
+  trackLength,
+  weatherData,
+}: {
+  ctx: CanvasRenderingContext2D;
+  currentCanvasWidth: number;
+  currentPointDistance: number;
+  trackLength: number;
+  mode: Exclude<ChartMode, "elevation">;
+  weatherData: WeatherData[];
+}) => {
+  if (currentPointDistance <= 0) return;
+
+  ctx.fillStyle = COLOR__ACCENT;
+  const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
+
+  ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
+
+  const flip = leftPoint > currentCanvasWidth / 2;
+  const point = Math.floor(currentPointDistance / DEFAULT_PACE);
+
+  const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
+  drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
+
+  const weatherTextString =
+    mode === "windSpeed"
+      ? `${weatherData[point].formatted[mode]} (${bearingToCardinalDirection(weatherData[point].values.windDirection)})`
+      : weatherData[point].formatted[mode];
+  drawTextWithBackground(ctx, weatherTextString, leftPoint + 5, 16, flip);
 };
 
 export const drawTrafficOnChart = ({
@@ -254,7 +289,6 @@ export const drawTrafficOnChart = ({
 export const drawWeatherChart = ({
   ctx,
   currentCanvasWidth,
-  currentPointDistance,
   mode,
   pace,
   routeTrack,
@@ -301,25 +335,6 @@ export const drawWeatherChart = ({
     ctx.lineCap = "round";
     ctx.stroke();
   });
-
-  if (currentPointDistance > 0) {
-    ctx.fillStyle = COLOR__ACCENT;
-    const leftPoint = scale(currentPointDistance, 0, trackLength, 0, currentCanvasWidth);
-
-    ctx.fillRect(leftPoint, 0, 1, CANVAS_HEIGHT);
-
-    const flip = false;
-    const point = Math.floor(currentPointDistance / DEFAULT_PACE);
-
-    const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
-    drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
-
-    const weatherTextString =
-      mode === "windSpeed"
-        ? `${weatherData[point].formatted[mode]} (${bearingToCardinalDirection(weatherData[point].values.windDirection)})`
-        : weatherData[point].formatted[mode];
-    drawTextWithBackground(ctx, weatherTextString, leftPoint + 5, 16, flip);
-  }
 };
 
 export const drawTextWithBackground = (
