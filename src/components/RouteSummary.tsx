@@ -64,10 +64,12 @@ export const RouteSummary = ({
 
   const handleGPXDownload = async () => {
     setLoading(true);
-    const safeFilename = convertToSafeFileName(selectedUserRoute?.name ?? "klonoot_route");
 
-    const route = await downloadRoute(points, brouterProfile, safeFilename);
-    if (!route) return;
+    const routeName = selectedUserRoute?.name ?? "Klonoot Route";
+    const safeFilename = convertToSafeFileName(routeName);
+
+    const routeString = await downloadRoute(points, brouterProfile, routeName);
+    if (!routeString) return;
 
     const POIString = POIs.map(
       (poi) =>
@@ -76,19 +78,21 @@ export const RouteSummary = ({
       .join("\n")
       .concat("\n"); // adding a final newline to make the output a little more readable
 
-    const indexOfTrackSegment = route?.indexOf("<trk>");
+    const indexOfTrackSegmentOpeningTag = routeString?.indexOf("<trk>");
 
-    const arrFromString = route?.split("");
-    arrFromString?.splice(indexOfTrackSegment - 1, 0, POIString);
-    const newString = arrFromString.join("");
+    const arrFromString = routeString?.split("");
+    arrFromString?.splice(indexOfTrackSegmentOpeningTag - 1, 0, POIString);
+    const newRouteString = arrFromString.join("");
 
-    const blob = new Blob([newString], { type: "text/plain" });
+    const blob = new Blob([newRouteString], { type: "text/plain" });
     const fileURL = URL.createObjectURL(blob);
+
     const downloadLink = document.createElement("a");
     downloadLink.href = fileURL;
     downloadLink.download = `${safeFilename}.gpx`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
+
     URL.revokeObjectURL(fileURL);
     setLoading(false);
   };
