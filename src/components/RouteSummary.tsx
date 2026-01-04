@@ -11,6 +11,8 @@ import {
   faWind,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
+import prettier from "prettier/standalone";
+import htmlPlugin from "prettier/plugins/html";
 
 import { ICON_BUTTON_SIZES } from "../consts";
 
@@ -84,7 +86,12 @@ export const RouteSummary = ({
     arrFromString?.splice(indexOfTrackSegmentOpeningTag - 1, 0, POIString);
     const newRouteString = arrFromString.join("");
 
-    const blob = new Blob([newRouteString], { type: "text/plain" });
+    const formattedString = await prettier.format(newRouteString, {
+      parser: "html",
+      plugins: [htmlPlugin],
+    });
+
+    const blob = new Blob([formattedString], { type: "text/plain" });
     const fileURL = URL.createObjectURL(blob);
 
     const downloadLink = document.createElement("a");
