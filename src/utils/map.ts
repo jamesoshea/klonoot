@@ -35,7 +35,7 @@ export const clearMap = (map: Map) => {
   if (map.getSource("route")) map.removeSource("route");
 };
 
-const draw = (map, routeTrack) => {
+const draw = (map: Map, routeTrack: BrouterResponse) => {
   clearMap(map);
 
   map.addSource("route", {
