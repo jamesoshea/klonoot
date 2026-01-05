@@ -29,54 +29,56 @@ export const addDirectionArrow = (map: Map) => {
   };
 };
 
+export const clearMap = (map: Map) => {
+  if (map.getLayer("route-arrow")) map.removeLayer("route-arrow");
+  if (map.getLayer("route")) map.removeLayer("route");
+  if (map.getSource("route")) map.removeSource("route");
+};
+
+const draw = (map, routeTrack) => {
+  clearMap(map);
+
+  map.addSource("route", {
+    type: "geojson",
+    data: routeTrack,
+  });
+
+  map.addLayer({
+    id: "route",
+    type: "line",
+    source: "route",
+    layout: {
+      "line-join": "round",
+      "line-cap": "round",
+    },
+    paint: {
+      "line-color": COLOR__ACCENT,
+      "line-width": 8,
+      "line-opacity": 0.7,
+    },
+  });
+
+  map.addLayer({
+    id: "route-arrow",
+    type: "symbol",
+    source: "route",
+    layout: {
+      "symbol-placement": "line",
+      "symbol-spacing": 200,
+      "icon-allow-overlap": true,
+      "icon-image": "arrow-right",
+      "icon-size": 0.1,
+      visibility: "visible",
+    },
+  });
+};
+
 export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
-  const draw = () => {
-    if (map.getLayer("route-arrow")) map.removeLayer("route-arrow");
-    if (map.getLayer("route")) map.removeLayer("route");
-    if (map.getSource("route")) map.removeSource("route");
-
-    map.addSource("route", {
-      type: "geojson",
-      data: routeTrack,
-    });
-
-    map.addLayer({
-      id: "route",
-      type: "line",
-      source: "route",
-      layout: {
-        "line-join": "round",
-        "line-cap": "round",
-      },
-      paint: {
-        "line-color": COLOR__ACCENT,
-        "line-width": 8,
-        "line-opacity": 0.7,
-      },
-    });
-
-    map.addLayer({
-      id: "route-arrow",
-      type: "symbol",
-      source: "route",
-      layout: {
-        "symbol-placement": "line",
-        "symbol-spacing": 200,
-        "icon-allow-overlap": true,
-        "icon-image": "arrow-right",
-        "icon-size": 0.1,
-        visibility: "visible",
-      },
-    });
-  };
-
-  if (map.loaded() && routeTrack) {
-    draw();
+  if (routeTrack) {
+    // TODO: not happy about potentially calling this twice
+    draw(map, routeTrack);
+    map.once("idle", () => draw(map, routeTrack));
     return;
-  }
-
-  if (!map.loaded() && routeTrack) {
-    map.once("idle", draw);
   }
 };
 

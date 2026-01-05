@@ -40,6 +40,7 @@ import {
   createPOIMarker,
   createRoutePOIMarker,
   addDirectionArrow,
+  clearMap,
 } from "../utils/map.ts";
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 import { DisplayRoutePOI } from "./RoutePOI.tsx";
@@ -51,7 +52,7 @@ const profileNameMap = {
   ROAD_LOW_TRAFFIC: "Road (low traffic)",
 };
 
-export const Routing = ({ map }: { map: mapboxgl.Map }) => {
+export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: string }) => {
   const { setPatches } = usePatchesContext();
   const {
     brouterProfile,
@@ -316,7 +317,7 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
   // draw route on map
   useEffect(() => {
     drawRoute(map, routeTrack as BrouterResponse);
-  }, [map, routeTrack]);
+  }, [map, mapStyle, routeTrack]);
 
   // listen for auth changes and add side-effects
   useEffect(() => {
@@ -339,12 +340,13 @@ export const Routing = ({ map }: { map: mapboxgl.Map }) => {
 
   // reset necessary state when changing route
   useEffect(() => {
+    clearMap(map);
     setSelectedPoint(null);
     setSelectedRoutePOI(null);
     setPatches([]);
 
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
-  }, [selectedRouteId, setPatches]);
+  }, [map, selectedRouteId, setPatches]);
 
   useEffect(() => {
     if (showRouteInfo) {

@@ -42,10 +42,7 @@ function App() {
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
       minZoom: 5,
-      style:
-        mapStyle === "OUTDOORS"
-          ? "mapbox://styles/mapbox/outdoors-v12"
-          : "mapbox://styles/mapbox/satellite-streets-v11", // style URL
+      style: "mapbox://styles/mapbox/outdoors-v12",
     });
 
     newMap.on("load", () => setMapLoaded(true));
@@ -56,7 +53,15 @@ function App() {
       newMap.off("idle", () => addTerrain(newMap));
       newMap.remove();
     };
-  }, [mapStyle]);
+  }, []);
+
+  useEffect(() => {
+    const MAP_STYLES = {
+      OUTDOORS: "mapbox://styles/mapbox/outdoors-v12",
+      SATELLITE: "mapbox://styles/mapbox/satellite-streets-v11",
+    };
+    map?.setStyle(MAP_STYLES[mapStyle]);
+  }, [mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -66,7 +71,7 @@ function App() {
             <PatchesContextProvider>
               <LoadingContextProvider>
                 <WeatherContextProvider>
-                  {map && mapLoaded && <Routing map={map} />}
+                  {map && mapLoaded && <Routing map={map} mapStyle={mapStyle} />}
                   <div id="map-container" ref={mapContainerRef} />
                   <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
                     <Nav />
