@@ -30,6 +30,7 @@ import {
   type BrouterResponse,
   type ChartMode,
   type Coordinate,
+  type MapStyle,
   type OverpassFeature,
   type RoutePOI,
 } from "../types";
@@ -39,7 +40,6 @@ import {
   drawCurrentPointMarker,
   createPOIMarker,
   createRoutePOIMarker,
-  addDirectionArrow,
   clearMap,
 } from "../utils/map.ts";
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
@@ -52,7 +52,7 @@ const profileNameMap = {
   ROAD_LOW_TRAFFIC: "Road (low traffic)",
 };
 
-export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: string }) => {
+export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapStyle }) => {
   const { setPatches } = usePatchesContext();
   const {
     brouterProfile,
@@ -177,8 +177,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: string
     e.preventDefault();
     e.stopPropagation();
   };
-
-  useEffect(() => addDirectionArrow(map), [map]);
 
   // authenticated users: select route from list
   // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
@@ -316,7 +314,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: string
 
   // draw route on map
   useEffect(() => {
-    drawRoute(map, routeTrack as BrouterResponse);
+    drawRoute(map, mapStyle, routeTrack as BrouterResponse);
   }, [map, mapStyle, routeTrack]);
 
   // listen for auth changes and add side-effects

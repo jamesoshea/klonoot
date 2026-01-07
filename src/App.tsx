@@ -45,23 +45,30 @@ function App() {
       style: "mapbox://styles/mapbox/outdoors-v12",
     });
 
+    const addTerrainWithMap = () => addTerrain(newMap);
+
     newMap.on("load", () => setMapLoaded(true));
-    newMap.once("idle", () => addTerrain(newMap));
+    newMap.once("idle", addTerrainWithMap);
     setMap(newMap);
 
     return () => {
-      newMap.off("idle", () => addTerrain(newMap));
       newMap.remove();
+      newMap.off("idle", addTerrainWithMap);
     };
   }, []);
 
   useEffect(() => {
+    if (!map) {
+      return;
+    }
+
     const MAP_STYLES = {
       OUTDOORS: "mapbox://styles/mapbox/outdoors-v12",
       SATELLITE: "mapbox://styles/mapbox/satellite-streets-v11",
     };
-    map?.setStyle(MAP_STYLES[mapStyle]);
-  }, [mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    map.setStyle(MAP_STYLES[mapStyle]);
+  }, [map, mapStyle]);
 
   return (
     <QueryClientProvider client={queryClient}>

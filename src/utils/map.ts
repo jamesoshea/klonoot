@@ -3,9 +3,10 @@ import type { Dispatch } from "react";
 
 import { getPointAlongLine } from "./route";
 
-import pathArrowUrl from "../assets/path-arrow.svg";
+import darkPathArrowUrl from "../assets/dark-path-arrow.svg";
+import lightPathArrowUrl from "../assets/light-path-arrow.svg";
 import { COLOR__ACCENT } from "../consts";
-import type { BrouterResponse, OverpassFeature, RoutePOI } from "../types";
+import type { BrouterResponse, MapStyle, OverpassFeature, RoutePOI } from "../types";
 
 export const addTerrain = (map: Map) => {
   if (map.getSource("mapbox-dem")) return;
@@ -20,22 +21,13 @@ export const addTerrain = (map: Map) => {
   map.setTerrain({ source: "mapbox-dem", exaggeration: 1 });
 };
 
-export const addDirectionArrow = (map: Map) => {
-  const img = new Image(240, 240);
-  img.src = pathArrowUrl;
-
-  img.onload = () => {
-    if (!map.hasImage("arrow-right")) map.addImage("arrow-right", img);
-  };
-};
-
 export const clearMap = (map: Map) => {
   if (map.getLayer("route-arrow")) map.removeLayer("route-arrow");
   if (map.getLayer("route")) map.removeLayer("route");
   if (map.getSource("route")) map.removeSource("route");
 };
 
-const draw = (map: Map, routeTrack: BrouterResponse) => {
+const draw = (map: Map, mapStyle: MapStyle, routeTrack: BrouterResponse) => {
   clearMap(map);
 
   map.addSource("route", {
@@ -58,28 +50,39 @@ const draw = (map: Map, routeTrack: BrouterResponse) => {
     },
   });
 
-  map.addLayer({
-    id: "route-arrow",
-    type: "symbol",
-    source: "route",
-    layout: {
-      "symbol-placement": "line",
-      "symbol-spacing": 200,
-      "icon-allow-overlap": true,
-      "icon-image": "arrow-right",
-      "icon-size": 0.1,
-      visibility: "visible",
-    },
-  });
+  if (map.hasImage("arrow-right")) map.removeImage("arrow-right");
+
+  const img = new Image(240, 240);
+  img.src = mapStyle === "SATELLITE" ? lightPathArrowUrl : darkPathArrowUrl;
+
+  img.onload = () => {
+    map.addImage("arrow-right", img);
+    map.addLayer({
+      id: "route-arrow",
+      type: "symbol",
+      source: "route",
+      layout: {
+        "symbol-placement": "line",
+        "symbol-spacing": 100,
+        "icon-allow-overlap": true,
+        "icon-image": "arrow-right",
+        "icon-size": 0.07,
+        visibility: "visible",
+      },
+    });
+  };
 };
 
-export const drawRoute = async (map: mapboxgl.Map, routeTrack: BrouterResponse) => {
-  if (routeTrack) {
-    // TODO: not happy about potentially calling this twice
-    draw(map, routeTrack);
-    map.once("idle", () => draw(map, routeTrack));
+export const drawRoute = async (
+  map: mapboxgl.Map,
+  mapStyle: MapStyle,
+  routeTrack: BrouterResponse,
+) => {
+  if (!routeTrack) {
     return;
   }
+
+  map.once("idle", () => draw(map, mapStyle, routeTrack));
 };
 
 export const drawCurrentPointMarker = ({
