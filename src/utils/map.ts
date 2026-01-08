@@ -150,7 +150,7 @@ export const createPOIMarker = (
     .filter((feature: OverpassFeature) => feature.lon && feature.lat)
     .map((publicTransportFeature: OverpassFeature) => {
       const element = document.createElement("div");
-      element.className = `rounded-[11px] min-w-[22px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[3px]`;
+      element.className = `rounded-[9px] h-[18px] w-[18px] text-center cursor-pointer border-1 bg-blue-300 text-white p-[2px]`;
       element.innerHTML = SVGString;
       element.onclick = (e) => onPOIClick(e, publicTransportFeature);
 
