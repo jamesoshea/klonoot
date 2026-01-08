@@ -77,12 +77,17 @@ export const drawRoute = async (
   map: mapboxgl.Map,
   mapStyle: MapStyle,
   routeTrack: BrouterResponse,
+  defer: boolean,
 ) => {
   if (!routeTrack) {
     return;
   }
 
-  map.once("idle", () => draw(map, mapStyle, routeTrack));
+  if (defer) {
+    map.once("idle", () => draw(map, mapStyle, routeTrack));
+  } else {
+    draw(map, mapStyle, routeTrack);
+  }
 };
 
 export const drawCurrentPointMarker = ({

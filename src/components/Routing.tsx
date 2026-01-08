@@ -314,8 +314,12 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
 
   // draw route on map
   useEffect(() => {
-    drawRoute(map, mapStyle, routeTrack as BrouterResponse);
-  }, [map, mapStyle, routeTrack]);
+    drawRoute(map, mapStyle, routeTrack as BrouterResponse, true);
+  }, [map, mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    drawRoute(map, mapStyle, routeTrack as BrouterResponse, false);
+  }, [routeTrack]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // listen for auth changes and add side-effects
   useEffect(() => {
