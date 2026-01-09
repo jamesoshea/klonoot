@@ -34,7 +34,7 @@ export const PointsList = ({
 
   const handlePointClick = (point: Coordinate) => {
     setSelectedPoint(point);
-    map.flyTo({ center: [point[0], point[1]] });
+    map.flyTo({ center: [point[0], point[1]], zoom: 14 });
   };
 
   return (
