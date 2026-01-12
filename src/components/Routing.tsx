@@ -329,9 +329,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
       if (event === "SIGNED_OUT") {
         setBrouterProfile(BROUTER_PROFILES.TREKKING);
         setPoints([]);
-
-        if (map.getLayer("route")) map.removeLayer("route");
-        if (map.getSource("route")) map.removeSource("route");
+        clearMap(map);
       }
     });
 
