@@ -13,12 +13,17 @@ export const Avatar = ({ onClick }: { onClick: () => void }) => {
       {loading ? (
         <span className="loading loading-spinner loading-lg text-neutral max-h-[19.2px] max-w-[19.2px] mx-0.5" />
       ) : (
-        <FontAwesomeIcon
-          className={`cursor-pointer text-neutral ${session || loading ? "" : "opacity-60"}`}
-          icon={faCircleUser}
-          size="xl"
-          onClick={onClick}
-        />
+        <div
+          className="tooltip tooltip-left"
+          data-tip={session ? `Signed in as ${session.user.email}` : "Not signed in"}
+        >
+          <FontAwesomeIcon
+            className="cursor-pointer text-neutral"
+            icon={faCircleUser}
+            size="xl"
+            onClick={onClick}
+          />
+        </div>
       )}
     </div>
   );

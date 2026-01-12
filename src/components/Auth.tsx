@@ -47,75 +47,73 @@ export const Auth = () => {
   };
 
   return (
-    <div className="mt-1">
+    <div>
       {session ? (
         <div className="join join-vertical w-full">
           <SquareButton icon={faSignOut} text="Sign out" onClick={handleSignOut} />
         </div>
       ) : (
         <>
-          <p className="text-content text-center">
+          <p className="text-content text-center text-sm">
             {step === "LOGIN"
               ? "To sign in, enter your email. We will email you a code to verify your email address."
               : step === "VERIFY"
                 ? "Please enter the code we sent to your email"
                 : ""}
           </p>
-          <p className="py-2">
-            <label className="input validator w-full">
-              <svg
-                className="h-[1em] opacity-50"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2.5"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                </g>
-              </svg>
-              {step === "LOGIN" ? (
-                <input
-                  className="w-full"
-                  placeholder="mail@example.com"
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.currentTarget.value)}
-                />
-              ) : step === "VERIFY" ? (
-                <input
-                  className="w-full"
-                  placeholder="000000"
-                  required
-                  type="number"
-                  value={otp}
-                  onChange={(e) => setOtp(e.currentTarget.value)}
-                />
-              ) : null}
-            </label>
-          </p>
-          <div className="flex justify-center mb-2">
+          <div className="flex gap-1 items-center">
+            <p className="py-2">
+              <label className="input validator w-full">
+                {step === "LOGIN" && (
+                  <svg
+                    className="h-[1em] opacity-50"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      strokeWidth="2.5"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </g>
+                  </svg>
+                )}
+                {step === "LOGIN" ? (
+                  <input
+                    className="w-full"
+                    placeholder="mail@example.com"
+                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.currentTarget.value)}
+                  />
+                ) : step === "VERIFY" ? (
+                  <input
+                    className="w-full"
+                    placeholder="000000"
+                    required
+                    type="number"
+                    value={otp}
+                    onChange={(e) => setOtp(e.currentTarget.value)}
+                  />
+                ) : null}
+              </label>
+            </p>
+
             {step === "LOGIN" ? (
               <button className="btn" onClick={handleEmailLogin}>
                 {loading && <span className="loading loading-spinner" />}
                 Sign in
               </button>
             ) : step === "VERIFY" ? (
-              <>
-                <button className="btn btn-outline" onClick={() => setStep("LOGIN")}>
-                  Back
-                </button>
-                <button className="btn ml-2" onClick={handleEmailConfirm}>
-                  {loading && <span className="loading loading-spinner" />}
-                  Verify
-                </button>
-              </>
+              <button className="btn ml-2" onClick={handleEmailConfirm}>
+                {loading && <span className="loading loading-spinner" />}
+                Verify
+              </button>
             ) : null}
           </div>
         </>

@@ -23,6 +23,7 @@ import { GeneralContextProvider } from "./contexts/GeneralContextProvider";
 import { addTerrain } from "./utils/map";
 import { WeatherControls } from "./components/WeatherControls";
 import type { MapStyle } from "./types";
+import { SessionContext } from "./contexts/SessionContext";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -81,14 +82,19 @@ function App() {
                 <WeatherContextProvider>
                   {map && mapLoaded && <Routing map={map} mapStyle={mapStyle} />}
                   <div id="map-container" ref={mapContainerRef} />
-                  <div className="absolute top-3 right-3 flex flex-col gap-2 items-end max-w-72">
-                    <Nav />
-                    <Layers currentMapStyle={mapStyle} setCurrentMapStyle={setMapStyle} />{" "}
-                    {/* TODO: add callback for toggle */}
-                    <Import map={map} />
-                    <WeatherControls />
-                    <NewRoute />
-                    <DuplicateRoute />
+                  <div className="absolute top-3 right-3 flex flex-col gap-1 items-end max-w-72">
+                    <SessionContext.Consumer>
+                      {({ session }) => (
+                        <>
+                          <Nav />
+                          <Layers currentMapStyle={mapStyle} setCurrentMapStyle={setMapStyle} />
+                          <Import map={map} />
+                          <WeatherControls />
+                          {session && <DuplicateRoute />}
+                          {session && <NewRoute />}
+                        </>
+                      )}
+                    </SessionContext.Consumer>
                   </div>
                 </WeatherContextProvider>
               </LoadingContextProvider>

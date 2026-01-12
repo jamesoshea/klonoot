@@ -29,7 +29,7 @@ export const NewRoute = () => {
 
   return (
     <>
-      <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3">
+      <div className="bg-base-100 flex flex-col rounded-lg p-2 z-3 mt-3">
         <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
           <div className="tooltip tooltip-left" data-tip="Create new route">
             <FontAwesomeIcon
