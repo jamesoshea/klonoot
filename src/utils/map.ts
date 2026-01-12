@@ -56,20 +56,22 @@ const draw = (map: Map, mapStyle: MapStyle, routeTrack: BrouterResponse) => {
   img.src = mapStyle === "SATELLITE" ? lightPathArrowUrl : darkPathArrowUrl;
 
   img.onload = () => {
-    map.addImage("arrow-right", img);
-    map.addLayer({
-      id: "route-arrow",
-      type: "symbol",
-      source: "route",
-      layout: {
-        "symbol-placement": "line",
-        "symbol-spacing": 100,
-        "icon-allow-overlap": true,
-        "icon-image": "arrow-right",
-        "icon-size": 0.07,
-        visibility: "visible",
-      },
-    });
+    if (map.getSource("route")) {
+      map.addImage("arrow-right", img);
+      map.addLayer({
+        id: "route-arrow",
+        type: "symbol",
+        source: "route",
+        layout: {
+          "symbol-placement": "line",
+          "symbol-spacing": 100,
+          "icon-allow-overlap": true,
+          "icon-image": "arrow-right",
+          "icon-size": 0.07,
+          visibility: "visible",
+        },
+      });
+    }
   };
 };
 

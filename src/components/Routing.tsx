@@ -336,7 +336,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     return () => {
       subscription.unsubscribe();
     };
-  }, [map, points, setBrouterProfile, setPoints, supabase.auth]);
+  }, [map, setBrouterProfile, setPoints, supabase.auth]);
 
   // reset necessary state when changing route
   useEffect(() => {
@@ -347,12 +347,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
 
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
   }, [map, selectedRouteId, setPatches]);
-
-  useEffect(() => {
-    if (showRouteInfo) {
-      setChartMode("elevation");
-    }
-  }, [showRouteInfo]);
 
   return (
     <>
