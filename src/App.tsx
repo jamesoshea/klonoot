@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./App.css";
 
+import { DuplicateRoute } from "./components/DuplicateRoute";
 import { Import } from "./components/Import";
 import { Layers } from "./components/Layers";
 import { Nav } from "./components/Nav";
@@ -87,6 +88,7 @@ function App() {
                     <Import map={map} />
                     <WeatherControls />
                     <NewRoute />
+                    <DuplicateRoute />
                   </div>
                 </WeatherContextProvider>
               </LoadingContextProvider>

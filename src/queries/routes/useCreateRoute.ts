@@ -15,9 +15,11 @@ export const useCreateRoute = () => {
     mutationKey: [MUTATION_KEYS.CREATE_USER_ROUTE],
     mutationFn: async ({
       brouterProfile,
+      name,
       points,
     }: {
       brouterProfile: BROUTER_PROFILES;
+      name?: string;
       points: Coordinate[];
     }) =>
       supabase
@@ -25,7 +27,7 @@ export const useCreateRoute = () => {
         .insert([
           {
             brouterProfile,
-            name: `New Route ${new Date().toLocaleDateString()}`,
+            name: name ?? `New Route ${new Date().toLocaleDateString()}`,
             points,
           },
         ])
