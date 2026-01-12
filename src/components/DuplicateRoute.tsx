@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClone } from "@fortawesome/free-solid-svg-icons";
 
 import { useCreateRoute } from "../queries/routes/useCreateRoute";
-import { BROUTER_PROFILES } from "../types";
 import { useRouteContext } from "../contexts/RouteContext";
 
 export const DuplicateRoute = () => {
@@ -12,7 +11,7 @@ export const DuplicateRoute = () => {
 
   const handleCreateRoute = () => {
     createUserRoute({
-      brouterProfile: BROUTER_PROFILES.TREKKING,
+      brouterProfile: selectedUserRoute.brouterProfile,
       name: `Copy of ${selectedUserRoute.name}`,
       points,
     });
