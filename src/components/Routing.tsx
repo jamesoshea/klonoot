@@ -17,11 +17,13 @@ import { usePatchesContext } from "../contexts/PatchesContext.ts";
 import { useRouteContext } from "../contexts/RouteContext.ts";
 import { useSessionContext } from "../contexts/SessionContext.ts";
 
-import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
-import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
+import { useCreateRoute } from "../queries/routes/useCreateRoute";
 import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
+import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
 import { useGetPOIs } from "../queries/pois/useGetPOIs.ts";
+import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
 import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes.ts";
+
 import { queryClient } from "../queries/queryClient.ts";
 
 import {
@@ -67,6 +69,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   } = useRouteContext();
   const { session, supabase } = useSessionContext();
 
+  const { mutateAsync: createUserRoute } = useCreateRoute();
   const { data: bikeShops } = useGetBikeShops(routeTrack as BrouterResponse, showPOIs);
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: publicTransport } = useGetPublicTransport(routeTrack as BrouterResponse, showPOIs);
@@ -178,14 +181,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     e.stopPropagation();
   };
 
-  // authenticated users: select route from list
-  // the session object changes on window focus. convert to boolean before passing to useEffect hook dep. array
-  const loggedIn = !!session;
   useEffect(() => {
-    if (!loggedIn) {
-      return;
-    }
-
     const route = userRoutes.find((route) => route.id === selectedRouteId) ?? userRoutes[0];
 
     if (!route) {
@@ -218,15 +214,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         padding: 256,
       },
     );
-  }, [
-    map,
-    selectedRouteId,
-    loggedIn,
-    setBrouterProfile,
-    setCurrentPointDistance,
-    setPoints,
-    userRoutes,
-  ]);
+  }, [map, selectedRouteId, userRoutes]);
 
   // set markers upon points change
   useEffect(() => {
@@ -312,15 +300,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     };
   }, [map, handleContextMenuOpen, handleLineMouseMove, handleLineMouseLeave, handleNewPointSet]);
 
-  // draw route on map
-  useEffect(() => {
-    drawRoute(map, mapStyle, routeTrack as BrouterResponse, true);
-  }, [map, mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    drawRoute(map, mapStyle, routeTrack as BrouterResponse, false);
-  }, [routeTrack]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // listen for auth changes and add side-effects
   useEffect(() => {
     const {
@@ -333,12 +312,25 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         if (map.getLayer("route")) map.removeLayer("route");
         if (map.getSource("route")) map.removeSource("route");
       }
+
+      if (event === "SIGNED_IN") {
+        if (points.length) {
+          await createUserRoute({
+            points,
+            brouterProfile,
+          });
+        }
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
+<<<<<<< Updated upstream
   }, [map, points, setBrouterProfile, setPoints, supabase.auth]);
+=======
+  }, [brouterProfile, map, points, supabase.auth]);
+>>>>>>> Stashed changes
 
   // reset necessary state when changing route
   useEffect(() => {
@@ -350,11 +342,22 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
   }, [map, selectedRouteId, setPatches]);
 
+<<<<<<< Updated upstream
   useEffect(() => {
     if (showRouteInfo) {
       setChartMode("elevation");
     }
   }, [showRouteInfo]);
+=======
+  // draw route on map
+  useEffect(() => {
+    drawRoute(map, mapStyle, routeTrack as BrouterResponse, true);
+  }, [map, mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    drawRoute(map, mapStyle, routeTrack as BrouterResponse, false);
+  }, [routeTrack]); // eslint-disable-line react-hooks/exhaustive-deps
+>>>>>>> Stashed changes
 
   return (
     <>
