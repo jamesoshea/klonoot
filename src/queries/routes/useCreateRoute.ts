@@ -32,9 +32,9 @@ export const useCreateRoute = () => {
           },
         ])
         .select(),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_USER_ROUTES] });
       setSelectedRouteId(res?.data?.[0]?.id ?? null);
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_USER_ROUTES] });
     },
   });
 };

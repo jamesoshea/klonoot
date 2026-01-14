@@ -312,21 +312,25 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         if (map.getLayer("route")) map.removeLayer("route");
         if (map.getSource("route")) map.removeSource("route");
       }
-
-      if (event === "SIGNED_IN") {
-        if (points.length) {
-          await createUserRoute({
-            points,
-            brouterProfile,
-          });
-        }
-      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, [brouterProfile, map, points, supabase.auth]);
+
+  useEffect(() => {
+    if (!session?.user?.id) {
+      return;
+    }
+
+    if (points.length) {
+      createUserRoute({
+        points,
+        brouterProfile,
+      });
+    }
+  }, [session?.user.id]);
 
   // reset necessary state when changing route
   useEffect(() => {
@@ -345,7 +349,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
 
   useEffect(() => {
     drawRoute(map, mapStyle, routeTrack as BrouterResponse, false);
-  }, [routeTrack]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [routeTrack, selectedRouteId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
