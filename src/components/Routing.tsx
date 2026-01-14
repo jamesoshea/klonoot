@@ -326,11 +326,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     return () => {
       subscription.unsubscribe();
     };
-<<<<<<< Updated upstream
-  }, [map, points, setBrouterProfile, setPoints, supabase.auth]);
-=======
   }, [brouterProfile, map, points, supabase.auth]);
->>>>>>> Stashed changes
 
   // reset necessary state when changing route
   useEffect(() => {
@@ -342,13 +338,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
   }, [map, selectedRouteId, setPatches]);
 
-<<<<<<< Updated upstream
-  useEffect(() => {
-    if (showRouteInfo) {
-      setChartMode("elevation");
-    }
-  }, [showRouteInfo]);
-=======
   // draw route on map
   useEffect(() => {
     drawRoute(map, mapStyle, routeTrack as BrouterResponse, true);
@@ -357,7 +346,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   useEffect(() => {
     drawRoute(map, mapStyle, routeTrack as BrouterResponse, false);
   }, [routeTrack]); // eslint-disable-line react-hooks/exhaustive-deps
->>>>>>> Stashed changes
 
   return (
     <>
