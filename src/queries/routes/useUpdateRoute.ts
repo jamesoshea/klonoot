@@ -10,7 +10,7 @@ export const useUpdateRoute = () => {
   const { supabase } = useContext(SessionContext);
 
   return useMutation({
-    mutationKey: [MUTATION_KEYS.CREATE_USER_ROUTE],
+    mutationKey: [MUTATION_KEYS.UPDATE_USER_ROUTE],
     mutationFn: async ({
       brouterProfile,
       points,
