@@ -214,7 +214,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         padding: 256,
       },
     );
-  }, [map, selectedRouteId, userRoutes]);
+  }, [map, selectedRouteId, setCurrentPointDistance, setBrouterProfile, setPoints, userRoutes]);
 
   // set markers upon points change
   useEffect(() => {
@@ -315,7 +315,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     return () => {
       subscription.unsubscribe();
     };
-  }, [brouterProfile, map, points, supabase.auth]);
+  }, [brouterProfile, map, points, setBrouterProfile, setPoints, supabase.auth]);
 
   useEffect(() => {
     if (!session?.user?.id) {
@@ -328,7 +328,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         brouterProfile,
       });
     }
-  }, [session?.user.id]);
+  }, [session?.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // reset necessary state when changing route
   useEffect(() => {
