@@ -56,13 +56,15 @@ export const downloadRoute = (
   points: Coordinate[],
   brouterProfile: BROUTER_PROFILES,
   routeName: string,
-) => fetchRoute("gpx", points, brouterProfile, routeName);
+  POIString: string,
+) => fetchRoute("gpx", points, brouterProfile, routeName, POIString);
 
 export async function fetchRoute(
   format: "gpx",
   points: Coordinate[],
   brouterProfile: BROUTER_PROFILES,
   routeName: string,
+  POIString: string,
 ): Promise<string | null>;
 export async function fetchRoute(
   format: "geojson",
@@ -75,6 +77,7 @@ export async function fetchRoute(
   points: Coordinate[],
   brouterProfile: BROUTER_PROFILES,
   routeName: string,
+  POIString?: string,
 ) {
   const formattedLngLats = points
     .map((point) => [point[0], point[1], point[2]]) // lng, lat, name
@@ -91,7 +94,7 @@ export async function fetchRoute(
 
   const formattedDirectPoints = directPoints.length ? `&straight=${directPoints.join(",")}` : "";
 
-  const formattedQueryString = `lonlats=${formattedLngLats}&profile=${brouterProfile}&alternativeidx=0&format=${format}${formattedDirectPoints}&trackname=${routeName}`;
+  const formattedQueryString = `lonlats=${formattedLngLats}&profile=${brouterProfile}&alternativeidx=0&format=${format}${formattedDirectPoints}&trackname=${routeName}&pois=${POIString ?? ""}`;
 
   const baseUrl = import.meta.env.PROD ? "/api" : "http://localhost:17777";
 

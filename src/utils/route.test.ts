@@ -59,6 +59,7 @@ describe("fetchRoute", () => {
       [[0, 0, "test point name", false]],
       BROUTER_PROFILES.GRAVEL,
       "test_route",
+      "",
     );
 
     expect(axiosGetSpy.mock.calls[0][0]).toContain(

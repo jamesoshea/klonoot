@@ -27,7 +27,6 @@
     "daisyui": "^5.0.50",
     "dayjs": "^1.11.18",
     "mapbox-gl": "^3.14.0",
-    "prettier": "^3.6.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.12"

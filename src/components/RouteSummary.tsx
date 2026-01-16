@@ -11,8 +11,6 @@ import {
   faWind,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import prettier from "prettier/standalone";
-import htmlPlugin from "prettier/plugins/html";
 
 import { ICON_BUTTON_SIZES } from "../consts";
 
@@ -70,28 +68,12 @@ export const RouteSummary = ({
     const routeName = selectedUserRoute?.name ?? "Klonoot Route";
     const safeFilename = convertToSafeFileName(routeName);
 
-    const routeString = await downloadRoute(points, brouterProfile, routeName);
-    if (!routeString) return;
-
     const POIString = POIs.map(
-      (poi) =>
-        `<wpt lat="${poi.coordinates[1]}" lon="${poi.coordinates[0]}"><name>${poi.name}</name></wpt>`,
-    )
-      .join("\n")
-      .concat("\n"); // adding a final newline to make the output a little more readable
+      (poi) => `${poi.coordinates[0]},${poi.coordinates[1]},${poi.name}`,
+    ).join("|");
+    const routeString = await downloadRoute(points, brouterProfile, routeName, POIString);
 
-    const indexOfTrackSegmentOpeningTag = routeString?.indexOf("<trk>");
-
-    const arrFromString = routeString?.split("");
-    arrFromString?.splice(indexOfTrackSegmentOpeningTag - 1, 0, POIString);
-    const newRouteString = arrFromString.join("");
-
-    const formattedString = await prettier.format(newRouteString, {
-      parser: "html",
-      plugins: [htmlPlugin],
-    });
-
-    const blob = new Blob([formattedString], { type: "text/plain" });
+    const blob = new Blob([routeString ?? ""], { type: "text/plain" });
     const fileURL = URL.createObjectURL(blob);
 
     const downloadLink = document.createElement("a");
