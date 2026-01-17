@@ -57,7 +57,8 @@ const draw = (map: Map, mapStyle: MapStyle, routeTrack: BrouterResponse) => {
 
   img.onload = () => {
     if (map.getSource("route")) {
-      map.addImage("arrow-right", img);
+      if (!map.listImages().includes("arrow-right")) map.addImage("arrow-right", img);
+
       map.addLayer({
         id: "route-arrow",
         type: "symbol",
@@ -78,10 +79,11 @@ const draw = (map: Map, mapStyle: MapStyle, routeTrack: BrouterResponse) => {
 export const drawRoute = async (
   map: mapboxgl.Map,
   mapStyle: MapStyle,
-  routeTrack: BrouterResponse,
+  routeTrack: BrouterResponse | null,
   defer: boolean,
 ) => {
   if (!routeTrack) {
+    clearMap(map);
     return;
   }
 

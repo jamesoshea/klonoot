@@ -22,7 +22,6 @@ import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
 import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
 import { useGetPOIs } from "../queries/pois/useGetPOIs.ts";
 import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
-import { useGetUserRoutes } from "../queries/routes/useGetUserRoutes.ts";
 
 import { queryClient } from "../queries/queryClient.ts";
 
@@ -63,6 +62,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     points,
     setPoints,
     selectedRouteId,
+    selectedUserRoute,
     setBrouterProfile,
     routeTrack,
     showPOIs,
@@ -73,7 +73,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   const { data: bikeShops } = useGetBikeShops(routeTrack as BrouterResponse, showPOIs);
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: publicTransport } = useGetPublicTransport(routeTrack as BrouterResponse, showPOIs);
-  const { data: userRoutes } = useGetUserRoutes();
   const { data: POIs } = useGetPOIs();
 
   const [chartMode, setChartMode] = useState<ChartMode>("elevation");
@@ -182,21 +181,19 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   };
 
   useEffect(() => {
-    const route = userRoutes.find((route) => route.id === selectedRouteId) ?? userRoutes[0];
-
-    if (!route) {
+    if (!selectedUserRoute) {
       return;
     }
 
     setCurrentPointDistance(-1);
-    setPoints(route.points);
-    setBrouterProfile(route.brouterProfile);
+    setPoints(selectedUserRoute.points);
+    setBrouterProfile(selectedUserRoute.brouterProfile);
 
-    if (!route.points.length) {
+    if (!selectedUserRoute.points.length) {
       return;
     }
 
-    const features = turf.points(route.points);
+    const features = turf.points(selectedUserRoute.points.map(([lng, lat]) => [lng, lat]));
     const center = turf.center(features);
     map.flyTo({
       center: [center.geometry.coordinates[0], center.geometry.coordinates[1]],
@@ -214,7 +211,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         padding: 256,
       },
     );
-  }, [map, selectedRouteId, setCurrentPointDistance, setBrouterProfile, setPoints, userRoutes]);
+  }, [map, selectedUserRoute, setCurrentPointDistance, setBrouterProfile, setPoints]);
 
   // set markers upon points change
   useEffect(() => {
@@ -340,14 +337,21 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
   }, [map, selectedRouteId, setPatches]);
 
+  const drawRouteWithArguments = useCallback(
+    (defer: boolean) => {
+      drawRoute(map, mapStyle, routeTrack, defer);
+    },
+    [map, mapStyle, routeTrack],
+  );
+
   // draw route on map
   useEffect(() => {
-    drawRoute(map, mapStyle, routeTrack as BrouterResponse, true);
-  }, [map, mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
+    drawRouteWithArguments(false);
+  }, [drawRouteWithArguments, selectedRouteId]);
 
   useEffect(() => {
-    drawRoute(map, mapStyle, routeTrack as BrouterResponse, false);
-  }, [routeTrack, selectedRouteId]); // eslint-disable-line react-hooks/exhaustive-deps
+    drawRouteWithArguments(true);
+  }, [drawRouteWithArguments, map, mapStyle]);
 
   return (
     <>
