@@ -29,3 +29,4 @@ dist-ssr
 segments4/
 
 docs/notes.txt
+nginx.conf

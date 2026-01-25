@@ -351,7 +351,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
 
   useEffect(() => {
     drawRouteWithArguments(true);
-  }, [drawRouteWithArguments, map, mapStyle]);
+  }, [drawRouteWithArguments, mapStyle]);
 
   return (
     <>
