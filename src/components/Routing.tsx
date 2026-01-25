@@ -347,11 +347,11 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   // draw route on map
   useEffect(() => {
     drawRouteWithArguments(false);
-  }, [drawRouteWithArguments, selectedRouteId]);
+  }, [drawRouteWithArguments, routeTrack]);
 
   useEffect(() => {
     drawRouteWithArguments(true);
-  }, [drawRouteWithArguments, mapStyle]);
+  }, [mapStyle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
