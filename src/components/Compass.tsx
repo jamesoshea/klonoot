@@ -16,16 +16,24 @@ export const Compass = ({ map }: { map: mapboxgl.Map }) => {
   };
 
   useEffect(() => {
-    map.on("rotate", () => {
+    const queryBearing = () => {
       const bearing = map.getBearing();
       setMapBearing(bearing);
-    });
+    };
 
-    map.on("pitch", () => {
+    const queryPitch = () => {
       const pitch = map.getPitch();
       setMapPitch(pitch);
-    });
-  });
+    };
+
+    map.on("rotate", queryBearing);
+    map.on("pitch", queryPitch);
+
+    return () => {
+      map.off("rotate", queryBearing);
+      map.off("pitch", queryPitch);
+    };
+  }, [map]);
 
   if (!mapPitch && !mapBearing) {
     return null;
