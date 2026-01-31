@@ -12,12 +12,12 @@ type LayersProps = {
 };
 
 export const Layers = ({ currentMapStyle, setCurrentMapStyle }: LayersProps) => {
-  const { routeTrack, showPOIs, setShowPOIs } = useRouteContext();
   const { currentlyOpenMenu, setCurrentlyOpenMenu } = useGeneralContext();
+  const { routeTrack, showPOIs, setShowPOIs } = useRouteContext();
 
   const menuIsOpen = currentlyOpenMenu === MENU_TYPES.LAYERS;
 
-  return routeTrack ? (
+  return (
     <div className="bg-base-100 flex flex-col rounded-lg p-2 z-4">
       <div className="flex flex-row-reverse items-center justify-start gap-2 w-full">
         <div className="tooltip tooltip-left" data-tip={menuIsOpen ? "" : "Select layers"}>
@@ -54,40 +54,44 @@ export const Layers = ({ currentMapStyle, setCurrentMapStyle }: LayersProps) => 
             Mapbox Satellite
           </label>
         </div>
-        <div className="mt-4">
-          <label className="label text-neutral">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm"
-              checked={showPOIs.water}
-              onChange={(e) => setShowPOIs({ ...showPOIs, water: e.target.checked })}
-            />
-            Drinking water
-          </label>
-        </div>
-        <div className="mt-1">
-          <label className="label text-neutral">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm"
-              checked={showPOIs.transit}
-              onChange={(e) => setShowPOIs({ ...showPOIs, transit: e.target.checked })}
-            />
-            Public Transport
-          </label>
-        </div>
-        <div className="mt-1">
-          <label className="label text-neutral">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm"
-              checked={showPOIs.bikeShops}
-              onChange={(e) => setShowPOIs({ ...showPOIs, bikeShops: e.target.checked })}
-            />
-            Bike shops
-          </label>
-        </div>
+        {routeTrack && (
+          <>
+            <div className="mt-4">
+              <label className="label text-neutral">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm"
+                  checked={showPOIs.water}
+                  onChange={(e) => setShowPOIs({ ...showPOIs, water: e.target.checked })}
+                />
+                Drinking water
+              </label>
+            </div>
+            <div className="mt-1">
+              <label className="label text-neutral">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm"
+                  checked={showPOIs.transit}
+                  onChange={(e) => setShowPOIs({ ...showPOIs, transit: e.target.checked })}
+                />
+                Public Transport
+              </label>
+            </div>
+            <div className="mt-1">
+              <label className="label text-neutral">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm"
+                  checked={showPOIs.bikeShops}
+                  onChange={(e) => setShowPOIs({ ...showPOIs, bikeShops: e.target.checked })}
+                />
+                Bike shops
+              </label>
+            </div>
+          </>
+        )}
       </RightHandPopover>
     </div>
-  ) : null;
+  );
 };
