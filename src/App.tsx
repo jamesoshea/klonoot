@@ -24,6 +24,7 @@ import { addTerrain } from "./utils/map";
 import { WeatherControls } from "./components/WeatherControls";
 import type { MapStyle } from "./types";
 import { SessionContext } from "./contexts/SessionContext";
+import { Compass } from "./components/Compass";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNvc2hlYTg5IiwiYSI6ImNtZWFhdHQ2eDBwN2kyd3NoaHMzMWZhaHkifQ.VL1Krfm7XmukDNIHCpZnfg";
@@ -92,6 +93,7 @@ function App() {
                           <WeatherControls />
                           {session && <DuplicateRoute />}
                           {session && <NewRoute />}
+                          {map && <Compass map={map} />}
                         </>
                       )}
                     </SessionContext.Consumer>
