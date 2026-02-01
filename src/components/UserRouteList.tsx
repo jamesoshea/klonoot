@@ -3,14 +3,14 @@ import {
   faEdit,
   faInfoCircle,
   faSave,
-  faTrash,
+  faTrashAlt,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
 import { IconButton } from "./shared/IconButton";
 
-import { ICON_BUTTON_SIZES } from "../consts";
+import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../consts";
 
 import { useLoadingContext } from "../contexts/LoadingContext";
 import { useRouteContext } from "../contexts/RouteContext";
@@ -143,8 +143,9 @@ export const UserRouteList = ({
                 </div>
                 <div className="tooltip" data-tip="Delete">
                   <IconButton
+                    color={COLOR__ERROR}
                     disabled={loading}
-                    icon={faTrash}
+                    icon={faTrashAlt}
                     size={ICON_BUTTON_SIZES.LARGE}
                     onClick={() =>
                       (document.getElementById("delete_modal") as HTMLDialogElement)?.showModal()

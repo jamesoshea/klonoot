@@ -53,7 +53,7 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
   const scaleXWithParams = (pointDistance: number) =>
     scale(pointDistance, 0, trackLength, 0, currentCanvasWidth);
 
-  const dots = routeTrack.features[0]?.properties?.["messages"].slice(1).reduce<{
+  const routeMarks = routeTrack.features[0]?.properties?.["messages"].slice(1).reduce<{
     points: {
       distance: number;
       elevation: number;
@@ -62,7 +62,7 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
       top: number;
       wayTags: Record<string, string>;
     }[];
-    distance: number;
+    accumulatedDistance: number;
   }>(
     (acc, message, index, array) => {
       const wayTags = message[9].split(" ").reduce<Record<string, string>>((acc, cur) => {
@@ -77,19 +77,19 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
           points: [
             ...acc.points,
             {
-              distance: acc.distance + Number(message[3]),
+              distance: acc.accumulatedDistance + Number(message[3]),
               elevation: acc.points.slice(-1)?.[0]?.elevation ?? 0,
               gradient: "0",
-              left: scaleXWithParams(acc.distance + Number(message[3])),
+              left: scaleXWithParams(acc.accumulatedDistance + Number(message[3])),
               top: acc.points.slice(-1)?.[0]?.top ?? 0, // use the previous height, if it exists
               wayTags,
             },
           ],
-          distance: acc.distance + Number(message[3]),
+          accumulatedDistance: acc.accumulatedDistance + Number(message[3]),
         };
       }
 
-      const accumulatedDistance = acc.distance + Number(message[3]);
+      const accumulatedDistance = acc.accumulatedDistance + Number(message[3]);
       const elevation = Number(message[2]);
       const nextMessageDistance = accumulatedDistance + Number(array[index + 1]?.[3]);
       const nextMessageElevation = Number(array[index + 1]?.[2]);
@@ -105,18 +105,18 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
             distance: accumulatedDistance,
             elevation,
             gradient,
-            left: scaleXWithParams(acc.distance + Number(message[3])),
+            left: scaleXWithParams(acc.accumulatedDistance + Number(message[3])),
             top: scaleYWithParams(Number(message[2])),
             wayTags,
           },
         ],
-        distance: acc.distance + Number(message[3]),
+        accumulatedDistance: acc.accumulatedDistance + Number(message[3]),
       };
     },
-    { points: [], distance: 0 },
+    { points: [], accumulatedDistance: 0 },
   );
 
-  return dots;
+  return routeMarks.points;
 };
 
 type SetupCanvasProps = {
@@ -170,13 +170,13 @@ export const drawElevationChart = ({
   routeTrack: BrouterResponse;
 }) => {
   const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
-  const points = routeMarks.points.slice(1);
+  const points = routeMarks.slice(1);
 
   points.forEach((point, index) => {
     ctx.beginPath();
-    ctx.moveTo(routeMarks.points[index].left, CANVAS_HEIGHT - routeMarks.points[index].top);
+    ctx.moveTo(routeMarks[index].left, CANVAS_HEIGHT - routeMarks[index].top);
     ctx.strokeStyle = SURFACE_COLORS[point.wayTags.surface as SURFACE];
-    ctx.lineTo(routeMarks.points[index + 1].left, CANVAS_HEIGHT - routeMarks.points[index + 1].top);
+    ctx.lineTo(routeMarks[index + 1].left, CANVAS_HEIGHT - routeMarks[index + 1].top);
     ctx.lineWidth = 2;
     ctx.lineCap = "round";
     ctx.stroke();
@@ -196,12 +196,12 @@ export const drawCurrentPointOnElevationChart = ({
 }) => {
   const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
 
-  const points = routeMarks.points.slice(1);
   const trackLength = getTrackLength(routeTrack);
 
-  const relevantPointIndex = points.findIndex(
+  const relevantPointIndex = routeMarks.findIndex(
     (point, index) =>
-      currentPointDistance > point.distance && currentPointDistance < points[index + 1].distance,
+      currentPointDistance > point.distance &&
+      currentPointDistance < routeMarks[index + 1].distance,
   );
 
   if (relevantPointIndex < 0) return;
@@ -216,10 +216,10 @@ export const drawCurrentPointOnElevationChart = ({
   const distanceTextString = `${(currentPointDistance / 1000).toFixed(1)}km`;
   drawTextWithBackground(ctx, distanceTextString, leftPoint + 5, 2, flip);
 
-  const topographyTextString = `${points[relevantPointIndex].elevation}m, ${points[relevantPointIndex].gradient}%`;
+  const topographyTextString = `${routeMarks[relevantPointIndex].elevation}m, ${routeMarks[relevantPointIndex].gradient}%`;
   drawTextWithBackground(ctx, topographyTextString, leftPoint + 5, 16, flip);
 
-  const surfaceTextString = `${points[relevantPointIndex + 1].wayTags.surface ? `${SURFACE_NAMES[points[relevantPointIndex + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[points[relevantPointIndex + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[points[relevantPointIndex + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
+  const surfaceTextString = `${routeMarks[relevantPointIndex + 1].wayTags.surface ? `${SURFACE_NAMES[routeMarks[relevantPointIndex + 1].wayTags.surface as SURFACE]}: ` : ""}${(CYCLEWAY_NAMES[routeMarks[relevantPointIndex + 1].wayTags.cycleway as CYCLEWAY] || HIGHWAY_NAMES[routeMarks[relevantPointIndex + 1].wayTags.highway as HIGHWAY]) ?? ""}`;
   drawTextWithBackground(ctx, surfaceTextString, leftPoint + 5, 30, flip);
 };
 
@@ -272,7 +272,7 @@ export const drawTrafficOnChart = ({
   const routeMarks = createRouteMarks(currentCanvasWidth, routeTrack);
   ctx.clearRect(0, 0, currentCanvasWidth, 10);
 
-  const points = routeMarks.points.slice(1);
+  const points = routeMarks.slice(1);
 
   points.forEach((point) => {
     if (point.wayTags.highway) {
