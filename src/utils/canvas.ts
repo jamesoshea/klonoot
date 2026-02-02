@@ -221,8 +221,6 @@ export const drawCurrentPointOnElevationChart = ({
       currentPointDistance < routeMarks[index + 1].distance,
   );
 
-  console.log(routeMarks, relevantPointIndex);
-
   if (relevantPointIndex < 0) return;
 
   ctx.fillStyle = COLOR__ACCENT;
