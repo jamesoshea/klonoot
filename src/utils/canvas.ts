@@ -1,3 +1,5 @@
+import type { Dispatch, RefObject } from "react";
+
 import {
   CANVAS_HEIGHT,
   COLOR__ACCENT,
@@ -10,23 +12,22 @@ import {
   SURFACE_COLORS,
   SURFACE_NAMES,
 } from "../consts";
-import { getTrackLength } from "./route";
 import type { BrouterResponse, ChartMode, CYCLEWAY, HIGHWAY, SURFACE, WeatherData } from "../types";
-import { bearingToCardinalDirection } from "./weather";
-import type { Dispatch, RefObject } from "react";
 
-const filterElevationNoise = (message: string[]) => {
-  return Number(message[2]) !== -8192;
+import { getTrackLength } from "./route";
+import { bearingToCardinalDirection } from "./weather";
+
+type SetupCanvasProps = {
+  canvas: HTMLCanvasElement | null;
+  containerRef: RefObject<HTMLDivElement | null>;
+  height: number;
+  setCanvasWidth: Dispatch<number>;
 };
 
-export const scale = (
-  number: number,
-  inMin: number,
-  inMax: number,
-  outMin: number,
-  outMax: number,
-) => {
-  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+const filterElevationNoise = (message: string[]) => {
+  // brouter quirks
+  // directly-routed points can have an elevation of -8192m
+  return Number(message[2]) !== -8192;
 };
 
 export const calculateMaxElevation = (routeTrack: BrouterResponse): number =>
@@ -41,6 +42,16 @@ export const calculateMinElevation = (routeTrack: BrouterResponse): number =>
     .filter(filterElevationNoise)
     .reduce((acc: number, cur) => (Number(cur[2]) < acc ? Number(cur[2]) : acc), Infinity);
 
+export const scale = (
+  number: number,
+  inMin: number,
+  inMax: number,
+  outMin: number,
+  outMax: number,
+) => {
+  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+};
+
 export const createRouteMarks = (currentCanvasWidth: number, routeTrack: BrouterResponse) => {
   const trackLength = getTrackLength(routeTrack);
 
@@ -52,6 +63,17 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
 
   const scaleXWithParams = (pointDistance: number) =>
     scale(pointDistance, 0, trackLength, 0, currentCanvasWidth);
+
+  const createFirstRouteMark = (message: string[]) => {
+    return {
+      distance: 0,
+      elevation: parseInt(message[3]),
+      gradient: "0",
+      left: 0,
+      top: scaleYWithParams(Number(message[2])),
+      wayTags: {},
+    };
+  };
 
   const routeMarks = routeTrack.features[0]?.properties?.["messages"].slice(1).reduce<{
     points: {
@@ -71,8 +93,7 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
         return acc;
       }, {});
 
-      if (Number(message[2]) === -8192) {
-        // brouter quirks for directly-routed points
+      if (!filterElevationNoise(message)) {
         return {
           points: [
             ...acc.points,
@@ -113,17 +134,13 @@ export const createRouteMarks = (currentCanvasWidth: number, routeTrack: Brouter
         accumulatedDistance: acc.accumulatedDistance + Number(message[3]),
       };
     },
-    { points: [], accumulatedDistance: 0 },
+    {
+      points: [createFirstRouteMark(routeTrack.features[0]?.properties?.["messages"][1])],
+      accumulatedDistance: 0,
+    },
   );
 
   return routeMarks.points;
-};
-
-type SetupCanvasProps = {
-  canvas: HTMLCanvasElement | null;
-  containerRef: RefObject<HTMLDivElement | null>;
-  height: number;
-  setCanvasWidth: Dispatch<number>;
 };
 
 export const setupCanvas = ({
@@ -203,6 +220,8 @@ export const drawCurrentPointOnElevationChart = ({
       currentPointDistance > point.distance &&
       currentPointDistance < routeMarks[index + 1].distance,
   );
+
+  console.log(routeMarks, relevantPointIndex);
 
   if (relevantPointIndex < 0) return;
 
