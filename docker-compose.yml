@@ -9,10 +9,70 @@ services:
       - 5173:5173
     volumes:
       - ./src:/client/src
-  api:
+
+  postgres:
+    image: postgres:17.4
+    container_name: klonoot_pg
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    hostname: postgres
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PW}
+      POSTGRES_DB: klonoot
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    command: >
+      postgres -c logging_collector=on
+               -c log_directory=/var/log/postgresql
+               -c log_filename=postgresql.log
+               -c log_statement=all
+               -c log_connections=on
+               -c log_disconnections=on
+               -c log_destination=stderr,csvlog
+               -c log_rotation_age=1d
+               -c shared_preload_libraries=pg_stat_statements
+               -c pg_stat_statements.track=all
     restart: unless-stopped
+
+  postgrest:
+    container_name: postgrest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    image: postgrest/postgrest:latest
+    ports:
+      - "3000:3000"
+    environment:
+      # The standard connection URI format, documented at
+      # https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING
+      - PGRST_DB_URI=postgres://${PG_USER}:${PG_PW}@host.docker.internal:5432/klonoot
+      # The name of which database schema to expose to REST clients
+      - PGRST_DB_SCHEMA=${DB_SCHEMA}
+      # The database role to use when no client authentication is provided
+      - PGRST_DB_ANON_ROLE=${DB_ANON_ROLE}
+      # Overrides the base URL used within the OpenAPI self-documentation hosted at the API root path
+      - PGRST_OPENAPI_SERVER_PROXY_URI=http://localhost:3000
+    networks:
+      - postgrest-backend
+    restart: always
+
+  brouter:
     image: joeakeem/brouter:v1.7.8
     ports:
       - 17777:17777
+    restart: unless-stopped
     volumes:
       - ./segments4:/segments4
+
+networks:
+  postgrest-backend:
+    driver: bridge
