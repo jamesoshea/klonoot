@@ -29,6 +29,8 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/pgjwt--0.2.0.sql:/usr/share/postgresql/17/extension/pgjwt--0.2.0.sql
+      - ./database/pgjwt.control:/usr/share/postgresql/17/extension/pgjwt.control
 
     command: >
       postgres -c logging_collector=on
