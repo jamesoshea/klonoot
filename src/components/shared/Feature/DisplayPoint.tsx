@@ -1,8 +1,9 @@
-import { faArrowRight, faCheck, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck, faCirclePlay, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useCallback, useState } from "react";
 
 import { COLOR__ERROR, ICON_BUTTON_SIZES } from "../../../consts";
 import { useRouteContext } from "../../../contexts/RouteContext";
+import { getRouteIsCircular } from "../../../utils/route";
 import type { Coordinate } from "../../../types";
 
 import { IconButton } from "../IconButton";
@@ -26,6 +27,7 @@ export const DisplayPoint = ({
   const [pointName, setPointName] = useState<string>(point[2] ?? "");
 
   const nameChanged = (point[2] ?? "") !== pointName;
+  const routeIsCircular = getRouteIsCircular(existingPoints);
 
   const handleDeletePoint = useCallback(
     (index: number) => {
@@ -44,6 +46,17 @@ export const DisplayPoint = ({
     newPoints.splice(newIndex, 0, pointToMove[0]);
 
     setPoints(newPoints);
+  };
+
+  const handleSetPointAsStartPoint = () => {
+    if (!routeIsCircular) return;
+
+    const indexOfPoint = existingPoints.findIndex((existingPoint) => existingPoint === point);
+
+    const start = existingPoints.slice(indexOfPoint);
+    const end = existingPoints.slice(0, indexOfPoint);
+
+    setPoints([...start, ...end]);
   };
 
   const handleUpdatePointIsDirect = (isDirect: boolean) => {
@@ -109,6 +122,16 @@ export const DisplayPoint = ({
               size={ICON_BUTTON_SIZES.LARGE}
             />
           </div>
+          {routeIsCircular && (
+            <div className="tooltip tooltip-right" data-tip="Set this point as the start point">
+              <IconButton
+                active={point[3]}
+                icon={faCirclePlay}
+                onClick={handleSetPointAsStartPoint}
+                size={ICON_BUTTON_SIZES.LARGE}
+              />
+            </div>
+          )}
         </div>
         <div className="flex gap-2 items-center">
           <span>Move to:</span>

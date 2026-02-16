@@ -143,3 +143,14 @@ export const getPointAlongLine = ({
   const line = turf.lineString(routeTrack.features[0].geometry.coordinates);
   return turf.along(line, distanceInMetres, { units: "metres" });
 };
+
+export const getRouteIsCircular = (points: Coordinate[]) => {
+  if (points.length < 3) return false;
+
+  const firstPoint = points[0];
+  const lastPoint = points.slice(-1)[0];
+
+  const from = turf.point([firstPoint[0], firstPoint[1]]);
+  const to = turf.point([lastPoint[0], lastPoint[1]]);
+  return turf.distance(from, to, { units: "metres" }) < 100;
+};
