@@ -14,7 +14,7 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
   const [currentPointDistance, setCurrentPointDistance] = useState<number>(-1);
   const [debouncedPoints, setDebouncedPoints] = useState<Coordinate[]>([]);
   const [points, setPoints] = useState<Coordinate[]>([]);
-  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(userRoutes?.[0]?.id);
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [showPOIs, setShowPOIs] = useState<ShowPOIContextType>({
     bikeShops: false,
     transit: false,
@@ -39,6 +39,12 @@ export const RouteContextProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(handler);
     };
   }, [points]);
+
+  useEffect(() => {
+    if (selectedRouteId || !userRoutes?.length) return;
+
+    setSelectedRouteId(userRoutes[0].id);
+  }, [userRoutes, selectedRouteId]);
 
   const selectedUserRoute = userRoutes.find((userRoute) => userRoute.id === selectedRouteId);
 
