@@ -51,7 +51,7 @@ function App() {
     const addTerrainWithMap = () => addTerrain(newMap);
 
     newMap.on("load", () => setMapLoaded(true));
-    newMap.once("idle", addTerrainWithMap);
+    newMap.on("idle", addTerrainWithMap);
     setMap(newMap);
 
     return () => {
