@@ -5,7 +5,7 @@ import { getPointAlongLine } from "./route";
 
 import darkPathArrowUrl from "../assets/dark-path-arrow.svg";
 import lightPathArrowUrl from "../assets/light-path-arrow.svg";
-import { COLOR__ACCENT } from "../consts";
+import { COLOR__ACCENT, COLOR__BASE_CONTENT } from "../consts";
 import type { BrouterResponse, MapStyle, OverpassFeature, RoutePOI } from "../types";
 
 export const addTerrain = (map: Map) => {
@@ -39,14 +39,12 @@ const draw = (map: Map, mapStyle: MapStyle, routeTrack: BrouterResponse) => {
     id: "route",
     type: "line",
     source: "route",
-    layout: {
-      "line-join": "round",
-      "line-cap": "round",
-    },
     paint: {
       "line-color": COLOR__ACCENT,
+      "line-border-color": COLOR__BASE_CONTENT,
+      "line-border-width": 1,
       "line-width": 8,
-      "line-opacity": 0.7,
+      "line-opacity": mapStyle === "OUTDOORS" ? 0.7 : 0.9,
     },
   });
 
