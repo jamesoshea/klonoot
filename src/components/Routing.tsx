@@ -146,7 +146,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
         return;
       }
 
-      const line = turf.cleanCoords(turf.lineString(routeTrack?.features[0].geometry.coordinates));
+      const line = turf.lineString(routeTrack?.features[0].geometry.coordinates);
 
       const nearestPointOnLine = turf.nearestPointOnLine(
         line,

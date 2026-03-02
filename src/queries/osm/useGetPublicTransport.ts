@@ -11,10 +11,13 @@ export const useGetPublicTransport = (
   routeTrack: BrouterResponse,
   showPOIs: ShowPOIContextType,
 ) => {
-  const bbox = routeTrack ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5)) : undefined;
+  const bbox =
+    showPOIs.transit && routeTrack
+      ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5))
+      : undefined;
 
   return useQuery({
-    enabled: !!bbox && showPOIs.transit,
+    enabled: !!bbox,
     queryKey: [QUERY_KEYS.GET_PUBLIC_TRANSPORT, bbox],
     staleTime: 1000 * 60 * 60 * 24 * 7,
     queryFn: async () => {

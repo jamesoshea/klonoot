@@ -8,10 +8,13 @@ import type { BrouterResponse } from "../../types";
 import { buildOverpassQuery } from "../../utils/queries";
 
 export const useGetBikeShops = (routeTrack: BrouterResponse, showPOIs: ShowPOIContextType) => {
-  const bbox = routeTrack ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5)) : undefined;
+  const bbox =
+    showPOIs.bikeShops && routeTrack
+      ? turf.bbox(turf.transformScale(routeTrack.features[0], 1.5))
+      : undefined;
 
   return useQuery({
-    enabled: !!bbox && showPOIs.bikeShops,
+    enabled: !!bbox,
     queryKey: [QUERY_KEYS.GET_BIKE_SHOPS, bbox],
     staleTime: 1000 * 60 * 60 * 24 * 7,
     queryFn: async () => {
