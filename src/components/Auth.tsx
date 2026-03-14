@@ -61,7 +61,7 @@ export const Auth = () => {
                 ? "Please enter the code we sent to your email"
                 : ""}
           </p>
-          <div className="flex gap-1 items-center">
+          <div className="flex flex-col gap-1 items-center">
             <p className="py-2">
               <label className="input validator w-full">
                 {step === "LOGIN" && (
