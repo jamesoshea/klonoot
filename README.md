@@ -21,11 +21,7 @@ VITE_SUPABASE_PUBLISHABLE_OR_ANON_KEY // this is the publicly-available key whic
 
 You will then need to create a table in Supabase called `routes`, which will hold the metadata for user-generated routes. A row in this table contains everything brouter needs to return a consistent output. The SQL to create this table is here: `docs/db-schemas/routes.sql`
 
-Finally, run `docker-compose build`, followed by `docker-compose up`. This will build the client, and start a local instance of the open-source brouter routing engine.
-
-The client runs on port 5173
-
-The brouter instance runs on port 17777
+Finally, run `npm i`and `npm run dev`
 
 Navigate to `http://localhost:5173` and have fun.
 
