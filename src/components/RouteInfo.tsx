@@ -53,12 +53,12 @@ export const RouteInfo = ({ routeTrack }: { routeTrack: BrouterResponse }) => {
 
       <div className="stat text-center px-0.5 py-0">
         <div className="stat-title">Unpaved</div>
-        <div className="">{(unpavedDistance / 1000).toFixed(1)} km</div>
+        <div>{(unpavedDistance / 1000).toFixed(1)} km</div>
       </div>
 
       <div className="stat text-center px-0.5 py-0">
         <div className="stat-title">Unknown</div>
-        <div className="">{(unknownDistance / 1000).toFixed(1)} km</div>
+        <div>{(unknownDistance / 1000).toFixed(1)} km</div>
       </div>
     </div>
   );

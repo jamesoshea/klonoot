@@ -82,13 +82,11 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   const [selectedPoint, setSelectedPoint] = useState<Coordinate | null>(null);
   const [selectedPOI, setSelectedPOI] = useState<GeoJSON.Feature<GeoJSON.Point> | null>(null);
   const [selectedRoutePOI, setSelectedRoutePOI] = useState<RoutePOI | null>(null);
-  const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
 
   const handlePointClick = (e: MouseEvent, index: number) => {
     e.stopPropagation();
     setSelectedPoint(points[index]);
     setChartMode("elevation");
-    setShowRouteInfo(false);
   };
 
   const handlePointDrag = useCallback(
@@ -356,13 +354,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   return (
     <>
       <div className="routing m-3 z-3">
-        {session && (
-          <UserRouteList
-            points={points}
-            showRouteInfo={showRouteInfo}
-            onToggleShowRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
-          />
-        )}
+        {session && <UserRouteList points={points} />}
         <div className="mt-2 px-2 py-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} />
           <div className="w-full mt-2 hidden sm:block">
@@ -386,7 +378,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
               <RouteSummary
                 chartMode={chartMode}
                 routeTrack={routeTrack}
-                showRouteInfo={showRouteInfo}
                 onToggleMode={(mode: ChartMode) => setChartMode(mode)}
               />
             </>

@@ -1,7 +1,7 @@
 import {
   faCheck,
+  faDownload,
   faEdit,
-  faInfoCircle,
   faSave,
   faTrashAlt,
   faXmark,
@@ -21,6 +21,9 @@ import { useUpdateRoute } from "../queries/routes/useUpdateRoute";
 import { useUpdateRouteName } from "../queries/routes/useUpdateRouteName";
 
 import { type Coordinate, type UserRoute } from "../types";
+import { convertToSafeFileName } from "../utils/strings";
+import { downloadRoute } from "../utils/route";
+import { useGetPOIs } from "../queries/pois/useGetPOIs";
 
 enum MODES {
   DEFAULT = "DEFAULT",
@@ -29,19 +32,12 @@ enum MODES {
 
 type Mode = (typeof MODES)[keyof typeof MODES];
 
-export const UserRouteList = ({
-  points,
-  showRouteInfo,
-  onToggleShowRouteInfo,
-}: {
-  points: Coordinate[];
-  showRouteInfo: boolean;
-  onToggleShowRouteInfo: () => void;
-}) => {
-  const { loading } = useLoadingContext();
+export const UserRouteList = ({ points }: { points: Coordinate[] }) => {
+  const { loading, setLoading } = useLoadingContext();
   const { brouterProfile, selectedUserRoute, selectedRouteId, setSelectedRouteId } =
     useRouteContext();
 
+  const { data: POIs } = useGetPOIs();
   const { data: userRoutes } = useGetUserRoutes();
   const { mutate: updateUserRoute } = useUpdateRoute();
   const { mutateAsync: deleteUserRoute } = useDeleteRoute();
@@ -49,6 +45,30 @@ export const UserRouteList = ({
 
   const [mode, setMode] = useState<Mode>(MODES.DEFAULT);
   const [newRouteName, setNewRouteName] = useState<string>(selectedUserRoute?.name ?? "");
+
+  const handleGPXDownload = async () => {
+    setLoading(true);
+
+    const routeName = selectedUserRoute?.name ?? "Klonoot Route";
+    const safeFilename = convertToSafeFileName(routeName);
+
+    const POIString = POIs.map(
+      (poi) => `${poi.coordinates[0]},${poi.coordinates[1]},${poi.name}`,
+    ).join("|");
+    const routeString = await downloadRoute(points, brouterProfile, routeName, POIString);
+
+    const blob = new Blob([routeString ?? ""], { type: "text/plain" });
+    const fileURL = URL.createObjectURL(blob);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = fileURL;
+    downloadLink.download = `${safeFilename}.gpx`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    URL.revokeObjectURL(fileURL);
+    setLoading(false);
+  };
 
   const handleUpdateRoute = async () => {
     await updateUserRoute({
@@ -117,15 +137,6 @@ export const UserRouteList = ({
           <div className="flex justify-end">
             {mode === "DEFAULT" && (
               <>
-                <div className="tooltip" data-tip="Route info">
-                  <IconButton
-                    active={showRouteInfo}
-                    disabled={loading}
-                    icon={faInfoCircle}
-                    size={ICON_BUTTON_SIZES.LARGE}
-                    onClick={onToggleShowRouteInfo}
-                  />
-                </div>
                 <div className="tooltip" data-tip="Rename">
                   <IconButton
                     icon={faEdit}
@@ -139,6 +150,14 @@ export const UserRouteList = ({
                     icon={faSave}
                     size={ICON_BUTTON_SIZES.LARGE}
                     onClick={handleUpdateRoute}
+                  />
+                </div>
+                <div className="tooltip" data-tip="Download GPX">
+                  <IconButton
+                    disabled={loading}
+                    icon={faDownload}
+                    size={ICON_BUTTON_SIZES.LARGE}
+                    onClick={handleGPXDownload}
                   />
                 </div>
                 <div className="tooltip" data-tip="Delete">

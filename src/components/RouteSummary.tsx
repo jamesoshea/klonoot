@@ -2,8 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
   faCloud,
-  faDownload,
   faDroplet,
+  faInfoCircle,
   faLeftRight,
   faMountain,
   faTemperatureThreeQuarters,
@@ -17,16 +17,14 @@ import { ICON_BUTTON_SIZES } from "../consts";
 import { useRouteContext } from "../contexts/RouteContext";
 import { useLoadingContext } from "../contexts/LoadingContext";
 
-import { useGetPOIs } from "../queries/pois/useGetPOIs";
-
 import { CHART_MODES, type BrouterResponse, type ChartMode, type Coordinate } from "../types";
 
-import { downloadRoute, getTrackLength } from "../utils/route";
-import { convertToSafeFileName } from "../utils/strings";
+import { getTrackLength } from "../utils/route";
 
 import { RouteInfo } from "./RouteInfo";
 import { IconButton } from "./shared/IconButton";
 import { SquareButton } from "./shared/SquareButton";
+import { useState } from "react";
 
 const CHART_MODE_ICON_MAP: Record<ChartMode, IconDefinition> = {
   cloudCover: faCloud,
@@ -49,42 +47,16 @@ const CHART_MODE_TOOLTIP_MAP: Record<ChartMode, string> = {
 export const RouteSummary = ({
   chartMode,
   routeTrack,
-  showRouteInfo,
   onToggleMode,
 }: {
   chartMode: ChartMode;
   routeTrack: BrouterResponse;
-  showRouteInfo: boolean;
   onToggleMode: (mode: ChartMode) => void;
 }) => {
-  const { loading, setLoading } = useLoadingContext();
-  const { brouterProfile, points, selectedUserRoute, setPoints } = useRouteContext();
+  const { loading } = useLoadingContext();
+  const { points, setPoints } = useRouteContext();
 
-  const { data: POIs } = useGetPOIs();
-
-  const handleGPXDownload = async () => {
-    setLoading(true);
-
-    const routeName = selectedUserRoute?.name ?? "Klonoot Route";
-    const safeFilename = convertToSafeFileName(routeName);
-
-    const POIString = POIs.map(
-      (poi) => `${poi.coordinates[0]},${poi.coordinates[1]},${poi.name}`,
-    ).join("|");
-    const routeString = await downloadRoute(points, brouterProfile, routeName, POIString);
-
-    const blob = new Blob([routeString ?? ""], { type: "text/plain" });
-    const fileURL = URL.createObjectURL(blob);
-
-    const downloadLink = document.createElement("a");
-    downloadLink.href = fileURL;
-    downloadLink.download = `${safeFilename}.gpx`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-
-    URL.revokeObjectURL(fileURL);
-    setLoading(false);
-  };
+  const [showRouteInfo, setShowRouteInfo] = useState<boolean>(false);
 
   const handleReverseRoute = () => {
     const newPoints = [...points];
@@ -122,8 +94,12 @@ export const RouteSummary = ({
 
   return (
     <>
-      <div className="flex items-center justify-end gap-2 min-w-full">
-        <div className="stats flex-grow">
+      <div className="flex items-center min-w-full">
+        <div
+          className="stats flex-grow tooltip cursor-pointer"
+          data-tip="Route info"
+          onClick={() => setShowRouteInfo(!showRouteInfo)}
+        >
           <div className="stat text-center px-0.5 py-0">
             <div className="stat-title">Distance</div>
             <div className="">{(trackLength / 1000).toFixed(1)} km</div>
@@ -139,7 +115,7 @@ export const RouteSummary = ({
             <div className="tooltip" data-tip="Route back to start">
               <details className="dropdown">
                 <summary className="btn btn-circle w-8 h-8 btn-ghost text-neutral">
-                  <FontAwesomeIcon icon={faLeftRight} size="lg" />
+                  <FontAwesomeIcon icon={faArrowsRotate} size="lg" />
                 </summary>
                 <ul className="menu dropdown-content bg-base-100 rounded-box z-12 w-52">
                   <li>
@@ -162,17 +138,9 @@ export const RouteSummary = ({
             <div className="tooltip" data-tip="Reverse route">
               <IconButton
                 disabled={loading}
-                icon={faArrowsRotate}
+                icon={faLeftRight}
                 size={ICON_BUTTON_SIZES.LARGE}
                 onClick={handleReverseRoute}
-              />
-            </div>
-            <div className="tooltip" data-tip="Download GPX">
-              <IconButton
-                disabled={loading}
-                icon={faDownload}
-                size={ICON_BUTTON_SIZES.LARGE}
-                onClick={handleGPXDownload}
               />
             </div>
             <div className="tooltip" data-tip={CHART_MODE_TOOLTIP_MAP[chartMode]}>
