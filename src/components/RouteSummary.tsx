@@ -3,7 +3,6 @@ import {
   faArrowsRotate,
   faCloud,
   faDroplet,
-  faInfoCircle,
   faLeftRight,
   faMountain,
   faTemperatureThreeQuarters,
