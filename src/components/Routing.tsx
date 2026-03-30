@@ -15,9 +15,7 @@ import { QUERY_KEYS } from "../consts.ts";
 
 import { usePatchesContext } from "../contexts/PatchesContext.ts";
 import { useRouteContext } from "../contexts/RouteContext.ts";
-import { useSessionContext } from "../contexts/SessionContext.ts";
 
-import { useCreateRoute } from "../queries/routes/useCreateRoute";
 import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
 import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
 import { useGetPOIs } from "../queries/pois/useGetPOIs.ts";
@@ -45,6 +43,7 @@ import {
 } from "../utils/map.ts";
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 import { DisplayRoutePOI } from "./RoutePOI.tsx";
+import { useSessionContext } from "../contexts/SessionContext.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -67,9 +66,9 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     routeTrack,
     showPOIs,
   } = useRouteContext();
-  const { session, supabase } = useSessionContext();
+  const { user } = useSessionContext();
 
-  const { mutateAsync: createUserRoute } = useCreateRoute();
+  // const { mutateAsync: createUserRoute } = useCreateRoute();
   const { data: bikeShops } = useGetBikeShops(routeTrack as BrouterResponse, showPOIs);
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: publicTransport } = useGetPublicTransport(routeTrack as BrouterResponse, showPOIs);
@@ -295,36 +294,6 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     };
   }, [map, handleContextMenuOpen, handleLineMouseMove, handleLineMouseLeave, handleNewPointSet]);
 
-  // listen for auth changes and add side-effects
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === "SIGNED_OUT") {
-        setBrouterProfile(BROUTER_PROFILES.TREKKING);
-        setPoints([]);
-        clearMap(map);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [brouterProfile, map, points, setBrouterProfile, setPoints, supabase.auth]);
-
-  useEffect(() => {
-    if (!session?.user?.id) {
-      return;
-    }
-
-    if (points.length) {
-      createUserRoute({
-        points,
-        brouterProfile,
-      });
-    }
-  }, [session?.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // reset necessary state when changing route
   useEffect(() => {
     clearMap(map);
@@ -354,7 +323,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   return (
     <>
       <div className="routing m-3 z-3">
-        {session && <UserRouteList points={points} />}
+        {user && <UserRouteList points={points} />} {/* TODO: check for userId / token */}
         <div className="mt-2 px-2 py-3 rounded-lg bg-base-100 flex flex-col items-center">
           <Search map={map} />
           <div className="w-full mt-2 hidden sm:block">

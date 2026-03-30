@@ -1,120 +1,107 @@
-import { useContext, useState } from "react";
-import { SessionContext } from "../contexts/SessionContext";
+import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
+
+import { useSessionContext } from "../contexts/SessionContext";
 import { queryClient } from "../queries/queryClient";
 import { faSignOut } from "@fortawesome/free-solid-svg-icons";
 
 import { SquareButton } from "./shared/SquareButton";
-
-type MODE = "LOGIN" | "VERIFY";
+import axios from "axios";
+import type { User } from "../types";
 
 export const Auth = () => {
+  const { user, token, setUser, setToken } = useSessionContext();
   // TODO: error handling
   const [email, setEmail] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [otp, setOtp] = useState<string>("");
-  const [step, setStep] = useState<MODE>("LOGIN");
+  const [password, setPassword] = useState<string>("");
 
-  const { supabase, session } = useContext(SessionContext);
-
-  const handleEmailLogin = async () => {
+  const handleEmailSignin = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    setLoading(false);
-    if (error) throw error;
-    setStep("VERIFY");
-  };
+    const {
+      data: { token },
+    } = await axios.post(
+      "http://localhost/api/rpc/login",
+      { email, pass: password },
+      { headers: { "Content-type": "application/json" } },
+    );
 
-  const handleEmailConfirm = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token: otp,
-      type: "magiclink",
-    });
-    setLoading(false);
+    setToken(token);
+    localStorage.setItem("token", token);
 
-    if (error) throw error;
-    setEmail("");
-    setOtp("");
+    const user = jwtDecode<User>(token);
+    setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    setLoading(false);
   };
 
   const handleSignOut = async () => {
-    setLoading(true);
-    await supabase.auth.signOut();
-    setLoading(false);
+    setToken(null);
+    window.localStorage.removeItem("token");
+
+    setUser(null);
+    window.localStorage.removeItem("user");
     queryClient.clear();
-    setStep("LOGIN");
   };
 
   return (
     <div>
-      {session ? (
+      {token && user ? (
         <div className="join join-vertical w-full">
+          <p className="text-content text-center text-sm">Signed in as {user.email}</p>
           <SquareButton icon={faSignOut} text="Sign out" onClick={handleSignOut} />
         </div>
       ) : (
         <>
           <p className="text-content text-center text-sm">
-            {step === "LOGIN"
-              ? "To sign in, enter your email. We will email you a code to verify your email address."
-              : step === "VERIFY"
-                ? "Please enter the code we sent to your email"
-                : ""}
+            Please sign up or log in with an email and password
           </p>
           <div className="flex flex-col gap-1 items-center">
             <p className="py-2">
               <label className="input validator w-full">
-                {step === "LOGIN" && (
-                  <svg
-                    className="h-[1em] opacity-50"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
+                <svg
+                  className="h-[1em] opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
                   >
-                    <g
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2.5"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                    </g>
-                  </svg>
-                )}
-                {step === "LOGIN" ? (
-                  <input
-                    className="w-full"
-                    placeholder="mail@example.com"
-                    required
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.currentTarget.value)}
-                  />
-                ) : step === "VERIFY" ? (
-                  <input
-                    className="w-full"
-                    placeholder="000000"
-                    required
-                    type="number"
-                    value={otp}
-                    onChange={(e) => setOtp(e.currentTarget.value)}
-                  />
-                ) : null}
+                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                  </g>
+                </svg>
+                <input
+                  className="w-full"
+                  placeholder="mail@example.com"
+                  required
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.currentTarget.value)}
+                />
+              </label>
+
+              <label className="input validator mt-1 w-full">
+                <input
+                  className="w-full"
+                  placeholder="password"
+                  required
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.currentTarget.value)}
+                />
               </label>
             </p>
 
-            {step === "LOGIN" ? (
-              <button className="btn" onClick={handleEmailLogin}>
-                {loading && <span className="loading loading-spinner" />}
-                Sign in
-              </button>
-            ) : step === "VERIFY" ? (
-              <button className="btn ml-2" onClick={handleEmailConfirm}>
-                {loading && <span className="loading loading-spinner" />}
-                Verify
-              </button>
-            ) : null}
+            <button className="btn" onClick={handleEmailSignin}>
+              {loading && <span className="loading loading-spinner" />}
+              Sign in
+            </button>
           </div>
         </>
       )}

@@ -25,6 +25,7 @@
     "d3-scale": "^4.0.2",
     "daisyui": "^5.0.50",
     "dayjs": "^1.11.18",
+    "jwt-decode": "^4.0.0",
     "mapbox-gl": "^3.14.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

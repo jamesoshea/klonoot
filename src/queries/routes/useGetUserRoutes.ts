@@ -1,20 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext } from "react";
 
 import { QUERY_KEYS } from "../../consts";
-import { SessionContext } from "../../contexts/SessionContext";
+import { useSessionContext } from "../../contexts/SessionContext";
+
+import { useAxios } from "./useAxios";
+import type { UserRoute } from "../../types";
 
 export const useGetUserRoutes = () => {
-  const { supabase, session } = useContext(SessionContext);
+  const axios = useAxios();
+  const { token, user } = useSessionContext();
   const { data, ...rest } = useQuery({
-    enabled: !!session,
+    enabled: !!(token && user),
     queryKey: [QUERY_KEYS.GET_USER_ROUTES],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("routes")
-        .select("*")
-        .eq("userId", session?.user.id)
-        .order("createdAt", { ascending: false });
+    queryFn: async (): Promise<UserRoute[]> => {
+      const { data } = await axios.get(
+        `http://localhost/api/routes?userId=eq.${user?.id}&order=createdAt.desc`,
+      );
 
       return data;
     },

@@ -1,33 +1,23 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { SessionContext, useSessionContext } from "./SessionContext";
-import { type Session } from "@supabase/supabase-js";
+import { SessionContext } from "./SessionContext";
+import type { User } from "../types";
 
-export const SessionContextProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
-  const { supabase } = useSessionContext();
-  const [session, setSession] = useState<Session | null>(null);
+export const SessionContextProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        setSession(null);
-      } else if (session) {
-        setSession(session);
-      }
-    });
+    const tokenFromLocalStorage = localStorage.getItem("token");
+    const userFromLocalStorage = localStorage.getItem("user");
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase.auth]);
+    if (tokenFromLocalStorage && userFromLocalStorage) {
+      setUser(JSON.parse(userFromLocalStorage) as User);
+      setToken(tokenFromLocalStorage);
+    }
+  }, []);
 
   return (
-    <SessionContext.Provider value={{ supabase, session }}>
+    <SessionContext.Provider value={{ token, user, setToken, setUser }}>
       {children}
     </SessionContext.Provider>
   );

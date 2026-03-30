@@ -22,6 +22,8 @@ export type BrouterResponse = FeatureCollection<
 /** lng, lat */
 export type Coordinate = [lng: number, lat: number, name: string, direct: boolean];
 
+export type User = { email: string; exp: number; id: string; role: string };
+
 export type UserRoute = {
   id: string;
   name: string;

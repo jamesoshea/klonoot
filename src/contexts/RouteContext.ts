@@ -20,7 +20,7 @@ export type RouteContextType = {
   setShowPOIs: Dispatch<ShowPOIContextType>;
   selectedRouteId: string | null;
   setSelectedRouteId: Dispatch<string>;
-  selectedUserRoute: UserRoute;
+  selectedUserRoute?: UserRoute;
   userRoutes: UserRoute[];
 };
 
