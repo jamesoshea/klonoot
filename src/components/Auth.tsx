@@ -1,39 +1,43 @@
 import { jwtDecode } from "jwt-decode";
 import { useState } from "react";
 
-import { useSessionContext } from "../contexts/SessionContext";
-import { queryClient } from "../queries/queryClient";
 import { faSignOut } from "@fortawesome/free-solid-svg-icons";
 
-import { SquareButton } from "./shared/SquareButton";
-import axios from "axios";
+import { useSessionContext } from "../contexts/SessionContext";
+import axios from "../queries/axios";
+import { queryClient } from "../queries/queryClient";
 import type { User } from "../types";
+
+import { SquareButton } from "./shared/SquareButton";
 
 export const Auth = () => {
   const { user, token, setUser, setToken } = useSessionContext();
-  // TODO: error handling
+
   const [email, setEmail] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
 
   const handleEmailSignin = async () => {
-    setLoading(true);
-    const {
-      data: { token },
-    } = await axios.post(
-      "http://localhost/api/rpc/login",
-      { email, pass: password },
-      { headers: { "Content-type": "application/json" } },
-    );
+    try {
+      setLoading(true);
 
-    setToken(token);
-    localStorage.setItem("token", token);
+      const {
+        data: { token },
+      } = await axios.post(
+        "http://localhost/api/rpc/login",
+        { email, pass: password },
+        { headers: { "Content-type": "application/json" } },
+      );
 
-    const user = jwtDecode<User>(token);
-    setUser(user);
-    localStorage.setItem("user", JSON.stringify(user));
+      setToken(token);
+      localStorage.setItem("token", token);
 
-    setLoading(false);
+      const user = jwtDecode<User>(token);
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignOut = async () => {

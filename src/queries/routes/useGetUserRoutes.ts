@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
+import axios from "../axios";
+
 import { QUERY_KEYS } from "../../consts";
 import { useSessionContext } from "../../contexts/SessionContext";
-
-import { useAxios } from "./useAxios";
 import type { UserRoute } from "../../types";
 
 export const useGetUserRoutes = () => {
-  const axios = useAxios();
   const { token, user } = useSessionContext();
   const { data, ...rest } = useQuery({
     enabled: !!(token && user),
