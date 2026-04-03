@@ -1,14 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { useContext } from "react";
 
 import { queryClient } from "../queryClient";
 import { MUTATION_KEYS, QUERY_KEYS } from "../../consts";
-import { SessionContext } from "../../contexts/SessionContext";
 import type { BROUTER_PROFILES, Coordinate } from "../../types";
+import axios from "../axios";
 
 export const useUpdateRoute = () => {
-  const { supabase } = useContext(SessionContext);
-
   return useMutation({
     mutationKey: [MUTATION_KEYS.UPDATE_USER_ROUTE],
     mutationFn: async ({
@@ -24,16 +21,18 @@ export const useUpdateRoute = () => {
         return Promise.reject("Route ID is null");
       }
 
-      return supabase
-        ?.from("routes")
-        .update([
-          {
-            points,
-            brouterProfile,
+      return axios.patch(
+        `http://localhost/api/routes?id=eq.${selectedRouteId}`,
+        {
+          points,
+          brouterProfile,
+        },
+        {
+          headers: {
+            Prefer: "return=representation",
           },
-        ])
-        .eq("id", selectedRouteId)
-        .select();
+        },
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_USER_ROUTES] });

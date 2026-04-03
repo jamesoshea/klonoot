@@ -44,6 +44,7 @@ import {
 import { formatOverpassFeatureAsGeoJSONPoint, setNewPoint } from "../utils/route.ts";
 import { DisplayRoutePOI } from "./RoutePOI.tsx";
 import { useSessionContext } from "../contexts/SessionContext.ts";
+import { useCreateRoute } from "../queries/routes/useCreateRoute.ts";
 
 const profileNameMap = {
   TREKKING: "Trekking",
@@ -68,7 +69,7 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
   } = useRouteContext();
   const { user } = useSessionContext();
 
-  // const { mutateAsync: createUserRoute } = useCreateRoute();
+  const { mutateAsync: createUserRoute } = useCreateRoute();
   const { data: bikeShops } = useGetBikeShops(routeTrack as BrouterResponse, showPOIs);
   const { data: drinkingWater } = useGetDrinkingWater(routeTrack as BrouterResponse, showPOIs);
   const { data: publicTransport } = useGetPublicTransport(routeTrack as BrouterResponse, showPOIs);
@@ -293,6 +294,20 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
       map.off("mouseleave", "route", handleLineMouseLeave);
     };
   }, [map, handleContextMenuOpen, handleLineMouseMove, handleLineMouseLeave, handleNewPointSet]);
+
+  const loggedIn = !!user;
+  useEffect(() => {
+    if (!loggedIn) {
+      return;
+    }
+
+    if (points.length) {
+      createUserRoute({
+        points,
+        brouterProfile,
+      });
+    }
+  }, [loggedIn]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // reset necessary state when changing route
   useEffect(() => {

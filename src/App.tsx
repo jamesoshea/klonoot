@@ -85,14 +85,14 @@ function App() {
                   <div id="map-container" ref={mapContainerRef} />
                   <div className="absolute top-3 right-3 flex flex-col gap-1 items-end max-w-72">
                     <SessionContext.Consumer>
-                      {({ session }) => (
+                      {({ user }) => (
                         <>
                           <Nav />
                           <Layers currentMapStyle={mapStyle} setCurrentMapStyle={setMapStyle} />
                           <Import map={map} />
                           <WeatherControls />
-                          {session && <DuplicateRoute />}
-                          {session && <NewRoute />}
+                          {user && <DuplicateRoute />}
+                          {user && <NewRoute />}
                           {map && <Compass map={map} />}
                         </>
                       )}

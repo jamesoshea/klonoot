@@ -38,7 +38,7 @@ export const UserRouteList = ({ points }: { points: Coordinate[] }) => {
     useRouteContext();
 
   const { data: POIs } = useGetPOIs();
-  const { data: userRoutes } = useGetUserRoutes();
+  const { data: userRoutes = [] } = useGetUserRoutes();
   const { mutate: updateUserRoute } = useUpdateRoute();
   const { mutateAsync: deleteUserRoute } = useDeleteRoute();
   const { mutateAsync: updateRouteName } = useUpdateRouteName();
@@ -83,13 +83,13 @@ export const UserRouteList = ({ points }: { points: Coordinate[] }) => {
       selectedRouteId,
     });
 
-    setSelectedRouteId(userRoutes.find((route) => route.id !== selectedRouteId).id ?? null);
+    setSelectedRouteId(userRoutes.find((route) => route.id !== selectedRouteId)?.id ?? null);
   };
 
   const handleUpdateRouteName = async () => {
     if (selectedRouteId) {
       await updateRouteName({
-        routeId: selectedUserRoute.id,
+        routeId: selectedRouteId,
         newName: newRouteName,
       });
     }

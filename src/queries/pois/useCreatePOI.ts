@@ -1,14 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
-import { useContext } from "react";
 
 import { queryClient } from "../queryClient";
 
 import { MUTATION_KEYS, QUERY_KEYS } from "../../consts";
 import { useRouteContext } from "../../contexts/RouteContext";
-import { SessionContext } from "../../contexts/SessionContext";
+
+import axios from "../axios";
 
 export const useCreatePOI = () => {
-  const { supabase } = useContext(SessionContext);
   const { selectedRouteId } = useRouteContext();
 
   return useMutation({
@@ -20,17 +19,12 @@ export const useCreatePOI = () => {
       coordinates: [lng: number, lat: number];
       name?: string;
     }) =>
-      supabase
-        ?.from("pois")
-        .insert([
-          {
-            routeId: selectedRouteId,
-            name: name ?? "",
-            coordinates,
-            category: "",
-          },
-        ])
-        .select(),
+      axios.post("http://localhost/api/pois", {
+        routeId: selectedRouteId,
+        name: name ?? "",
+        coordinates,
+        category: "",
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ROUTE_POIS] });
     },

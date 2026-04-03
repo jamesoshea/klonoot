@@ -1,20 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext } from "react";
 
 import { QUERY_KEYS } from "../../consts";
 import { useRouteContext } from "../../contexts/RouteContext";
-import { SessionContext } from "../../contexts/SessionContext";
+import { useSessionContext } from "../../contexts/SessionContext";
 import type { RoutePOI } from "../../types";
 
+import axios from "../axios";
+
 export const useGetPOIs = () => {
-  const { supabase, session } = useContext(SessionContext);
   const { selectedRouteId } = useRouteContext();
+  const { user } = useSessionContext();
 
   const { data, ...rest } = useQuery<RoutePOI[] | null>({
-    enabled: !!(session && selectedRouteId),
+    enabled: !!(user && selectedRouteId),
     queryKey: [QUERY_KEYS.GET_ROUTE_POIS],
     queryFn: async () => {
-      const { data } = await supabase.from("pois").select("*").eq("routeId", selectedRouteId);
+      const { data } = await axios.get("http://localhost/api/pois");
       return data;
     },
   });

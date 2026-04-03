@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 import { useRouteContext } from "../../../contexts/RouteContext";
-import { SessionContext } from "../../../contexts/SessionContext";
+import { useSessionContext } from "../../../contexts/SessionContext";
 
 import type { Coordinate } from "../../../types";
 import { getNewPointIndex } from "../../../utils/route";
@@ -22,7 +22,7 @@ type FeatureProps = {
 
 export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
   const { points: existingPoints, setPoints } = useRouteContext();
-  const { session } = useContext(SessionContext);
+  const { user } = useSessionContext();
 
   const { mutateAsync: createPOI } = useCreatePOI();
 
@@ -112,7 +112,7 @@ export const Feature = ({ GeoJSONFeature, point, onClose }: FeatureProps) => {
                     existingPoints={existingPoints}
                     onAddFeatureToMiddle={handleAddFeatureToMiddle}
                   />
-                  {session && (
+                  {user && (
                     <div className="tooltip">
                       <button className="btn btn-primary" onClick={handleAddFeatureAsPOI}>
                         POI

@@ -1,6 +1,9 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-const axiosInstance = axios.create({ baseURL: "/api/" });
+const axiosInstance = axios.create({
+  baseURL: "/api/",
+  headers: { "Content-Type": "application/json" },
+});
 
 const addAuthHeader = (config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem("token");
@@ -12,7 +15,7 @@ const addAuthHeader = (config: InternalAxiosRequestConfig) => {
 };
 
 const handleError = (error: AxiosError) => {
-  alert(JSON.stringify(error.message));
+  console.error(error.message);
   return Promise.reject(error);
 };
 
