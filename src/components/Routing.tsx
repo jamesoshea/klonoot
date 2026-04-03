@@ -20,7 +20,6 @@ import { useGetBikeShops } from "../queries/osm/useGetBikeShops.ts";
 import { useGetDrinkingWater } from "../queries/osm/useGetDrinkingWater.ts";
 import { useGetPOIs } from "../queries/pois/useGetPOIs.ts";
 import { useGetPublicTransport } from "../queries/osm/useGetPublicTransport.ts";
-
 import { queryClient } from "../queries/queryClient.ts";
 
 import {
@@ -295,17 +294,21 @@ export const Routing = ({ map, mapStyle }: { map: mapboxgl.Map; mapStyle: MapSty
     };
   }, [map, handleContextMenuOpen, handleLineMouseMove, handleLineMouseLeave, handleNewPointSet]);
 
-  const loggedIn = !!user;
-  useEffect(() => {
-    if (!loggedIn) {
-      return;
-    }
-
+  const createUserRouteAsEffect = useCallback(() => {
     if (points.length) {
       createUserRoute({
         points,
         brouterProfile,
       });
+    }
+  }, [brouterProfile, createUserRoute, points]);
+
+  const loggedIn = !!user;
+  useEffect(() => {
+    if (loggedIn) {
+      createUserRouteAsEffect();
+    } else {
+      queryClient.invalidateQueries();
     }
   }, [loggedIn]); // eslint-disable-line react-hooks/exhaustive-deps
 
